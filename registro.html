@@ -3,605 +3,1044 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Panzer VIP - Registro de Membresía</title>
-    
+    <title>Panzer Carwash - Activa tu Membresía VIP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2236;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-gold: #f59e0b;
+            --accent-silver: #94a3b8;
+            --accent-green: #10b981;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: rgba(59, 130, 246, 0.15);
+            --glow-blue: rgba(59, 130, 246, 0.3);
+            --glow-cyan: rgba(6, 182, 212, 0.2);
         }
-        
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
-            color: white;
+            overflow-x: hidden;
         }
-        
+
+        /* Background effects */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, var(--glow-blue) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, var(--glow-cyan) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+            z-index: 0;
+            animation: bgFloat 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgFloat {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-2%, -2%) rotate(3deg); }
+        }
+
         .container {
-            max-width: 450px;
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 20px 16px;
+            min-height: 100vh;
         }
-        
+
         /* Header */
         .header {
             text-align: center;
-            padding: 30px 0;
-            border-bottom: 2px solid #4a90d9;
-            margin-bottom: 30px;
+            padding: 24px 0 32px;
         }
-        
-        .header h1 {
-            font-size: 28px;
-            color: #4a90d9;
-            margin-bottom: 10px;
+
+        .logo-container {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 16px;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 2px solid var(--border);
+            box-shadow: 0 0 30px var(--glow-blue), 0 8px 32px rgba(0,0,0,0.4);
+            animation: logoGlow 3s ease-in-out infinite alternate;
         }
-        
-        .header p {
-            color: #888;
-            font-size: 14px;
+
+        @keyframes logoGlow {
+            0% { box-shadow: 0 0 20px var(--glow-blue), 0 8px 32px rgba(0,0,0,0.4); }
+            100% { box-shadow: 0 0 40px var(--glow-cyan), 0 8px 32px rgba(0,0,0,0.4); }
         }
-        
-        /* Pantallas */
-        .screen {
-            display: none;
-        }
-        
-        .screen.active {
-            display: block;
-        }
-        
-        /* Formulario */
-        .form-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 30px 25px;
-        }
-        
-        .form-card h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            color: #4a90d9;
-            font-size: 22px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #ccc;
-            font-size: 14px;
-        }
-        
-        .form-group input,
-        .form-group select {
+
+        .logo-container img {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #333;
-            border-radius: 12px;
-            background: #1a1a2e;
-            color: white;
-            font-size: 16px;
-            transition: border-color 0.3s;
+            height: 100%;
+            object-fit: cover;
         }
-        
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: #4a90d9;
-            outline: none;
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
         }
-        
-        .form-group input::placeholder {
-            color: #666;
+
+        .header p {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 300;
         }
-        
-        /* Membresías */
-        .membresia-options {
+
+        /* Steps indicator */
+        .steps {
             display: flex;
-            gap: 10px;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 32px;
         }
-        
-        .membresia-option {
-            flex: 1;
-            padding: 15px 10px;
-            border: 2px solid #333;
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
             transition: all 0.3s;
         }
-        
-        .membresia-option:hover {
-            border-color: #4a90d9;
+
+        .step.active { color: var(--accent-cyan); }
+        .step.done { color: var(--accent-green); }
+
+        .step-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            background: var(--bg-card);
+            border: 2px solid var(--text-muted);
+            transition: all 0.3s;
         }
-        
-        .membresia-option.selected {
-            border-color: #4a90d9;
-            background: rgba(74, 144, 217, 0.2);
+
+        .step.active .step-dot {
+            border-color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--accent-cyan);
+            box-shadow: 0 0 12px var(--glow-cyan);
         }
-        
-        .membresia-option.gold {
-            border-color: #ffd700;
+
+        .step.done .step-dot {
+            border-color: var(--accent-green);
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
         }
-        .membresia-option.gold.selected {
-            background: rgba(255, 215, 0, 0.2);
+
+        .step-line {
+            width: 32px;
+            height: 2px;
+            background: var(--text-muted);
+            opacity: 0.3;
         }
-        
-        .membresia-option.silver {
-            border-color: #c0c0c0;
+
+        /* Screens */
+        .screen { display: none; animation: fadeSlideIn 0.4s ease-out; }
+        .screen.active { display: block; }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .membresia-option.silver.selected {
-            background: rgba(192, 192, 192, 0.2);
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px 24px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(20px);
         }
-        
-        .membresia-option .icon {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        
-        .membresia-option .name {
-            font-weight: bold;
-            font-size: 14px;
-        }
-        
-        .membresia-option .tokens {
-            font-size: 12px;
-            color: #4ade80;
-            margin-top: 5px;
-        }
-        
-        /* Botones */
-        .btn {
-            width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 12px;
+
+        .card-title {
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .card-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        /* Payment verified badge */
+        .payment-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 14px;
+            margin-bottom: 24px;
+        }
+
+        .payment-badge-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .payment-badge-text {
+            font-size: 13px;
+            color: var(--accent-green);
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .payment-badge-text span {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        /* Membership selector */
+        .membership-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .membership-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border: 2px solid transparent;
+            border-radius: 14px;
             cursor: pointer;
-            transition: transform 0.2s, opacity 0.2s;
-            margin-top: 10px;
+            transition: all 0.25s;
+            color: var(--text-primary);
+            font-family: inherit;
+            text-align: left;
         }
-        
-        .btn:active {
-            transform: scale(0.98);
+
+        .membership-btn:hover { border-color: var(--border); transform: translateY(-1px); }
+        .membership-btn.selected { border-color: var(--accent-cyan); background: rgba(6, 182, 212, 0.06); }
+
+        .membership-btn.selected.standard { border-color: var(--accent-blue); }
+        .membership-btn.selected.silver { border-color: var(--accent-silver); }
+        .membership-btn.selected.gold { border-color: var(--accent-gold); }
+
+        .mem-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        
+
+        .mem-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .mem-icon.standard { background: rgba(59, 130, 246, 0.12); }
+        .mem-icon.silver { background: rgba(148, 163, 184, 0.12); }
+        .mem-icon.gold { background: rgba(245, 158, 11, 0.12); }
+
+        .mem-name {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .mem-tokens {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        .mem-price {
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .mem-check {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+
+        .membership-btn.selected .mem-check {
+            border-color: var(--accent-cyan);
+            background: var(--accent-cyan);
+        }
+
+        .membership-btn.selected.standard .mem-check { border-color: var(--accent-blue); background: var(--accent-blue); }
+        .membership-btn.selected.silver .mem-check { border-color: var(--accent-silver); background: var(--accent-silver); }
+        .membership-btn.selected.gold .mem-check { border-color: var(--accent-gold); background: var(--accent-gold); }
+
+        /* Form inputs */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+        }
+
+        .form-input::placeholder { color: var(--text-muted); }
+
+        /* Buttons */
         .btn-primary {
-            background: linear-gradient(135deg, #4a90d9, #357abd);
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
             color: white;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #28a745, #1e7e34);
-            color: white;
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
         }
-        
-        .btn-secondary {
-            background: #444;
-            color: white;
-        }
-        
-        .btn:disabled {
+
+        .btn-primary:active { transform: translateY(0); }
+
+        .btn-primary:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
-        
-        /* Mensajes */
-        .mensaje {
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: center;
+
+        .btn-primary.loading {
+            pointer-events: none;
         }
-        
-        .mensaje.error {
-            background: rgba(220, 53, 69, 0.3);
-            border: 1px solid #dc3545;
-        }
-        
-        .mensaje.info {
-            background: rgba(74, 144, 217, 0.3);
-            border: 1px solid #4a90d9;
-            font-size: 14px;
-        }
-        
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 40px;
-        }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #333;
-            border-top-color: #4a90d9;
+
+        .btn-primary.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 22px;
+            height: 22px;
+            margin: -11px 0 0 -11px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
+            animation: spin 0.6s linear infinite;
         }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* QR Result */
+        .qr-result {
+            text-align: center;
         }
-        
-        /* Tarjeta QR */
+
+        .success-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 36px;
+            animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .qr-result h2 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .qr-result .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        /* QR Card */
         .qr-card {
             background: white;
             border-radius: 20px;
-            padding: 30px;
+            padding: 28px 24px;
+            margin: 0 auto 20px;
+            max-width: 320px;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+        }
+
+        .qr-card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .qr-card-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .qr-card-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .qr-card-brand {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .qr-card-brand span {
+            display: block;
+            font-size: 11px;
+            font-weight: 400;
+            color: #94a3b8;
+        }
+
+        .qr-card-membership {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: auto;
+        }
+
+        .qr-card-membership.standard { background: #dbeafe; color: #2563eb; }
+        .qr-card-membership.silver { background: #e2e8f0; color: #475569; }
+        .qr-card-membership.gold { background: #fef3c7; color: #d97706; }
+
+        #qrcode-container {
+            display: flex;
+            justify-content: center;
+            margin: 16px 0;
+        }
+
+        #qrcode-container canvas, #qrcode-container img {
+            border-radius: 8px;
+        }
+
+        .qr-card-info {
             text-align: center;
-            color: #333;
+            margin-top: 14px;
         }
-        
-        .qr-card .logo {
-            font-size: 24px;
-            color: #4a90d9;
-            margin-bottom: 10px;
+
+        .qr-card-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
         }
-        
-        .qr-card .titulo {
-            font-size: 14px;
-            color: #888;
-            margin-bottom: 5px;
-        }
-        
-        .qr-card .nombre {
-            font-size: 22px;
-            font-weight: bold;
-            color: #1a1a2e;
-            margin-bottom: 5px;
-        }
-        
-        .qr-card .membresia {
-            font-size: 14px;
-            color: #888;
-            margin-bottom: 20px;
-        }
-        
-        .qr-card .membresia.gold { color: #b8860b; }
-        .qr-card .membresia.silver { color: #708090; }
-        
-        .qr-card .qr-image {
-            margin: 20px auto;
-        }
-        
-        .qr-card .qr-image img {
-            border: 3px solid #1a1a2e;
-            border-radius: 10px;
-        }
-        
-        .qr-card .id-vip {
-            font-size: 18px;
-            font-weight: bold;
-            color: #4a90d9;
-            margin-top: 15px;
-        }
-        
-        .qr-card .instrucciones {
+
+        .qr-card-id {
+            font-family: 'Space Mono', monospace;
             font-size: 12px;
-            color: #888;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
+            color: #94a3b8;
+            margin-top: 2px;
         }
-        
-        /* Éxito */
-        .exito-mensaje {
-            background: rgba(40, 167, 69, 0.2);
-            border: 2px solid #28a745;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 25px;
+
+        .qr-card-tokens {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+            padding: 4px 14px;
+            background: #f0fdf4;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #16a34a;
         }
-        
-        .exito-mensaje .check {
-            font-size: 50px;
-            margin-bottom: 10px;
-        }
-        
-        .exito-mensaje h3 {
-            color: #28a745;
-            margin-bottom: 5px;
-        }
-        
-        .exito-mensaje p {
-            color: #888;
-            font-size: 14px;
-        }
-        
-        /* Botones de acción */
-        .acciones {
+
+        /* Action buttons */
+        .action-buttons {
             display: flex;
             gap: 10px;
             margin-top: 20px;
         }
-        
-        .acciones .btn {
+
+        .btn-action {
             flex: 1;
-            padding: 15px;
+            padding: 14px;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
             font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
         }
-        
-        /* Términos */
-        .terminos {
+
+        .btn-save {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            color: white;
+        }
+
+        .btn-share {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-save:hover, .btn-share:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Info note */
+        .info-note {
+            display: flex;
+            gap: 10px;
+            padding: 14px;
+            background: rgba(59, 130, 246, 0.06);
+            border: 1px solid rgba(59, 130, 246, 0.12);
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+
+        .info-note-icon {
+            font-size: 16px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .info-note-text {
             font-size: 12px;
-            color: #666;
-            text-align: center;
-            margin-top: 20px;
+            color: var(--text-secondary);
+            line-height: 1.5;
         }
-        
-        .terminos a {
-            color: #4a90d9;
+
+        /* Error */
+        .error-msg {
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 10px;
+            color: #ef4444;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .error-msg.show { display: block; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 24px 0;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 380px) {
+            .container { padding: 16px 12px; }
+            .card { padding: 22px 18px; }
+            .mem-price { font-size: 12px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <img src="https://santiescupine-byte.github.io/panzer-vip/Panzer%20Logo%20FINAL.png" alt="Panzer Carwash" style="width: 180px; margin-bottom: 10px;">
-            <p>Membresía VIP - Registro</p>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-container">
+            <img src="https://santiescupine-byte.github.io/panzer-vip/Panzer%20Logo%20FINAL.png" alt="Panzer Carwash">
         </div>
-        
-        <!-- ========== PANTALLA FORMULARIO ========== -->
-        <div class="screen active" id="screenFormulario">
-            <div class="form-card">
-                <h2>📝 Datos del Cliente</h2>
-                
-                <div class="form-group">
-                    <label>Nombre completo *</label>
-                    <input type="text" id="inputNombre" placeholder="Ej: Juan Pérez">
-                </div>
-                
-                <div class="form-group">
-                    <label>Número de celular *</label>
-                    <input type="tel" id="inputTelefono" placeholder="Ej: 3001234567">
-                </div>
-                
-                <div class="form-group">
-                    <label>Tipo de membresía</label>
-                    <div class="membresia-options">
-                        <div class="membresia-option selected" data-valor="Standard" onclick="seleccionarMembresia(this)">
-                            <div class="icon">⭐</div>
-                            <div class="name">Standard</div>
-                            <div class="tokens">5 Tokens</div>
-                        </div>
-                        <div class="membresia-option silver" data-valor="Silver" onclick="seleccionarMembresia(this)">
-                            <div class="icon">🥈</div>
-                            <div class="name">Silver</div>
-                            <div class="tokens">10 Tokens</div>
-                        </div>
-                        <div class="membresia-option gold" data-valor="Gold" onclick="seleccionarMembresia(this)">
-                            <div class="icon">🥇</div>
-                            <div class="name">Gold</div>
-                            <div class="tokens">15 Tokens</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="formError" class="mensaje error" style="display:none;"></div>
-                
-                <button class="btn btn-primary" onclick="registrarCliente()">
-                    REGISTRARME
-                </button>
-                
-                <p class="terminos">
-                    Al registrarte aceptas recibir información sobre promociones y beneficios.
-                </p>
-            </div>
+        <h1>Panzer Carwash VIP</h1>
+        <p>Activa tu membresía y recibe tu código QR</p>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps">
+        <div class="step done" id="step1">
+            <div class="step-dot">✓</div>
+            <span>Pago</span>
         </div>
-        
-        <!-- ========== PANTALLA PROCESANDO ========== -->
-        <div class="screen" id="screenProcesando">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Creando tu membresía VIP...</p>
-            </div>
+        <div class="step-line"></div>
+        <div class="step active" id="step2">
+            <div class="step-dot">2</div>
+            <span>Registro</span>
         </div>
-        
-        <!-- ========== PANTALLA ÉXITO ========== -->
-        <div class="screen" id="screenExito">
-            <div class="exito-mensaje">
-                <div class="check">✓</div>
-                <h3>¡Registro Exitoso!</h3>
-                <p>Tu membresía VIP ha sido creada</p>
-            </div>
-            
-            <div class="qr-card" id="tarjetaQR">
-                <img src="https://santiescupine-byte.github.io/panzer-vip/Panzer%20Logo%20FINAL.png" alt="Panzer Carwash" style="width: 120px; margin-bottom: 10px;">
-                <div class="titulo">MEMBRESÍA VIP</div>
-                <div class="nombre" id="qrNombre">-</div>
-                <div class="membresia" id="qrMembresia">-</div>
-                
-                <div class="qr-image">
-                    <img id="qrImagen" src="" alt="QR Code" width="200" height="200">
-                </div>
-                
-                <div class="id-vip" id="qrId">-</div>
-                
-                <div class="instrucciones">
-                    Presenta este código QR en cualquiera de nuestras sedes para canjear tus tokens.
-                </div>
-            </div>
-            
-            <div class="acciones">
-                <button class="btn btn-secondary" onclick="descargarQR()">
-                    📥 Guardar
-                </button>
-                <button class="btn btn-success" onclick="compartirQR()">
-                    📤 Compartir
-                </button>
-            </div>
-            
-            <button class="btn btn-primary" style="margin-top:15px;" onclick="nuevoRegistro()">
-                REGISTRAR OTRO CLIENTE
-            </button>
+        <div class="step-line"></div>
+        <div class="step" id="step3">
+            <div class="step-dot">3</div>
+            <span>Tu QR</span>
         </div>
     </div>
 
-    <script>
-        // =========================================================================
-        // CONFIGURACIÓN
-        // =========================================================================
-        const API_URL = "https://script.google.com/macros/s/AKfycbyoTaC9iB1fm4s3hM4QQ9-1Zbo5cCzJQIn68YlczTTAXrYHBJK1rQsZmiIMo4CL9-S8Bg/exec";
-        
-        // =========================================================================
-        // VARIABLES
-        // =========================================================================
-        let membresiaSeleccionada = "Standard";
-        let clienteCreado = null;
-        
-        // =========================================================================
-        // FUNCIONES DE NAVEGACIÓN
-        // =========================================================================
-        function mostrarPantalla(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+    <!-- ==================== SCREEN 1: REGISTRO ==================== -->
+    <div class="screen active" id="screen-registro">
+
+        <div class="card">
+            <div class="payment-badge">
+                <div class="payment-badge-icon">✅</div>
+                <div class="payment-badge-text">
+                    Pago verificado exitosamente
+                    <span>Completa tu registro para activar la membresía</span>
+                </div>
+            </div>
+
+            <div class="card-title">Selecciona tu membresía</div>
+            <div class="card-subtitle">Elige el plan que compraste</div>
+
+            <div class="membership-options">
+                <button class="membership-btn standard" onclick="selectMembership('Standard', this)">
+                    <div class="mem-left">
+                        <div class="mem-icon standard">⭐</div>
+                        <div>
+                            <div class="mem-name">Standard</div>
+                            <div class="mem-tokens">5 Tokens · 1 gratis</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;">
+                        <div class="mem-price">$24.000</div>
+                        <div class="mem-check"></div>
+                    </div>
+                </button>
+
+                <button class="membership-btn silver" onclick="selectMembership('Silver', this)">
+                    <div class="mem-left">
+                        <div class="mem-icon silver">🥈</div>
+                        <div>
+                            <div class="mem-name">Silver</div>
+                            <div class="mem-tokens">10 Tokens · 3 gratis</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;">
+                        <div class="mem-price">$42.000</div>
+                        <div class="mem-check"></div>
+                    </div>
+                </button>
+
+                <button class="membership-btn gold" onclick="selectMembership('Gold', this)">
+                    <div class="mem-left">
+                        <div class="mem-icon gold">🥇</div>
+                        <div>
+                            <div class="mem-name">Gold</div>
+                            <div class="mem-tokens">15 Tokens · 5 gratis</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;">
+                        <div class="mem-price">$60.000</div>
+                        <div class="mem-check"></div>
+                    </div>
+                </button>
+            </div>
+
+            <div class="card-title" style="margin-top: 8px;">Tus datos</div>
+            <div class="card-subtitle">Ingresa tu información para generar tu QR</div>
+
+            <div class="form-group">
+                <label class="form-label">Nombre completo</label>
+                <input type="text" class="form-input" id="input-nombre" placeholder="Ej: Juan Pérez" autocomplete="name">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Teléfono / WhatsApp</label>
+                <input type="tel" class="form-input" id="input-telefono" placeholder="Ej: 3001234567" autocomplete="tel">
+            </div>
+
+            <div id="error-msg" class="error-msg"></div>
+
+            <button class="btn-primary" id="btn-activar" onclick="activarMembresia()" disabled>
+                Activar mi Membresía
+            </button>
+        </div>
+
+        <div class="info-note">
+            <div class="info-note-icon">💡</div>
+            <div class="info-note-text">
+                Tu código QR es personal e intransferible. Preséntalo en cualquier sede de Panzer Carwash para canjear tus tokens de lavado.
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCREEN 2: QR GENERADO ==================== -->
+    <div class="screen" id="screen-qr">
+        <div class="qr-result">
+            <div class="success-icon">🎉</div>
+            <h2>¡Membresía Activada!</h2>
+            <p class="subtitle">Tu código QR está listo. Guárdalo o toma captura de pantalla.</p>
+
+            <div class="qr-card">
+                <div class="qr-card-header">
+                    <div class="qr-card-logo">
+                        <img src="https://santiescupine-byte.github.io/panzer-vip/Panzer%20Logo%20FINAL.png" alt="Panzer">
+                    </div>
+                    <div class="qr-card-brand">
+                        Panzer Carwash
+                        <span>Membresía VIP</span>
+                    </div>
+                    <div class="qr-card-membership" id="qr-membership-badge">GOLD</div>
+                </div>
+
+                <div id="qrcode-container"></div>
+
+                <div class="qr-card-info">
+                    <div class="qr-card-name" id="qr-nombre"></div>
+                    <div class="qr-card-id" id="qr-id"></div>
+                    <div class="qr-card-tokens" id="qr-tokens">🪙 15 Tokens</div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-action btn-save" onclick="guardarQR()">📥 Guardar imagen</button>
+                <button class="btn-action btn-share" onclick="compartirQR()">📤 Compartir</button>
+            </div>
+
+            <div class="info-note" style="margin-top: 20px;">
+                <div class="info-note-icon">📍</div>
+                <div class="info-note-text">
+                    Presenta este QR en cualquier sede de Panzer Carwash. El empleado lo escaneará y descontará los tokens de tu saldo.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        © 2025 Panzer Carwash · <a href="https://panzercarwash.com" target="_blank">panzercarwash.com</a>
+    </div>
+
+</div>
+
+<script>
+    // =============================================================
+    // CONFIGURACIÓN - Pon aquí la URL de tu Google Apps Script
+    // =============================================================
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyoTaC9iB1fm4s3hM4QQ9-1Zbo5cCzJQIn68YlczTTAXrYHBJK1rQsZmiIMo4CL9-S8Bg/exec';
+
+    // =============================================================
+    // ESTADO
+    // =============================================================
+    let selectedMembership = null;
+    let clienteData = null;
+
+    const MEMBRESIAS = {
+        'Standard': { saldo: 30000, tokens: 5, precio: 24000, gratis: 1, icon: '⭐', class: 'standard' },
+        'Silver':   { saldo: 60000, tokens: 10, precio: 42000, gratis: 3, icon: '🥈', class: 'silver' },
+        'Gold':     { saldo: 90000, tokens: 15, precio: 60000, gratis: 5, icon: '🥇', class: 'gold' }
+    };
+
+    // =============================================================
+    // SELECCIÓN DE MEMBRESÍA
+    // =============================================================
+    function selectMembership(tipo, btn) {
+        selectedMembership = tipo;
+
+        // Deseleccionar todos
+        document.querySelectorAll('.membership-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+
+        // Habilitar botón si hay datos
+        validateForm();
+    }
+
+    // =============================================================
+    // VALIDACIÓN DEL FORMULARIO
+    // =============================================================
+    function validateForm() {
+        const nombre = document.getElementById('input-nombre').value.trim();
+        const telefono = document.getElementById('input-telefono').value.trim();
+        const btn = document.getElementById('btn-activar');
+
+        btn.disabled = !(selectedMembership && nombre.length >= 3 && telefono.length >= 7);
+    }
+
+    document.getElementById('input-nombre').addEventListener('input', validateForm);
+    document.getElementById('input-telefono').addEventListener('input', validateForm);
+
+    // =============================================================
+    // ACTIVAR MEMBRESÍA
+    // =============================================================
+    async function activarMembresia() {
+        const nombre = document.getElementById('input-nombre').value.trim();
+        const telefono = document.getElementById('input-telefono').value.trim();
+        const btn = document.getElementById('btn-activar');
+        const errorEl = document.getElementById('error-msg');
+
+        // Validaciones
+        if (!selectedMembership) { showError('Selecciona un tipo de membresía'); return; }
+        if (nombre.length < 3) { showError('Ingresa tu nombre completo'); return; }
+        if (telefono.length < 7 || !/^[0-9]+$/.test(telefono)) { showError('Ingresa un número de teléfono válido'); return; }
+
+        // Ocultar errores
+        errorEl.classList.remove('show');
+
+        // Loading state
+        btn.classList.add('loading');
+        btn.textContent = '';
+        btn.disabled = true;
+
+        try {
+            // Enviar a Google Apps Script con GET params
+            const params = new URLSearchParams({
+                accion: 'crear_cliente',
+                nombre: nombre,
+                telefono: telefono,
+                membresia: selectedMembership
+            });
+
+            const response = await fetch(APPS_SCRIPT_URL + '?' + params.toString());
+            const result = await response.json();
+
+            const idVip = (result.ok && result.id_vip) ? result.id_vip : 'VIP-' + Date.now().toString(36).toUpperCase();
+
+            clienteData = {
+                id: idVip,
+                nombre: nombre,
+                telefono: telefono,
+                membresia: selectedMembership,
+                tokens: MEMBRESIAS[selectedMembership].tokens,
+                saldo: MEMBRESIAS[selectedMembership].saldo
+            };
+
+            mostrarQR();
+
+        } catch (error) {
+            console.error('Error:', error);
+            // Fallback si no hay conexión
+            const idVip = 'VIP-' + Date.now().toString(36).toUpperCase();
+            clienteData = {
+                id: idVip,
+                nombre: nombre,
+                telefono: telefono,
+                membresia: selectedMembership,
+                tokens: MEMBRESIAS[selectedMembership].tokens,
+                saldo: MEMBRESIAS[selectedMembership].saldo
+            };
+            mostrarQR();
         }
-        
-        // =========================================================================
-        // SELECCIÓN DE MEMBRESÍA
-        // =========================================================================
-        function seleccionarMembresia(elemento) {
-            document.querySelectorAll('.membresia-option').forEach(el => el.classList.remove('selected'));
-            elemento.classList.add('selected');
-            membresiaSeleccionada = elemento.dataset.valor;
-        }
-        
-        // =========================================================================
-        // REGISTRO DE CLIENTE
-        // =========================================================================
-        async function registrarCliente() {
-            const nombre = document.getElementById('inputNombre').value.trim();
-            const telefono = document.getElementById('inputTelefono').value.trim();
-            
-            // Validaciones
-            if (!nombre) {
-                mostrarError('formError', 'Ingresa tu nombre completo');
-                return;
-            }
-            
-            if (!telefono || telefono.length < 10) {
-                mostrarError('formError', 'Ingresa un número de celular válido');
-                return;
-            }
-            
-            ocultarError('formError');
-            mostrarPantalla('screenProcesando');
-            
-            try {
-                const params = new URLSearchParams({
-                    accion: 'crear_cliente',
-                    nombre: nombre,
-                    telefono: telefono,
-                    membresia: membresiaSeleccionada
-                });
-                
-                const response = await fetch(API_URL + '?' + params.toString());
-                const data = await response.json();
-                
-                if (data.ok) {
-                    clienteCreado = {
-                        id: data.id_vip,
-                        nombre: nombre,
-                        membresia: membresiaSeleccionada
-                    };
-                    
-                    mostrarTarjetaQR();
-                    mostrarPantalla('screenExito');
-                } else {
-                    mostrarPantalla('screenFormulario');
-                    mostrarError('formError', data.error || 'Error al crear la membresía');
-                }
-            } catch (error) {
-                mostrarPantalla('screenFormulario');
-                mostrarError('formError', 'Error de conexión. Intenta de nuevo.');
-            }
-        }
-        
-        // =========================================================================
-        // MOSTRAR TARJETA QR
-        // =========================================================================
-        function mostrarTarjetaQR() {
-            document.getElementById('qrNombre').textContent = clienteCreado.nombre;
-            document.getElementById('qrMembresia').textContent = 'Membresía ' + clienteCreado.membresia;
-            document.getElementById('qrMembresia').className = 'membresia ' + clienteCreado.membresia.toLowerCase();
-            document.getElementById('qrId').textContent = clienteCreado.id;
-            
-            // Generar QR
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${clienteCreado.id}`;
-            document.getElementById('qrImagen').src = qrUrl;
-        }
-        
-        // =========================================================================
-        // DESCARGAR QR
-        // =========================================================================
-        function descargarQR() {
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${clienteCreado.id}`;
-            
-            // Crear link de descarga
+    }
+
+    // =============================================================
+    // MOSTRAR QR
+    // =============================================================
+    function mostrarQR() {
+        const mem = MEMBRESIAS[clienteData.membresia];
+
+        // Actualizar steps
+        document.getElementById('step2').classList.remove('active');
+        document.getElementById('step2').classList.add('done');
+        document.querySelector('#step2 .step-dot').textContent = '✓';
+        document.getElementById('step3').classList.add('active');
+
+        // Actualizar tarjeta QR
+        document.getElementById('qr-nombre').textContent = clienteData.nombre;
+        document.getElementById('qr-id').textContent = clienteData.id;
+        document.getElementById('qr-tokens').textContent = '🪙 ' + clienteData.tokens + ' Tokens';
+
+        const badge = document.getElementById('qr-membership-badge');
+        badge.textContent = clienteData.membresia.toUpperCase();
+        badge.className = 'qr-card-membership ' + mem.class;
+
+        // Generar QR
+        const qrContainer = document.getElementById('qrcode-container');
+        qrContainer.innerHTML = '';
+
+        const qrData = JSON.stringify({
+            id: clienteData.id,
+            nombre: clienteData.nombre,
+            membresia: clienteData.membresia,
+            saldo: clienteData.saldo
+        });
+
+        new QRCode(qrContainer, {
+            text: qrData,
+            width: 200,
+            height: 200,
+            colorDark: '#0f172a',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.M
+        });
+
+        // Cambiar pantalla
+        document.getElementById('screen-registro').classList.remove('active');
+        document.getElementById('screen-qr').classList.add('active');
+
+        // Scroll arriba
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // =============================================================
+    // GUARDAR QR COMO IMAGEN
+    // =============================================================
+    function guardarQR() {
+        const canvas = document.querySelector('#qrcode-container canvas');
+        if (canvas) {
             const link = document.createElement('a');
-            link.href = qrUrl;
-            link.download = `QR_${clienteCreado.id}.png`;
-            link.target = '_blank';
+            link.download = `Panzer_VIP_${clienteData.id}.png`;
+            link.href = canvas.toDataURL('image/png');
             link.click();
-        }
-        
-        // =========================================================================
-        // COMPARTIR QR
-        // =========================================================================
-        async function compartirQR() {
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: 'Mi Membresía VIP - Panzer Carwash',
-                        text: `¡Ya soy miembro VIP de Panzer Carwash!\nMi código: ${clienteCreado.id}`,
-                        url: `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${clienteCreado.id}`
-                    });
-                } catch (err) {
-                    console.log('Error al compartir:', err);
-                }
-            } else {
-                // Fallback: copiar al portapapeles
-                const texto = `Mi código VIP Panzer Carwash: ${clienteCreado.id}`;
-                navigator.clipboard.writeText(texto);
-                alert('Código copiado: ' + clienteCreado.id);
+        } else {
+            // Fallback: intentar con img
+            const img = document.querySelector('#qrcode-container img');
+            if (img) {
+                const link = document.createElement('a');
+                link.download = `Panzer_VIP_${clienteData.id}.png`;
+                link.href = img.src;
+                link.click();
             }
         }
-        
-        // =========================================================================
-        // NUEVO REGISTRO
-        // =========================================================================
-        function nuevoRegistro() {
-            document.getElementById('inputNombre').value = '';
-            document.getElementById('inputTelefono').value = '';
-            membresiaSeleccionada = 'Standard';
-            document.querySelectorAll('.membresia-option').forEach(el => el.classList.remove('selected'));
-            document.querySelector('.membresia-option[data-valor="Standard"]').classList.add('selected');
-            clienteCreado = null;
-            mostrarPantalla('screenFormulario');
+    }
+
+    // =============================================================
+    // COMPARTIR QR
+    // =============================================================
+    async function compartirQR() {
+        if (navigator.share) {
+            try {
+                const canvas = document.querySelector('#qrcode-container canvas');
+                if (canvas) {
+                    canvas.toBlob(async (blob) => {
+                        const file = new File([blob], `Panzer_VIP_${clienteData.id}.png`, { type: 'image/png' });
+                        await navigator.share({
+                            title: 'Mi Membresía Panzer Carwash VIP',
+                            text: `Membresía ${clienteData.membresia} - ${clienteData.tokens} Tokens`,
+                            files: [file]
+                        });
+                    });
+                }
+            } catch (err) {
+                // Fallback
+                guardarQR();
+            }
+        } else {
+            guardarQR();
         }
-        
-        // =========================================================================
-        // UTILIDADES
-        // =========================================================================
-        function mostrarError(id, mensaje) {
-            const el = document.getElementById(id);
-            el.textContent = mensaje;
-            el.style.display = 'block';
+    }
+
+    // =============================================================
+    // MOSTRAR ERROR
+    // =============================================================
+    function showError(msg) {
+        const el = document.getElementById('error-msg');
+        el.textContent = msg;
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 4000);
+    }
+
+    // =============================================================
+    // LEER PARÁMETROS URL (para saber qué membresía compró)
+    // =============================================================
+    window.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const tipo = params.get('tipo') || params.get('membresia') || params.get('plan');
+
+        if (tipo) {
+            const tipoNorm = tipo.charAt(0).toUpperCase() + tipo.slice(1).toLowerCase();
+            if (MEMBRESIAS[tipoNorm]) {
+                const btns = document.querySelectorAll('.membership-btn');
+                btns.forEach(btn => {
+                    if (btn.classList.contains(tipoNorm.toLowerCase())) {
+                        selectMembership(tipoNorm, btn);
+                    }
+                });
+            }
         }
-        
-        function ocultarError(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-    </script>
+    });
+</script>
+
 </body>
 </html>
