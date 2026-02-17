@@ -597,8 +597,12 @@
                 <div class="stat-label">Ventas hoy</div>
             </div>
             <div class="stat-item">
+                <div class="stat-value" id="stat-recargas">0</div>
+                <div class="stat-label">Recargas hoy</div>
+            </div>
+            <div class="stat-item">
                 <div class="stat-value" id="stat-tokens">0</div>
-                <div class="stat-label">Tokens entregados</div>
+                <div class="stat-label">Tokens</div>
             </div>
         </div>
 
@@ -606,12 +610,19 @@
             <div class="menu-card" onclick="goTo('screen-scan')">
                 <div class="menu-card-icon scan">📷</div>
                 <div class="menu-card-title">Canjear Tokens</div>
-                <div class="menu-card-desc">Escanea el QR del cliente VIP y descuenta su saldo</div>
+                <div class="menu-card-desc">Escanea el QR y descuenta saldo</div>
             </div>
             <div class="menu-card" onclick="goTo('screen-venta')">
                 <div class="menu-card-icon sell">🛒</div>
                 <div class="menu-card-title">Vender Membresía</div>
-                <div class="menu-card-desc">Registra un nuevo cliente VIP y envía su QR por WhatsApp</div>
+                <div class="menu-card-desc">Registra un nuevo cliente VIP</div>
+            </div>
+        </div>
+        <div class="menu-grid" style="grid-template-columns: 1fr; margin-top: -4px;">
+            <div class="menu-card" onclick="goTo('screen-recarga')">
+                <div class="menu-card-icon" style="background: rgba(16, 185, 129, 0.12);">🔋</div>
+                <div class="menu-card-title">Recargar Membresía</div>
+                <div class="menu-card-desc">Escanea el QR del cliente y recarga su saldo con tokens gratis incluidos</div>
             </div>
         </div>
 
@@ -791,6 +802,139 @@
         </div>
     </div>
 
+    <!-- ==================== RECARGAR MEMBRESÍA ==================== -->
+    <div class="screen" id="screen-recarga">
+        <button class="back-btn" onclick="goTo('screen-menu')">← Menú</button>
+
+        <div id="recarga-scan-section">
+            <div class="card">
+                <div class="card-title">🔋 Recargar Membresía</div>
+                <div class="card-subtitle">Escanea el QR del cliente para recargar su saldo</div>
+                <div id="qr-reader-recarga"></div>
+                <div id="recarga-scan-alert" class="alert"></div>
+            </div>
+        </div>
+
+        <!-- Info del cliente + selección de recarga -->
+        <div id="recarga-client-panel" style="display:none;">
+            <div class="card">
+                <div class="card-title">Cliente encontrado</div>
+                <div class="client-info">
+                    <div class="client-row">
+                        <span class="client-label">Nombre</span>
+                        <span class="client-value" id="recarga-nombre">—</span>
+                    </div>
+                    <div class="client-row">
+                        <span class="client-label">Membresía</span>
+                        <span class="client-value" id="recarga-membresia">—</span>
+                    </div>
+                    <div class="client-row">
+                        <span class="client-label">Saldo actual</span>
+                        <span class="client-value saldo" id="recarga-saldo">—</span>
+                    </div>
+                    <div class="client-row">
+                        <span class="client-label">ID</span>
+                        <span class="client-value" id="recarga-id" style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text-muted);">—</span>
+                    </div>
+                </div>
+
+                <div style="margin-top:18px;">
+                    <div class="card-title" style="font-size:14px;">Selecciona paquete de recarga</div>
+                    <div class="card-subtitle">Mismo beneficio de tokens gratis</div>
+                    <div class="mem-options">
+                        <button class="mem-btn standard" onclick="selectRecarga('Standard', this)">
+                            <div class="mem-left">
+                                <div class="mem-icon standard">⭐</div>
+                                <div>
+                                    <div class="mem-name">Standard</div>
+                                    <div class="mem-tokens">+5 Tokens · 1 gratis</div>
+                                </div>
+                            </div>
+                            <div class="mem-price">$24.000</div>
+                        </button>
+                        <button class="mem-btn silver" onclick="selectRecarga('Silver', this)">
+                            <div class="mem-left">
+                                <div class="mem-icon silver">🥈</div>
+                                <div>
+                                    <div class="mem-name">Silver</div>
+                                    <div class="mem-tokens">+10 Tokens · 3 gratis</div>
+                                </div>
+                            </div>
+                            <div class="mem-price">$42.000</div>
+                        </button>
+                        <button class="mem-btn gold" onclick="selectRecarga('Gold', this)">
+                            <div class="mem-left">
+                                <div class="mem-icon gold">🥇</div>
+                                <div>
+                                    <div class="mem-name">Gold</div>
+                                    <div class="mem-tokens">+15 Tokens · 5 gratis</div>
+                                </div>
+                            </div>
+                            <div class="mem-price">$60.000</div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top:14px;">
+                    <label class="form-label">Método de pago</label>
+                    <div class="payment-methods">
+                        <button class="pay-btn selected" onclick="selectRecargaPago('Efectivo', this)">
+                            <div class="pay-btn-icon">💵</div>
+                            <div class="pay-btn-label">Efectivo</div>
+                        </button>
+                        <button class="pay-btn" onclick="selectRecargaPago('Nequi', this)">
+                            <div class="pay-btn-icon">📱</div>
+                            <div class="pay-btn-label">Nequi</div>
+                        </button>
+                        <button class="pay-btn" onclick="selectRecargaPago('Transferencia', this)">
+                            <div class="pay-btn-icon">🏦</div>
+                            <div class="pay-btn-label">Transferencia</div>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="recarga-error" class="alert error"></div>
+
+                <button class="btn btn-green" id="btn-recargar" onclick="ejecutarRecarga()">
+                    🔋 Recargar Saldo
+                </button>
+            </div>
+        </div>
+
+        <!-- Resultado de la recarga -->
+        <div id="recarga-result" style="display:none;">
+            <div class="card">
+                <div class="success-box">
+                    <div class="success-icon">✅</div>
+                    <div class="success-title">¡Saldo Recargado!</div>
+                    <div class="success-sub" id="recarga-detail"></div>
+
+                    <div class="client-info" style="text-align:left; margin: 16px 0;">
+                        <div class="client-row">
+                            <span class="client-label">Saldo anterior</span>
+                            <span class="client-value" id="recarga-saldo-anterior">—</span>
+                        </div>
+                        <div class="client-row">
+                            <span class="client-label">Recarga</span>
+                            <span class="client-value" style="color:var(--accent-green);" id="recarga-monto-agregado">—</span>
+                        </div>
+                        <div class="client-row">
+                            <span class="client-label">Nuevo saldo</span>
+                            <span class="client-value saldo" id="recarga-saldo-nuevo">—</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="nuevaRecarga()" style="margin-bottom: 10px;">
+                        Recargar otro cliente
+                    </button>
+                    <button class="btn btn-outline" onclick="goTo('screen-menu')">
+                        Volver al menú
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -816,7 +960,11 @@ let ventaMembresia = null;
 let ventaPago = 'Efectivo';
 let ventaClienteData = null;
 let qrScanner = null;
-let stats = { canjes: 0, ventas: 0, tokens: 0 };
+let stats = { canjes: 0, ventas: 0, recargas: 0, tokens: 0 };
+let recargaCliente = null;
+let recargaTipo = null;
+let recargaPago = 'Efectivo';
+let qrScannerRecarga = null;
 
 // =============================================================
 // LLAMADA AL APPS SCRIPT (GET con query params)
@@ -919,8 +1067,12 @@ function goTo(screenId) {
     if (screenId === 'screen-scan') startScanner();
     else stopScanner();
 
+    if (screenId === 'screen-recarga') startScannerRecarga();
+    else stopScannerRecarga();
+
     if (screenId === 'screen-menu') updateStats();
     if (screenId === 'screen-venta') resetVentaForm();
+    if (screenId === 'screen-recarga') resetRecarga();
 }
 
 // =============================================================
@@ -929,6 +1081,7 @@ function goTo(screenId) {
 function updateStats() {
     document.getElementById('stat-canjes').textContent = stats.canjes;
     document.getElementById('stat-ventas').textContent = stats.ventas;
+    document.getElementById('stat-recargas').textContent = stats.recargas;
     document.getElementById('stat-tokens').textContent = stats.tokens;
 }
 
@@ -1199,6 +1352,141 @@ function enviarWhatsApp() {
     );
 
     window.open('https://wa.me/' + tel + '?text=' + mensaje, '_blank');
+}
+
+// =============================================================
+// RECARGAR MEMBRESÍA
+// =============================================================
+function startScannerRecarga() {
+    document.getElementById('recarga-client-panel').style.display = 'none';
+    document.getElementById('recarga-result').style.display = 'none';
+    document.getElementById('recarga-scan-section').style.display = 'block';
+
+    if (qrScannerRecarga) { try { qrScannerRecarga.clear(); } catch(e) {} }
+
+    qrScannerRecarga = new Html5QrcodeScanner("qr-reader-recarga", {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+        aspectRatio: 1,
+        showTorchButtonIfSupported: true,
+        showZoomSliderIfSupported: true
+    }, false);
+
+    qrScannerRecarga.render(onRecargaScanSuccess, function() {});
+}
+
+function stopScannerRecarga() {
+    if (qrScannerRecarga) {
+        try { qrScannerRecarga.clear(); } catch(e) {}
+        qrScannerRecarga = null;
+    }
+}
+
+async function onRecargaScanSuccess(decodedText) {
+    try {
+        const data = JSON.parse(decodedText);
+        if (!data.id) throw new Error('QR inválido');
+
+        stopScannerRecarga();
+        document.getElementById('recarga-scan-section').style.display = 'none';
+
+        // Consultar datos actualizados del cliente
+        document.getElementById('recarga-nombre').textContent = data.nombre || '...';
+        document.getElementById('recarga-membresia').textContent = data.membresia || '...';
+        document.getElementById('recarga-saldo').textContent = 'Consultando...';
+        document.getElementById('recarga-id').textContent = data.id;
+        document.getElementById('recarga-client-panel').style.display = 'block';
+
+        const result = await callAPI({ accion: 'consultar_cliente', id_vip: data.id });
+
+        if (result.ok && result.cliente) {
+            recargaCliente = result.cliente;
+            document.getElementById('recarga-nombre').textContent = result.cliente.nombre;
+            document.getElementById('recarga-membresia').textContent = result.cliente.membresia;
+            document.getElementById('recarga-saldo').textContent = '$' + result.cliente.saldo.toLocaleString('es-CO');
+            document.getElementById('recarga-id').textContent = result.cliente.id;
+        } else {
+            recargaCliente = data;
+            document.getElementById('recarga-saldo').textContent = '$' + (data.saldo || 0).toLocaleString('es-CO');
+            showAlert(document.getElementById('recarga-scan-alert'), 'Usando datos del QR (sin conexión)', 'error');
+        }
+
+    } catch (e) {
+        showAlert(document.getElementById('recarga-scan-alert'), 'QR no reconocido. Intenta de nuevo.', 'error');
+    }
+}
+
+function selectRecarga(tipo, btn) {
+    recargaTipo = tipo;
+    document.querySelectorAll('#recarga-client-panel .mem-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+}
+
+function selectRecargaPago(metodo, btn) {
+    recargaPago = metodo;
+    document.querySelectorAll('#recarga-client-panel .pay-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+}
+
+function resetRecarga() {
+    recargaCliente = null;
+    recargaTipo = null;
+    recargaPago = 'Efectivo';
+    document.getElementById('recarga-client-panel').style.display = 'none';
+    document.getElementById('recarga-result').style.display = 'none';
+    document.getElementById('recarga-scan-section').style.display = 'block';
+    document.querySelectorAll('#recarga-client-panel .mem-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('#recarga-client-panel .pay-btn').forEach(b => b.classList.remove('selected'));
+    const firstPay = document.querySelector('#recarga-client-panel .pay-btn');
+    if (firstPay) firstPay.classList.add('selected');
+}
+
+async function ejecutarRecarga() {
+    const errorEl = document.getElementById('recarga-error');
+    const btn = document.getElementById('btn-recargar');
+
+    if (!recargaCliente) { showAlert(errorEl, 'No hay cliente escaneado', 'error'); return; }
+    if (!recargaTipo) { showAlert(errorEl, 'Selecciona un paquete de recarga', 'error'); return; }
+
+    const mem = MEMBRESIAS[recargaTipo];
+    const saldoAnterior = recargaCliente.saldo || 0;
+
+    btn.textContent = 'Recargando...';
+    btn.disabled = true;
+
+    // Llamar al Apps Script para recargar
+    const result = await callAPI({
+        accion: 'recargar_saldo',
+        id_vip: recargaCliente.id,
+        monto: mem.saldo,
+        operador: 'Empleado'
+    });
+
+    btn.textContent = '🔋 Recargar Saldo';
+    btn.disabled = false;
+
+    const nuevoSaldo = result.ok ? result.saldo_nuevo : (saldoAnterior + mem.saldo);
+
+    stats.recargas++;
+
+    // Mostrar resultado
+    document.getElementById('recarga-detail').textContent =
+        recargaCliente.nombre + ' · Paquete ' + recargaTipo + ' · ' + recargaPago;
+    document.getElementById('recarga-saldo-anterior').textContent = '$' + saldoAnterior.toLocaleString('es-CO');
+    document.getElementById('recarga-monto-agregado').textContent = '+$' + mem.saldo.toLocaleString('es-CO');
+    document.getElementById('recarga-saldo-nuevo').textContent = '$' + nuevoSaldo.toLocaleString('es-CO');
+
+    document.getElementById('recarga-client-panel').style.display = 'none';
+    document.getElementById('recarga-result').style.display = 'block';
+
+    if (!result.ok) {
+        showAlert(errorEl, 'Recarga local. Error: ' + (result.error || 'sin conexión'), 'error');
+    }
+}
+
+function nuevaRecarga() {
+    resetRecarga();
+    startScannerRecarga();
 }
 
 // =============================================================
