@@ -1160,35 +1160,45 @@ function nuevaVenta() {
 }
 
 // =============================================================
-// ENVIAR POR WHATSAPP
+// ENVIAR POR WHATSAPP (link directo al carnet)
 // =============================================================
 function enviarWhatsApp() {
     if (!ventaClienteData) return;
 
     const mem = MEMBRESIAS[ventaClienteData.membresia];
     const telefono = ventaClienteData.telefono;
+    const memType = ventaClienteData.membresia;
 
     // Formatear teléfono Colombia
     let tel = telefono.replace(/\D/g, '');
     if (tel.startsWith('3') && tel.length === 10) tel = '57' + tel;
     if (!tel.startsWith('57')) tel = '57' + tel;
 
+    // Generar link al carnet con datos en la URL
+    const carnetParams = new URLSearchParams({
+        id: ventaClienteData.id,
+        nombre: ventaClienteData.nombre,
+        mem: memType,
+        saldo: mem.saldo
+    });
+    const carnetLink = 'https://santiescupine-byte.github.io/panzer-vip/carnet.html?' + carnetParams.toString();
+
     const mensaje = encodeURIComponent(
-        `🚗 *PANZER CARWASH - Membresía VIP*\n\n` +
-        `¡Hola ${ventaClienteData.nombre}! 👋\n\n` +
-        `Tu membresía *${ventaClienteData.membresia}* ha sido activada:\n\n` +
-        `🪙 Tokens: *${mem.tokens}* (${mem.gratis} gratis)\n` +
-        `💰 Saldo cargado: *$${mem.saldo.toLocaleString('es-CO')}*\n` +
-        `💵 Pagaste: *$${mem.precio.toLocaleString('es-CO')}*\n` +
-        `🎁 Ahorraste: *$${(mem.saldo - mem.precio).toLocaleString('es-CO')}*\n` +
-        `🔑 ID: *${ventaClienteData.id}*\n\n` +
-        `Para obtener tu código QR ingresa aquí:\n` +
-        `👉 https://santiescupine-byte.github.io/panzer-vip/registro.html?tipo=${ventaClienteData.membresia.toLowerCase()}\n\n` +
-        `Presenta tu QR en cualquier sede para canjear tus tokens.\n\n` +
-        `¡Gracias por preferirnos! 🙌`
+        '🚗 *PANZER CARWASH - Membresía VIP*\n\n' +
+        '¡Hola ' + ventaClienteData.nombre + '! 👋\n\n' +
+        'Tu membresía *' + memType + '* ha sido activada:\n\n' +
+        '🪙 Tokens: *' + mem.tokens + '* (' + mem.gratis + ' gratis)\n' +
+        '💰 Saldo cargado: *$' + mem.saldo.toLocaleString('es-CO') + '*\n' +
+        '💵 Pagaste: *$' + mem.precio.toLocaleString('es-CO') + '*\n' +
+        '🎁 Ahorraste: *$' + (mem.saldo - mem.precio).toLocaleString('es-CO') + '*\n' +
+        '🔑 ID: *' + ventaClienteData.id + '*\n\n' +
+        '📲 *Descarga tu carnet VIP con código QR aquí:*\n' +
+        '👉 ' + carnetLink + '\n\n' +
+        'Presenta tu QR en cualquier sede para canjear tus tokens.\n\n' +
+        '¡Gracias por preferirnos! 🙌'
     );
 
-    window.open(`https://wa.me/${tel}?text=${mensaje}`, '_blank');
+    window.open('https://wa.me/' + tel + '?text=' + mensaje, '_blank');
 }
 
 // =============================================================
