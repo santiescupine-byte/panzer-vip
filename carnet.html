@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tu Membresía VIP - Panzer Carwash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --bg: #0a0e1a;
+            --card-bg: #111827;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-gold: #f59e0b;
+            --accent-silver: #94a3b8;
+            --accent-green: #10b981;
+            --text-primary: #f1f5f9;
+            --text-muted: #64748b;
+            --border: rgba(59, 130, 246, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background:
+                radial-gradient(ellipse at 30% 20%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(6,182,212,0.06) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .page-header-logo {
+            width: 56px; height: 56px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 0 auto 10px;
+            border: 2px solid var(--border);
+            box-shadow: 0 0 30px rgba(59,130,246,0.15);
+        }
+
+        .page-header-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .page-header h1 {
+            font-size: 18px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Carnet Card */
+        .carnet {
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
+            margin-bottom: 20px;
+        }
+
+        /* Franja superior */
+        .carnet-header {
+            padding: 24px 20px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .carnet-header.standard { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .carnet-header.silver { background: linear-gradient(135deg, #64748b, #475569); }
+        .carnet-header.gold { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+        .carnet-header-logo {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 10px;
+            border: 3px solid rgba(255,255,255,0.9);
+            background: white;
+        }
+
+        .carnet-header-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .carnet-header h2 {
+            color: white;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .carnet-header span {
+            color: rgba(255,255,255,0.8);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Badge */
+        .carnet-badge {
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            margin: -18px auto 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .carnet-badge.standard { background: #dbeafe; color: #1e40af; }
+        .carnet-badge.silver { background: #e2e8f0; color: #334155; }
+        .carnet-badge.gold { background: #fef3c7; color: #92400e; }
+
+        /* Body */
+        .carnet-body {
+            padding: 28px 24px 24px;
+            text-align: center;
+        }
+
+        /* QR */
+        .qr-wrapper {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 20px;
+            display: inline-block;
+            margin: 12px 0 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+        }
+
+        #qr-container canvas, #qr-container img {
+            border-radius: 8px;
+        }
+
+        /* Info cliente */
+        .client-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 2px;
+        }
+
+        .client-id {
+            font-family: 'Space Mono', monospace;
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 16px;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 0 0 16px;
+        }
+
+        /* Stats */
+        .stats-box {
+            background: #f0fdf4;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 6px;
+        }
+
+        .stats-tokens {
+            font-size: 20px;
+            font-weight: 800;
+            color: #15803d;
+        }
+
+        .stats-tokens span {
+            font-size: 13px;
+            font-weight: 500;
+            color: #16a34a;
+        }
+
+        .stats-saldo {
+            font-family: 'Space Mono', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: #166534;
+            margin-top: 6px;
+        }
+
+        /* Footer carnet */
+        .carnet-footer {
+            padding: 12px 24px 20px;
+            text-align: center;
+        }
+
+        .carnet-footer p {
+            font-size: 11px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .carnet-footer .site {
+            font-size: 10px;
+            color: #cbd5e1;
+            margin-top: 4px;
+        }
+
+        /* Botones */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn:active { transform: scale(0.97); }
+
+        .btn-download {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            color: white;
+            box-shadow: 0 6px 20px rgba(59,130,246,0.25);
+        }
+
+        .btn-share {
+            background: rgba(255,255,255,0.06);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        /* Error */
+        .error-msg {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .error-msg h2 { font-size: 20px; margin-bottom: 8px; }
+        .error-msg p { color: var(--text-muted); font-size: 14px; }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            width: 40px; height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading p { color: var(--text-muted); font-size: 14px; }
+
+        /* Hidden QR generator */
+        #qr-hidden { position: absolute; left: -9999px; top: -9999px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="page-header">
+        <div class="page-header-logo">
+            <img src="https://santiescupine-byte.github.io/panzer-vip/Panzer%20Logo%20FINAL.png" alt="Panzer Carwash">
+        </div>
+        <h1>Panzer Carwash</h1>
+        <p>Tu membresía VIP</p>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading-state" class="loading">
+        <div class="spinner"></div>
+        <p>Cargando tu membresía...</p>
+    </div>
+
+    <!-- Error -->
+    <div id="error-state" class="error-msg" style="display:none;">
+        <h2>⚠️ Link inválido</h2>
+        <p>Este enlace no contiene datos de membresía válidos. Contacta a tu sede de Panzer Carwash.</p>
+    </div>
+
+    <!-- Carnet -->
+    <div id="carnet-state" style="display:none;">
+        <div class="carnet" id="carnet-card">
+            <div class="carnet-header" id="carnet-header">
+                <div class="carnet-header-logo">
+                    <img src="https://santiescupine-byte.github.io/panzer-vip/Panzer%20Logo%20FINAL.png" alt="Panzer">
+                </div>
+                <h2>PANZER CARWASH</h2>
+                <span>Membresía VIP</span>
+            </div>
+
+            <div style="text-align:center;">
+                <div class="carnet-badge" id="carnet-badge"></div>
+            </div>
+
+            <div class="carnet-body">
+                <div class="qr-wrapper">
+                    <div id="qr-container"></div>
+                </div>
+
+                <div class="client-name" id="carnet-nombre"></div>
+                <div class="client-id" id="carnet-id"></div>
+
+                <div class="divider"></div>
+
+                <div class="stats-box">
+                    <div class="stats-tokens" id="carnet-tokens"></div>
+                    <div class="stats-saldo" id="carnet-saldo"></div>
+                </div>
+            </div>
+
+            <div class="carnet-footer">
+                <p>Presenta este código QR en cualquier sede<br>de Panzer Carwash para canjear tus tokens</p>
+                <p class="site">panzercarwash.com</p>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-download" onclick="descargarCarnet()">
+                📥 Descargar mi carnet
+            </button>
+            <button class="btn btn-share" onclick="compartirCarnet()">
+                📤 Compartir
+            </button>
+        </div>
+    </div>
+
+    <!-- QR hidden para generar imagen -->
+    <div id="qr-hidden"></div>
+</div>
+
+<script>
+// =============================================================
+// CONFIGURACIÓN
+// =============================================================
+const MEMBRESIAS = {
+    'Standard': { saldo: 30000, tokens: 5, gratis: 1, emoji: '⭐' },
+    'Silver':   { saldo: 60000, tokens: 10, gratis: 3, emoji: '🥈' },
+    'Gold':     { saldo: 90000, tokens: 15, gratis: 5, emoji: '🥇' }
+};
+
+let clienteData = null;
+
+// =============================================================
+// LEER PARÁMETROS DE URL
+// =============================================================
+function init() {
+    const params = new URLSearchParams(window.location.search);
+
+    const id = params.get('id');
+    const nombre = params.get('nombre');
+    const mem = params.get('mem');
+    const saldo = parseInt(params.get('saldo'));
+
+    // Validar datos mínimos
+    if (!id || !nombre || !mem || !MEMBRESIAS[mem]) {
+        document.getElementById('loading-state').style.display = 'none';
+        document.getElementById('error-state').style.display = 'block';
+        return;
+    }
+
+    const memData = MEMBRESIAS[mem];
+
+    clienteData = {
+        id: id,
+        nombre: decodeURIComponent(nombre),
+        membresia: mem,
+        saldo: saldo || memData.saldo,
+        tokens: memData.tokens,
+        gratis: memData.gratis
+    };
+
+    renderCarnet();
+}
+
+// =============================================================
+// RENDERIZAR CARNET
+// =============================================================
+function renderCarnet() {
+    const d = clienteData;
+    const mem = MEMBRESIAS[d.membresia];
+    const cls = d.membresia.toLowerCase();
+
+    // Header color
+    document.getElementById('carnet-header').className = 'carnet-header ' + cls;
+
+    // Badge
+    const badge = document.getElementById('carnet-badge');
+    badge.className = 'carnet-badge ' + cls;
+    badge.textContent = mem.emoji + '  ' + d.membresia.toUpperCase();
+
+    // Info
+    document.getElementById('carnet-nombre').textContent = d.nombre.toUpperCase();
+    document.getElementById('carnet-id').textContent = d.id;
+    document.getElementById('carnet-tokens').innerHTML = '🪙 ' + d.tokens + ' Tokens <span>(' + d.gratis + ' gratis)</span>';
+    document.getElementById('carnet-saldo').textContent = 'Saldo: $' + d.saldo.toLocaleString('es-CO');
+
+    // Generar QR
+    new QRCode(document.getElementById('qr-container'), {
+        text: JSON.stringify({
+            id: d.id,
+            nombre: d.nombre,
+            membresia: d.membresia,
+            saldo: d.saldo
+        }),
+        width: 220,
+        height: 220,
+        colorDark: '#0f172a',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+    });
+
+    // Mostrar carnet
+    setTimeout(() => {
+        document.getElementById('loading-state').style.display = 'none';
+        document.getElementById('carnet-state').style.display = 'block';
+    }, 600);
+}
+
+// =============================================================
+// DESCARGAR COMO IMAGEN
+// =============================================================
+function descargarCarnet() {
+    const d = clienteData;
+    const mem = MEMBRESIAS[d.membresia];
+    const qrCanvas = document.querySelector('#qr-container canvas');
+    if (!qrCanvas) return;
+
+    // Cargar logo
+    const logo = new Image();
+    logo.crossOrigin = 'anonymous';
+    logo.onload = function() { generarImagen(qrCanvas, logo, d, mem); };
+    logo.onerror = function() { generarImagen(qrCanvas, null, d, mem); };
+    logo.src = 'https://santiescupine-byte.github.io/panzer-vip/Panzer%20Logo%20FINAL.png';
+}
+
+function generarImagen(qrCanvas, logo, d, mem) {
+    const c = document.createElement('canvas');
+    const ctx = c.getContext('2d');
+    const w = 650, h = 1000;
+    c.width = w; c.height = h;
+
+    // Fondo oscuro
+    const bg = ctx.createLinearGradient(0, 0, w, h);
+    bg.addColorStop(0, '#0a0e1a');
+    bg.addColorStop(0.5, '#0f1729');
+    bg.addColorStop(1, '#0a0e1a');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, w, h);
+
+    // Tarjeta blanca
+    const mx = 35, my = 35;
+    const cw = w - mx*2, ch = h - my*2;
+    rr(ctx, mx, my, cw, ch, 28, '#ffffff');
+
+    // Franja superior
+    const hc = { 'Standard': ['#3b82f6','#2563eb'], 'Silver': ['#64748b','#475569'], 'Gold': ['#f59e0b','#d97706'] };
+    const colors = hc[d.membresia] || hc['Standard'];
+    const hg = ctx.createLinearGradient(mx, my, mx + cw, my);
+    hg.addColorStop(0, colors[0]);
+    hg.addColorStop(1, colors[1]);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(mx + 28, my);
+    ctx.lineTo(mx + cw - 28, my);
+    ctx.quadraticCurveTo(mx + cw, my, mx + cw, my + 28);
+    ctx.lineTo(mx + cw, my + 150);
+    ctx.lineTo(mx, my + 150);
+    ctx.lineTo(mx, my + 28);
+    ctx.quadraticCurveTo(mx, my, mx + 28, my);
+    ctx.closePath();
+    ctx.fillStyle = hg;
+    ctx.fill();
+    ctx.restore();
+
+    // Logo
+    if (logo) {
+        const ls = 60, lx = w/2 - ls/2, ly = my + 18;
+        ctx.beginPath();
+        ctx.arc(w/2, ly + ls/2, ls/2 + 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(w/2, ly + ls/2, ls/2, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(logo, lx, ly, ls, ls);
+        ctx.restore();
+    }
+
+    // Texto franja
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 24px Arial, sans-serif';
+    ctx.fillText('PANZER CARWASH', w/2, my + 118);
+    ctx.globalAlpha = 0.85;
+    ctx.font = '12px Arial, sans-serif';
+    ctx.fillText('MEMBRESÍA VIP', w/2, my + 140);
+    ctx.globalAlpha = 1;
+
+    // Badge
+    const by = my + 168;
+    const bbg = { 'Standard': '#dbeafe', 'Silver': '#e2e8f0', 'Gold': '#fef3c7' };
+    const btx = { 'Standard': '#1e40af', 'Silver': '#334155', 'Gold': '#92400e' };
+    const bem = { 'Standard': '⭐', 'Silver': '🥈', 'Gold': '🥇' };
+    rr(ctx, w/2 - 75, by, 150, 36, 18, bbg[d.membresia]);
+    ctx.fillStyle = btx[d.membresia];
+    ctx.font = 'bold 14px Arial, sans-serif';
+    ctx.fillText(bem[d.membresia] + '  ' + d.membresia.toUpperCase(), w/2, by + 24);
+
+    // QR
+    const qs = 280, qx = (w - qs)/2, qy = by + 55;
+    ctx.shadowColor = 'rgba(0,0,0,0.06)';
+    ctx.shadowBlur = 16;
+    ctx.shadowOffsetY = 4;
+    rr(ctx, qx - 15, qy - 15, qs + 30, qs + 30, 16, '#f8fafc');
+    ctx.shadowColor = 'transparent';
+    ctx.drawImage(qrCanvas, qx, qy, qs, qs);
+
+    // Nombre
+    const ny = qy + qs + 40;
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 26px Arial, sans-serif';
+    ctx.fillText(d.nombre.toUpperCase(), w/2, ny);
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '14px monospace';
+    ctx.fillText(d.id, w/2, ny + 26);
+
+    // Línea
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(80, ny + 46);
+    ctx.lineTo(w - 80, ny + 46);
+    ctx.stroke();
+
+    // Stats
+    const sy = ny + 62;
+    rr(ctx, 65, sy, w - 130, 100, 14, '#f0fdf4');
+    ctx.fillStyle = '#15803d';
+    ctx.font = 'bold 22px Arial, sans-serif';
+    ctx.fillText('🪙 ' + d.tokens + ' Tokens', w/2, sy + 35);
+    ctx.fillStyle = '#16a34a';
+    ctx.font = '14px Arial, sans-serif';
+    ctx.fillText(mem.gratis + ' tokens gratis incluidos', w/2, sy + 58);
+    ctx.fillStyle = '#166534';
+    ctx.font = 'bold 18px monospace';
+    ctx.fillText('Saldo: $' + d.saldo.toLocaleString('es-CO'), w/2, sy + 85);
+
+    // Footer
+    const fy = sy + 125;
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '12px Arial, sans-serif';
+    ctx.fillText('Presenta este QR en cualquier sede', w/2, fy);
+    ctx.fillText('de Panzer Carwash para canjear tus tokens', w/2, fy + 18);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.font = '11px Arial, sans-serif';
+    ctx.fillText('panzercarwash.com', w/2, fy + 44);
+
+    // Descargar
+    c.toBlob(function(blob) {
+        const link = document.createElement('a');
+        link.download = 'Panzer_VIP_' + d.id + '.png';
+        link.href = URL.createObjectURL(blob);
+        link.click();
+    }, 'image/png');
+}
+
+// =============================================================
+// COMPARTIR
+// =============================================================
+function compartirCarnet() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Mi Membresía VIP - Panzer Carwash',
+            text: '🚗 Membresía ' + clienteData.membresia + ' · ' + clienteData.tokens + ' Tokens · Saldo: $' + clienteData.saldo.toLocaleString('es-CO'),
+            url: window.location.href
+        }).catch(() => {});
+    } else {
+        // Fallback: copiar link
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert('¡Link copiado! Puedes pegarlo donde quieras.');
+        }).catch(() => {
+            prompt('Copia este link:', window.location.href);
+        });
+    }
+}
+
+// =============================================================
+// UTILIDADES
+// =============================================================
+function rr(ctx, x, y, w, h, r, fill) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+}
+
+// Iniciar
+window.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
