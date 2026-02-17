@@ -3,734 +3,1203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Panzer VIP - Canje de Tokens</title>
-    
-    <!-- Librería para escanear QR -->
+    <title>Panzer Carwash - App Empleados</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2236;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-gold: #f59e0b;
+            --accent-silver: #94a3b8;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: rgba(59, 130, 246, 0.15);
+            --glow-blue: rgba(59, 130, 246, 0.15);
+            --glow-cyan: rgba(6, 182, 212, 0.1);
         }
-        
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
-            color: white;
+            overflow-x: hidden;
         }
-        
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background:
+                radial-gradient(ellipse at 20% 20%, var(--glow-blue) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, var(--glow-cyan) 0%, transparent 50%);
+            z-index: 0;
+        }
+
         .container {
-            max-width: 400px;
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
             margin: 0 auto;
-            padding: 15px;
+            padding: 16px;
+            min-height: 100vh;
         }
-        
+
         /* Header */
         .header {
-            text-align: center;
-            padding: 20px 0;
-            border-bottom: 2px solid #4a90d9;
-            margin-bottom: 20px;
-        }
-        
-        .header img {
-            width: 150px;
-            margin-bottom: 5px;
-        }
-        
-        .header .sede {
-            font-size: 14px;
-            color: #888;
-        }
-        
-        /* Pantallas */
-        .screen {
-            display: none;
-        }
-        
-        .screen.active {
-            display: block;
-        }
-        
-        /* Login */
-        .login-box {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 30px 20px;
-            margin-top: 50px;
-        }
-        
-        .login-box h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            color: #4a90d9;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 0;
             margin-bottom: 8px;
-            color: #ccc;
-            font-size: 14px;
         }
-        
-        .form-group select,
-        .form-group input {
+
+        .header-logo {
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .header-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .header-text h1 {
+            font-size: 18px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-text p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .header-sede {
+            margin-left: auto;
+            padding: 5px 10px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+
+        /* Screens */
+        .screen { display: none; animation: fadeIn 0.3s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Login */
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .login-logo {
+            width: 90px; height: 90px;
+            border-radius: 22px;
+            overflow: hidden;
+            margin: 0 auto 20px;
+            border: 2px solid var(--border);
+            box-shadow: 0 0 30px var(--glow-blue);
+        }
+
+        .login-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .login-title { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+        .login-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
+
+        /* Form elements */
+        .form-group { margin-bottom: 14px; text-align: left; }
+
+        .form-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input, .form-select {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #333;
-            border-radius: 10px;
-            background: #1a1a2e;
-            color: white;
-            font-size: 16px;
-        }
-        
-        .form-group select:focus,
-        .form-group input:focus {
-            border-color: #4a90d9;
+            padding: 13px 14px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
             outline: none;
+            transition: border-color 0.2s;
+            -webkit-appearance: none;
         }
-        
-        /* Botones */
+
+        .form-input:focus, .form-select:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+        }
+
+        .form-input::placeholder { color: var(--text-muted); }
+
+        .form-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        .form-select option { background: var(--bg-secondary); color: var(--text-primary); }
+
+        /* Buttons */
         .btn {
             width: 100%;
-            padding: 18px;
+            padding: 14px;
             border: none;
             border-radius: 12px;
-            font-size: 18px;
-            font-weight: bold;
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s, opacity 0.2s;
+            transition: all 0.2s;
         }
-        
-        .btn:active {
-            transform: scale(0.98);
-        }
-        
+
+        .btn:active { transform: scale(0.98); }
+
         .btn-primary {
-            background: linear-gradient(135deg, #4a90d9, #357abd);
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
             color: white;
         }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #28a745, #1e7e34);
+
+        .btn-primary:hover { box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3); }
+
+        .btn-green {
+            background: linear-gradient(135deg, #059669, var(--accent-green));
             color: white;
         }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #dc3545, #c82333);
-            color: white;
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border);
         }
-        
-        .btn-secondary {
-            background: #444;
-            color: white;
-        }
-        
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        /* Scanner QR */
-        .scanner-container {
-            background: #000;
-            border-radius: 15px;
-            overflow: hidden;
+
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Menu Cards */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
             margin-bottom: 20px;
         }
-        
-        #reader {
-            width: 100%;
-        }
-        
-        .scan-instructions {
+
+        .menu-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 24px 16px;
             text-align: center;
-            padding: 15px;
-            color: #888;
-            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.25s;
         }
-        
-        /* Cliente Info */
-        .cliente-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
+
+        .menu-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
-        
-        .cliente-card.gold {
-            border: 2px solid #ffd700;
+
+        .menu-card-icon {
+            width: 56px; height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin: 0 auto 12px;
         }
-        
-        .cliente-card.silver {
-            border: 2px solid #c0c0c0;
-        }
-        
-        .cliente-card.standard {
-            border: 2px solid #4a90d9;
-        }
-        
-        .cliente-nombre {
-            font-size: 22px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .cliente-membresia {
-            font-size: 14px;
-            color: #888;
-            margin-bottom: 15px;
-        }
-        
-        .cliente-saldo {
-            font-size: 36px;
-            font-weight: bold;
-            color: #4ade80;
-            text-align: center;
-            padding: 15px;
-            background: rgba(0,0,0,0.3);
+
+        .menu-card-icon.scan { background: rgba(6, 182, 212, 0.12); }
+        .menu-card-icon.sell { background: rgba(139, 92, 246, 0.12); }
+
+        .menu-card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+        .menu-card-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+
+        /* Back button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 10px;
+            color: var(--text-secondary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: all 0.2s;
         }
-        
-        .cliente-saldo small {
-            font-size: 14px;
-            color: #888;
-            display: block;
-            margin-bottom: 5px;
+
+        .back-btn:hover { border-color: var(--accent-cyan); color: var(--text-primary); }
+
+        /* Card generic */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 24px 20px;
+            margin-bottom: 14px;
         }
-        
-        /* Tokens Selector */
-        .tokens-selector {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
+
+        .card-title { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+        .card-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+
+        /* QR Scanner */
+        #qr-reader {
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 16px;
         }
-        
-        .tokens-selector h3 {
-            text-align: center;
-            margin-bottom: 15px;
-            color: #ccc;
+
+        #qr-reader video { border-radius: 14px; }
+
+        /* Cliente info */
+        .client-info {
+            background: var(--bg-secondary);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 16px;
         }
-        
-        .tokens-controls {
+
+        .client-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .client-row:not(:last-child) { border-bottom: 1px solid var(--border); }
+
+        .client-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+
+        .client-value { font-size: 14px; font-weight: 600; }
+        .client-value.saldo {
+            font-family: 'Space Mono', monospace;
+            color: var(--accent-green);
+            font-size: 16px;
+        }
+
+        /* Token counter */
+        .token-counter {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 20px;
-            margin-bottom: 15px;
+            padding: 16px;
+            margin-bottom: 16px;
         }
-        
-        .tokens-controls button {
-            width: 60px;
-            height: 60px;
+
+        .token-btn {
+            width: 48px; height: 48px;
             border-radius: 50%;
-            border: none;
-            font-size: 30px;
-            font-weight: bold;
+            border: 2px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 22px;
+            font-weight: 700;
             cursor: pointer;
-            background: #4a90d9;
-            color: white;
-        }
-        
-        .tokens-controls button:active {
-            transform: scale(0.95);
-        }
-        
-        .tokens-controls .cantidad {
-            font-size: 48px;
-            font-weight: bold;
-            min-width: 80px;
-            text-align: center;
-        }
-        
-        .tokens-valor {
-            text-align: center;
-            font-size: 20px;
-            color: #fbbf24;
-        }
-        
-        /* Resumen */
-        .resumen {
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .resumen-row {
             display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        .token-btn:active { transform: scale(0.9); }
+        .token-btn:hover { border-color: var(--accent-cyan); }
+
+        .token-display {
+            text-align: center;
+        }
+
+        .token-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            line-height: 1;
+        }
+
+        .token-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .token-valor {
+            font-family: 'Space Mono', monospace;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Membership selector */
+        .mem-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+
+        .mem-btn {
+            display: flex;
+            align-items: center;
             justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #333;
+            padding: 14px;
+            background: var(--bg-secondary);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-primary);
+            font-family: inherit;
+            text-align: left;
         }
-        
-        .resumen-row:last-child {
-            border-bottom: none;
-            font-weight: bold;
-            font-size: 18px;
-            color: #4ade80;
-        }
-        
-        /* Mensajes */
-        .mensaje {
-            padding: 15px;
+
+        .mem-btn:hover { border-color: var(--border); }
+        .mem-btn.selected { border-color: var(--accent-cyan); background: rgba(6, 182, 212, 0.05); }
+        .mem-btn.selected.standard { border-color: var(--accent-blue); }
+        .mem-btn.selected.silver { border-color: var(--accent-silver); }
+        .mem-btn.selected.gold { border-color: var(--accent-gold); }
+
+        .mem-left { display: flex; align-items: center; gap: 10px; }
+
+        .mem-icon {
+            width: 38px; height: 38px;
             border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+
+        .mem-icon.standard { background: rgba(59, 130, 246, 0.12); }
+        .mem-icon.silver { background: rgba(148, 163, 184, 0.12); }
+        .mem-icon.gold { background: rgba(245, 158, 11, 0.12); }
+
+        .mem-name { font-size: 14px; font-weight: 600; }
+        .mem-tokens { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+        .mem-price {
+            font-family: 'Space Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        /* Método de pago */
+        .payment-methods {
+            display: flex;
+            gap: 8px;
             margin-bottom: 20px;
+        }
+
+        .pay-btn {
+            flex: 1;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border: 2px solid transparent;
+            border-radius: 10px;
             text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-primary);
+            font-family: inherit;
         }
-        
-        .mensaje.exito {
-            background: rgba(40, 167, 69, 0.3);
-            border: 1px solid #28a745;
-        }
-        
-        .mensaje.error {
-            background: rgba(220, 53, 69, 0.3);
-            border: 1px solid #dc3545;
-        }
-        
-        /* Loading */
-        .loading {
+
+        .pay-btn.selected { border-color: var(--accent-green); background: rgba(16, 185, 129, 0.06); }
+        .pay-btn-icon { font-size: 20px; margin-bottom: 4px; }
+        .pay-btn-label { font-size: 11px; font-weight: 600; }
+
+        /* Success / Result */
+        .success-box {
             text-align: center;
-            padding: 40px;
+            padding: 20px 0;
         }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #333;
-            border-top-color: #4a90d9;
+
+        .success-icon {
+            width: 64px; height: 64px;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
+            background: rgba(16, 185, 129, 0.12);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 32px;
+            animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+
+        @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+
+        .success-title { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+        .success-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+
+        /* QR display card */
+        .qr-mini-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            display: inline-block;
+            margin-bottom: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
         }
-        
-        /* Éxito animación */
-        .checkmark {
-            font-size: 80px;
+
+        #qr-venta-container canvas, #qr-venta-container img { border-radius: 6px; }
+
+        .qr-mini-name { color: #0f172a; font-size: 14px; font-weight: 700; margin-top: 10px; }
+        .qr-mini-id { color: #94a3b8; font-size: 11px; font-family: 'Space Mono', monospace; }
+
+        /* WhatsApp button */
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 14px;
+            display: none;
+        }
+
+        .alert.show { display: block; }
+        .alert.error { background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+        .alert.success { background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
             text-align: center;
-            color: #4ade80;
-            animation: pop 0.5s ease;
         }
-        
-        @keyframes pop {
-            0% { transform: scale(0); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+
+        .stat-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-cyan);
         }
-        
-        /* Navegación inferior */
-        .nav-bottom {
-            margin-top: 20px;
+
+        .stat-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 16px 0;
+        }
+
+        .footer {
             text-align: center;
-        }
-        
-        .nav-bottom a {
-            color: #4a90d9;
-            text-decoration: none;
-            font-size: 14px;
+            padding: 20px 0;
+            font-size: 11px;
+            color: var(--text-muted);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
+
+<div class="container">
+
+    <!-- ==================== LOGIN ==================== -->
+    <div class="screen active" id="screen-login">
+        <div class="login-card">
+            <div class="login-logo">
+                <img src="https://santiescupine-byte.github.io/panzer-vip/Panzer%20Logo%20FINAL.png" alt="Panzer Carwash">
+            </div>
+            <div class="login-title">Panzer Carwash</div>
+            <div class="login-sub">App de Empleados</div>
+
+            <div class="form-group">
+                <label class="form-label">Sede</label>
+                <select class="form-select" id="login-sede">
+                    <option value="">Selecciona tu sede</option>
+                    <option value="poblado">Sede Poblado</option>
+                    <option value="centro">Sede Centro</option>
+                    <option value="toberin">Sede Toberín</option>
+                    <option value="bolivariana">Sede Bolivariana</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Contraseña de sede</label>
+                <input type="password" class="form-input" id="login-pass" placeholder="Ingresa la contraseña">
+            </div>
+
+            <div id="login-error" class="alert error"></div>
+
+            <button class="btn btn-primary" onclick="login()">Ingresar</button>
+        </div>
+    </div>
+
+    <!-- ==================== MENÚ PRINCIPAL ==================== -->
+    <div class="screen" id="screen-menu">
         <div class="header">
-            <img src="https://santiescupine-byte.github.io/panzer-vip/Panzer%20Logo%20FINAL.png" alt="Panzer Carwash">
-            <div class="sede" id="nombreSede">Sistema VIP</div>
+            <div class="header-logo">
+                <img src="https://santiescupine-byte.github.io/panzer-vip/Panzer%20Logo%20FINAL.png" alt="Panzer">
+            </div>
+            <div class="header-text">
+                <h1>Panzer Carwash</h1>
+                <p>Panel de empleado</p>
+            </div>
+            <div class="header-sede" id="display-sede">Poblado</div>
         </div>
-        
-        <!-- ========== PANTALLA LOGIN ========== -->
-        <div class="screen active" id="screenLogin">
-            <div class="login-box">
-                <h2>🔐 Iniciar Sesión</h2>
-                
-                <div class="form-group">
-                    <label>Selecciona tu sede:</label>
-                    <select id="selectSede">
-                        <option value="">Cargando sedes...</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Contraseña:</label>
-                    <input type="password" id="inputPassword" placeholder="****">
-                </div>
-                
-                <div id="loginError" class="mensaje error" style="display:none;"></div>
-                
-                <button class="btn btn-primary" onclick="iniciarSesion()">ENTRAR</button>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" id="stat-canjes">0</div>
+                <div class="stat-label">Canjes hoy</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="stat-ventas">0</div>
+                <div class="stat-label">Ventas hoy</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="stat-tokens">0</div>
+                <div class="stat-label">Tokens entregados</div>
             </div>
         </div>
-        
-        <!-- ========== PANTALLA ESCANEAR ========== -->
-        <div class="screen" id="screenEscanear">
-            <div class="scanner-container">
-                <div id="reader"></div>
+
+        <div class="menu-grid">
+            <div class="menu-card" onclick="goTo('screen-scan')">
+                <div class="menu-card-icon scan">📷</div>
+                <div class="menu-card-title">Canjear Tokens</div>
+                <div class="menu-card-desc">Escanea el QR del cliente VIP y descuenta su saldo</div>
             </div>
-            
-            <p class="scan-instructions">
-                📷 Apunta la cámara al código QR del cliente VIP
-            </p>
-            
-            <div id="scanError" class="mensaje error" style="display:none;"></div>
-            
-            <input type="text" id="inputManualId" placeholder="O ingresa ID manual (VIP-001)" 
-                   style="width:100%; padding:15px; margin-bottom:15px; border-radius:10px; border:2px solid #333; background:#1a1a2e; color:white;">
-            
-            <button class="btn btn-secondary" onclick="buscarClienteManual()">Buscar Manual</button>
-            
-            <div class="nav-bottom">
-                <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
+            <div class="menu-card" onclick="goTo('screen-venta')">
+                <div class="menu-card-icon sell">🛒</div>
+                <div class="menu-card-title">Vender Membresía</div>
+                <div class="menu-card-desc">Registra un nuevo cliente VIP y envía su QR por WhatsApp</div>
             </div>
         </div>
-        
-        <!-- ========== PANTALLA CLIENTE ========== -->
-        <div class="screen" id="screenCliente">
-            <div id="clienteCard" class="cliente-card">
-                <div class="cliente-nombre" id="clienteNombre">-</div>
-                <div class="cliente-membresia" id="clienteMembresia">-</div>
-                <div class="cliente-saldo">
-                    <small>Saldo disponible</small>
-                    $<span id="clienteSaldo">0</span>
-                </div>
-            </div>
-            
-            <div class="tokens-selector">
-                <h3>Tokens a entregar:</h3>
-                <div class="tokens-controls">
-                    <button onclick="cambiarTokens(-1)">−</button>
-                    <div class="cantidad" id="cantidadTokens">1</div>
-                    <button onclick="cambiarTokens(1)">+</button>
-                </div>
-                <div class="tokens-valor">
-                    Valor: $<span id="valorTokens">6,000</span>
-                </div>
-            </div>
-            
-            <div class="resumen">
-                <div class="resumen-row">
-                    <span>Saldo actual:</span>
-                    <span>$<span id="resumenSaldo">0</span></span>
-                </div>
-                <div class="resumen-row">
-                    <span>Descuento:</span>
-                    <span>-$<span id="resumenDescuento">0</span></span>
-                </div>
-                <div class="resumen-row">
-                    <span>Saldo restante:</span>
-                    <span>$<span id="resumenRestante">0</span></span>
-                </div>
-            </div>
-            
-            <div id="clienteError" class="mensaje error" style="display:none;"></div>
-            
-            <button class="btn btn-success" id="btnDescontar" onclick="descontarSaldo()">
-                ✓ DESCONTAR Y ENTREGAR TOKENS
-            </button>
-            
-            <button class="btn btn-secondary" style="margin-top:10px;" onclick="volverEscanear()">
-                ← Escanear otro
-            </button>
-        </div>
-        
-        <!-- ========== PANTALLA PROCESANDO ========== -->
-        <div class="screen" id="screenProcesando">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Procesando transacción...</p>
-            </div>
-        </div>
-        
-        <!-- ========== PANTALLA ÉXITO ========== -->
-        <div class="screen" id="screenExito">
-            <div style="text-align:center; padding:40px 0;">
-                <div class="checkmark">✓</div>
-                <h2 style="margin:20px 0; color:#4ade80;">¡Transacción Exitosa!</h2>
-                <p style="color:#888; margin-bottom:10px;">Entrega al cliente:</p>
-                <p style="font-size:48px; font-weight:bold;" id="exitoTokens">0</p>
-                <p style="color:#888;">TOKENS</p>
-                
-                <div style="margin-top:30px; padding:20px; background:rgba(0,0,0,0.3); border-radius:10px;">
-                    <p style="color:#888;">Nuevo saldo del cliente:</p>
-                    <p style="font-size:28px; color:#4ade80;">$<span id="exitoNuevoSaldo">0</span></p>
-                </div>
-            </div>
-            
-            <button class="btn btn-primary" onclick="volverEscanear()">
-                ESCANEAR OTRO CLIENTE
+
+        <div class="footer">
+            <button class="btn btn-outline" onclick="logout()" style="width: auto; padding: 10px 20px; font-size: 12px;">
+                Cerrar sesión
             </button>
         </div>
     </div>
 
-    <script>
-        // =========================================================================
-        // CONFIGURACIÓN
-        // =========================================================================
-        const API_URL = "https://script.google.com/macros/s/AKfycbyoTaC9iB1fm4s3hM4QQ9-1Zbo5cCzJQIn68YlczTTAXrYHBJK1rQsZmiIMo4CL9-S8Bg/exec";
-        const VALOR_TOKEN = 6000;
-        
-        // =========================================================================
-        // VARIABLES GLOBALES
-        // =========================================================================
-        let sedeActual = null;
-        let clienteActual = null;
-        let cantidadTokens = 1;
-        let html5QrCode = null;
-        
-        // =========================================================================
-        // INICIALIZACIÓN
-        // =========================================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            cargarSedes();
-        });
-        
-        // =========================================================================
-        // FUNCIONES DE NAVEGACIÓN
-        // =========================================================================
-        function mostrarPantalla(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-        
-        // =========================================================================
-        // LOGIN
-        // =========================================================================
-        async function cargarSedes() {
-            try {
-                const response = await fetch(API_URL + "?accion=listar_sedes");
-                const data = await response.json();
-                
-                const select = document.getElementById('selectSede');
-                select.innerHTML = '<option value="">Selecciona una sede...</option>';
-                
-                if (data.ok && data.sedes) {
-                    data.sedes.forEach(sede => {
-                        select.innerHTML += `<option value="${sede.id}">${sede.nombre}</option>`;
-                    });
-                }
-            } catch (error) {
-                console.error("Error cargando sedes:", error);
-                document.getElementById('selectSede').innerHTML = '<option value="">Error al cargar</option>';
-            }
-        }
-        
-        async function iniciarSesion() {
-            const idSede = document.getElementById('selectSede').value;
-            const password = document.getElementById('inputPassword').value;
-            
-            if (!idSede || !password) {
-                mostrarError('loginError', 'Selecciona una sede e ingresa la contraseña');
-                return;
-            }
-            
-            try {
-                const response = await fetch(API_URL + `?accion=validar_sede&id_sede=${idSede}&password=${password}`);
-                const data = await response.json();
-                
-                if (data.ok) {
-                    sedeActual = data.sede;
-                    document.getElementById('nombreSede').textContent = sedeActual.nombre;
-                    ocultarError('loginError');
-                    iniciarScanner();
-                    mostrarPantalla('screenEscanear');
-                } else {
-                    mostrarError('loginError', data.error || 'Credenciales inválidas');
-                }
-            } catch (error) {
-                mostrarError('loginError', 'Error de conexión');
-            }
-        }
-        
-        function cerrarSesion() {
-            detenerScanner();
-            sedeActual = null;
-            clienteActual = null;
-            document.getElementById('inputPassword').value = '';
-            mostrarPantalla('screenLogin');
-        }
-        
-        // =========================================================================
-        // SCANNER QR
-        // =========================================================================
-        function iniciarScanner() {
-            html5QrCode = new Html5Qrcode("reader");
-            
-            html5QrCode.start(
-                { facingMode: "environment" },
-                { fps: 10, qrbox: { width: 250, height: 250 } },
-                onQrCodeSuccess,
-                onQrCodeError
-            ).catch(err => {
-                console.error("Error iniciando cámara:", err);
-                document.getElementById('reader').innerHTML = 
-                    '<p style="color:#888; padding:40px; text-align:center;">No se pudo acceder a la cámara.<br>Usa el campo manual.</p>';
+    <!-- ==================== CANJEAR TOKENS (ESCANEAR QR) ==================== -->
+    <div class="screen" id="screen-scan">
+        <button class="back-btn" onclick="goTo('screen-menu')">← Menú</button>
+
+        <div class="card">
+            <div class="card-title">📷 Escanear QR del Cliente</div>
+            <div class="card-subtitle">Apunta la cámara al código QR de la membresía</div>
+            <div id="qr-reader"></div>
+            <div id="scan-alert" class="alert"></div>
+        </div>
+
+        <!-- Info del cliente después de escanear -->
+        <div id="client-panel" style="display:none;">
+            <div class="card">
+                <div class="card-title">Cliente VIP</div>
+                <div class="client-info">
+                    <div class="client-row">
+                        <span class="client-label">Nombre</span>
+                        <span class="client-value" id="scan-nombre">—</span>
+                    </div>
+                    <div class="client-row">
+                        <span class="client-label">Membresía</span>
+                        <span class="client-value" id="scan-membresia">—</span>
+                    </div>
+                    <div class="client-row">
+                        <span class="client-label">Saldo</span>
+                        <span class="client-value saldo" id="scan-saldo">—</span>
+                    </div>
+                    <div class="client-row">
+                        <span class="client-label">ID</span>
+                        <span class="client-value" id="scan-id" style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text-muted);">—</span>
+                    </div>
+                </div>
+
+                <div class="card-title" style="font-size:14px;">Tokens a entregar</div>
+                <div class="token-counter">
+                    <button class="token-btn" onclick="cambiarTokens(-1)">−</button>
+                    <div class="token-display">
+                        <div class="token-number" id="token-count">1</div>
+                        <div class="token-label">tokens</div>
+                        <div class="token-valor" id="token-valor">$6.000</div>
+                    </div>
+                    <button class="token-btn" onclick="cambiarTokens(1)">+</button>
+                </div>
+
+                <button class="btn btn-green" onclick="descontarSaldo()">✅ Descontar Saldo</button>
+            </div>
+        </div>
+
+        <!-- Resultado del descuento -->
+        <div id="descuento-result" style="display:none;">
+            <div class="card">
+                <div class="success-box">
+                    <div class="success-icon">✅</div>
+                    <div class="success-title">Saldo Descontado</div>
+                    <div class="success-sub" id="descuento-detail"></div>
+                    <button class="btn btn-primary" onclick="nuevoEscaneo()">Escanear otro cliente</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== VENDER MEMBRESÍA ==================== -->
+    <div class="screen" id="screen-venta">
+        <button class="back-btn" onclick="goTo('screen-menu')">← Menú</button>
+
+        <div id="venta-form">
+            <div class="card">
+                <div class="card-title">🛒 Vender Membresía</div>
+                <div class="card-subtitle">Registra un nuevo cliente VIP en el punto de venta</div>
+
+                <div class="form-group">
+                    <label class="form-label">Nombre del cliente</label>
+                    <input type="text" class="form-input" id="venta-nombre" placeholder="Nombre completo" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Teléfono / WhatsApp</label>
+                    <input type="tel" class="form-input" id="venta-telefono" placeholder="Ej: 3001234567" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tipo de membresía</label>
+                    <div class="mem-options">
+                        <button class="mem-btn standard" onclick="selectVentaMem('Standard', this)">
+                            <div class="mem-left">
+                                <div class="mem-icon standard">⭐</div>
+                                <div>
+                                    <div class="mem-name">Standard</div>
+                                    <div class="mem-tokens">5 Tokens · 1 gratis</div>
+                                </div>
+                            </div>
+                            <div class="mem-price">$24.000</div>
+                        </button>
+                        <button class="mem-btn silver" onclick="selectVentaMem('Silver', this)">
+                            <div class="mem-left">
+                                <div class="mem-icon silver">🥈</div>
+                                <div>
+                                    <div class="mem-name">Silver</div>
+                                    <div class="mem-tokens">10 Tokens · 3 gratis</div>
+                                </div>
+                            </div>
+                            <div class="mem-price">$42.000</div>
+                        </button>
+                        <button class="mem-btn gold" onclick="selectVentaMem('Gold', this)">
+                            <div class="mem-left">
+                                <div class="mem-icon gold">🥇</div>
+                                <div>
+                                    <div class="mem-name">Gold</div>
+                                    <div class="mem-tokens">15 Tokens · 5 gratis</div>
+                                </div>
+                            </div>
+                            <div class="mem-price">$60.000</div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Método de pago</label>
+                    <div class="payment-methods">
+                        <button class="pay-btn selected" onclick="selectPago('Efectivo', this)">
+                            <div class="pay-btn-icon">💵</div>
+                            <div class="pay-btn-label">Efectivo</div>
+                        </button>
+                        <button class="pay-btn" onclick="selectPago('Nequi', this)">
+                            <div class="pay-btn-icon">📱</div>
+                            <div class="pay-btn-label">Nequi</div>
+                        </button>
+                        <button class="pay-btn" onclick="selectPago('Transferencia', this)">
+                            <div class="pay-btn-icon">🏦</div>
+                            <div class="pay-btn-label">Transferencia</div>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="venta-error" class="alert error"></div>
+
+                <button class="btn btn-primary" id="btn-vender" onclick="registrarVenta()">
+                    Registrar Membresía
+                </button>
+            </div>
+        </div>
+
+        <!-- Resultado de la venta -->
+        <div id="venta-result" style="display:none;">
+            <div class="card">
+                <div class="success-box">
+                    <div class="success-icon">🎉</div>
+                    <div class="success-title">¡Membresía Creada!</div>
+                    <div class="success-sub" id="venta-detail"></div>
+
+                    <div class="qr-mini-card">
+                        <div id="qr-venta-container"></div>
+                        <div class="qr-mini-name" id="venta-qr-nombre"></div>
+                        <div class="qr-mini-id" id="venta-qr-id"></div>
+                    </div>
+
+                    <button class="btn btn-whatsapp" onclick="enviarWhatsApp()" style="margin-bottom: 10px;">
+                        📲 Enviar QR por WhatsApp
+                    </button>
+
+                    <button class="btn btn-outline" onclick="nuevaVenta()">
+                        Registrar otra membresía
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// =============================================================
+// CONFIGURACIÓN
+// =============================================================
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyoTaC9iB1fm4s3hM4QQ9-1Zbo5cCzJQIn68YlczTTAXrYHBJK1rQsZmiIMo4CL9-S8Bg/exec';
+const PRECIO_TOKEN = 6000;
+
+const MEMBRESIAS = {
+    'Standard': { saldo: 30000, tokens: 5, precio: 24000, gratis: 1 },
+    'Silver':   { saldo: 60000, tokens: 10, precio: 42000, gratis: 3 },
+    'Gold':     { saldo: 90000, tokens: 15, precio: 60000, gratis: 5 }
+};
+
+// =============================================================
+// ESTADO
+// =============================================================
+let currentSede = null;
+let scannedClient = null;
+let tokenCount = 1;
+let ventaMembresia = null;
+let ventaPago = 'Efectivo';
+let ventaClienteData = null;
+let qrScanner = null;
+let stats = { canjes: 0, ventas: 0, tokens: 0 };
+
+// =============================================================
+// LLAMADA AL APPS SCRIPT (GET con query params)
+// =============================================================
+async function callAPI(params) {
+    const query = new URLSearchParams(params).toString();
+    const url = APPS_SCRIPT_URL + '?' + query;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data;
+    } catch (e) {
+        console.error('Error API:', e);
+        return { ok: false, error: 'Error de conexión' };
+    }
+}
+
+// =============================================================
+// LOGIN - Valida contra Google Sheets
+// =============================================================
+async function login() {
+    const sedeId = document.getElementById('login-sede').value;
+    const pass = document.getElementById('login-pass').value;
+    const errorEl = document.getElementById('login-error');
+    const btn = document.querySelector('#screen-login .btn-primary');
+
+    if (!sedeId) { showAlert(errorEl, 'Selecciona una sede', 'error'); return; }
+    if (!pass) { showAlert(errorEl, 'Ingresa la contraseña', 'error'); return; }
+
+    btn.textContent = 'Verificando...';
+    btn.disabled = true;
+
+    const result = await callAPI({ accion: 'validar_sede', id_sede: sedeId, password: pass });
+
+    btn.textContent = 'Ingresar';
+    btn.disabled = false;
+
+    if (result.ok) {
+        currentSede = { id: result.sede.id, nombre: result.sede.nombre };
+        document.getElementById('display-sede').textContent = result.sede.nombre.replace('Sede ', '');
+        goTo('screen-menu');
+    } else {
+        showAlert(errorEl, result.error || 'Credenciales inválidas', 'error');
+    }
+}
+
+function logout() {
+    currentSede = null;
+    document.getElementById('login-pass').value = '';
+    goTo('screen-login');
+    stopScanner();
+}
+
+// =============================================================
+// CARGAR SEDES DESDE GOOGLE SHEETS (con fallback)
+// =============================================================
+const SEDES_FALLBACK = [
+    { id: 'poblado', nombre: 'Sede Poblado' },
+    { id: 'centro', nombre: 'Sede Centro' },
+    { id: 'toberin', nombre: 'Sede Toberín' },
+    { id: 'bolivariana', nombre: 'Sede Bolivariana' }
+];
+
+async function cargarSedes() {
+    const select = document.getElementById('login-sede');
+    try {
+        const result = await callAPI({ accion: 'listar_sedes' });
+        if (result.ok && result.sedes && result.sedes.length > 0) {
+            select.innerHTML = '<option value="">Selecciona tu sede</option>';
+            result.sedes.forEach(sede => {
+                const opt = document.createElement('option');
+                opt.value = sede.id;
+                opt.textContent = sede.nombre;
+                select.appendChild(opt);
             });
+            return;
         }
-        
-        function detenerScanner() {
-            if (html5QrCode && html5QrCode.isScanning) {
-                html5QrCode.stop().catch(err => console.log(err));
-            }
+    } catch (e) { console.log('No se pudo conectar al API, usando sedes locales'); }
+
+    // Fallback: sedes locales
+    select.innerHTML = '<option value="">Selecciona tu sede</option>';
+    SEDES_FALLBACK.forEach(sede => {
+        const opt = document.createElement('option');
+        opt.value = sede.id;
+        opt.textContent = sede.nombre;
+        select.appendChild(opt);
+    });
+}
+
+// Cargar sedes al iniciar
+window.addEventListener('DOMContentLoaded', cargarSedes);
+
+// =============================================================
+// NAVEGACIÓN
+// =============================================================
+function goTo(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+
+    if (screenId === 'screen-scan') startScanner();
+    else stopScanner();
+
+    if (screenId === 'screen-menu') updateStats();
+    if (screenId === 'screen-venta') resetVentaForm();
+}
+
+// =============================================================
+// STATS
+// =============================================================
+function updateStats() {
+    document.getElementById('stat-canjes').textContent = stats.canjes;
+    document.getElementById('stat-ventas').textContent = stats.ventas;
+    document.getElementById('stat-tokens').textContent = stats.tokens;
+}
+
+// =============================================================
+// QR SCANNER
+// =============================================================
+function startScanner() {
+    document.getElementById('client-panel').style.display = 'none';
+    document.getElementById('descuento-result').style.display = 'none';
+
+    if (qrScanner) { qrScanner.clear(); }
+
+    qrScanner = new Html5QrcodeScanner("qr-reader", {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+        aspectRatio: 1,
+        showTorchButtonIfSupported: true,
+        showZoomSliderIfSupported: true
+    }, false);
+
+    qrScanner.render(onScanSuccess, onScanError);
+}
+
+function stopScanner() {
+    if (qrScanner) {
+        try { qrScanner.clear(); } catch(e) {}
+        qrScanner = null;
+    }
+}
+
+async function onScanSuccess(decodedText) {
+    try {
+        const data = JSON.parse(decodedText);
+        if (!data.id || !data.nombre) throw new Error('QR inválido');
+
+        stopScanner();
+
+        // Consultar saldo ACTUALIZADO desde Google Sheets
+        document.getElementById('scan-nombre').textContent = data.nombre;
+        document.getElementById('scan-membresia').textContent = data.membresia || '—';
+        document.getElementById('scan-saldo').textContent = 'Consultando...';
+        document.getElementById('scan-id').textContent = data.id;
+        document.getElementById('client-panel').style.display = 'block';
+
+        const result = await callAPI({ accion: 'consultar_cliente', id_vip: data.id });
+
+        if (result.ok && result.cliente) {
+            scannedClient = result.cliente;
+            tokenCount = 1;
+
+            document.getElementById('scan-nombre').textContent = result.cliente.nombre;
+            document.getElementById('scan-membresia').textContent = result.cliente.membresia;
+            document.getElementById('scan-saldo').textContent = '$' + result.cliente.saldo.toLocaleString('es-CO');
+            document.getElementById('scan-id').textContent = result.cliente.id;
+            document.getElementById('token-count').textContent = '1';
+            document.getElementById('token-valor').textContent = '$' + PRECIO_TOKEN.toLocaleString('es-CO');
+        } else {
+            // Fallback: usar datos del QR
+            scannedClient = data;
+            tokenCount = 1;
+            document.getElementById('scan-saldo').textContent = '$' + (data.saldo || 0).toLocaleString('es-CO');
+            document.getElementById('token-count').textContent = '1';
+            document.getElementById('token-valor').textContent = '$' + PRECIO_TOKEN.toLocaleString('es-CO');
+            showAlert(document.getElementById('scan-alert'), 'Usando datos del QR (sin conexión)', 'error');
         }
-        
-        function onQrCodeSuccess(decodedText) {
-            // Vibrar si está disponible
-            if (navigator.vibrate) navigator.vibrate(200);
-            
-            buscarCliente(decodedText);
-        }
-        
-        function onQrCodeError(error) {
-            // Ignorar errores de escaneo continuo
-        }
-        
-        function buscarClienteManual() {
-            const id = document.getElementById('inputManualId').value.trim().toUpperCase();
-            if (id) {
-                buscarCliente(id);
-            }
-        }
-        
-        // =========================================================================
-        // CLIENTE
-        // =========================================================================
-        async function buscarCliente(idVip) {
-            try {
-                ocultarError('scanError');
-                
-                const response = await fetch(API_URL + `?accion=consultar_cliente&id_vip=${idVip}`);
-                const data = await response.json();
-                
-                if (data.ok) {
-                    clienteActual = data.cliente;
-                    cantidadTokens = 1;
-                    mostrarCliente();
-                    detenerScanner();
-                    mostrarPantalla('screenCliente');
-                } else {
-                    mostrarError('scanError', data.error || 'Cliente no encontrado');
-                }
-            } catch (error) {
-                mostrarError('scanError', 'Error de conexión');
-            }
-        }
-        
-        function mostrarCliente() {
-            const card = document.getElementById('clienteCard');
-            card.className = 'cliente-card ' + clienteActual.membresia.toLowerCase();
-            
-            document.getElementById('clienteNombre').textContent = clienteActual.nombre;
-            document.getElementById('clienteMembresia').textContent = 
-                `${clienteActual.membresia} • ${clienteActual.id}`;
-            document.getElementById('clienteSaldo').textContent = formatearNumero(clienteActual.saldo);
-            
-            actualizarResumen();
-        }
-        
-        function cambiarTokens(delta) {
-            const nuevoValor = cantidadTokens + delta;
-            const maxTokens = Math.floor(clienteActual.saldo / VALOR_TOKEN);
-            
-            if (nuevoValor >= 1 && nuevoValor <= maxTokens) {
-                cantidadTokens = nuevoValor;
-                actualizarResumen();
-            }
-        }
-        
-        function actualizarResumen() {
-            const valor = cantidadTokens * VALOR_TOKEN;
-            const restante = clienteActual.saldo - valor;
-            
-            document.getElementById('cantidadTokens').textContent = cantidadTokens;
-            document.getElementById('valorTokens').textContent = formatearNumero(valor);
-            document.getElementById('resumenSaldo').textContent = formatearNumero(clienteActual.saldo);
-            document.getElementById('resumenDescuento').textContent = formatearNumero(valor);
-            document.getElementById('resumenRestante').textContent = formatearNumero(restante);
-            
-            // Deshabilitar botón si no alcanza
-            const btn = document.getElementById('btnDescontar');
-            btn.disabled = restante < 0;
-        }
-        
-        // =========================================================================
-        // DESCONTAR SALDO
-        // =========================================================================
-        async function descontarSaldo() {
-            const monto = cantidadTokens * VALOR_TOKEN;
-            
-            if (monto > clienteActual.saldo) {
-                mostrarError('clienteError', 'Saldo insuficiente');
-                return;
-            }
-            
-            mostrarPantalla('screenProcesando');
-            
-            try {
-                const params = new URLSearchParams({
-                    accion: 'descontar_saldo',
-                    id_vip: clienteActual.id,
-                    monto: monto,
-                    tokens: cantidadTokens,
-                    sede: sedeActual.nombre,
-                    operador: sedeActual.id,
-                    metodo: 'WebApp'
-                });
-                
-                const response = await fetch(API_URL + '?' + params.toString());
-                const data = await response.json();
-                
-                if (data.ok) {
-                    document.getElementById('exitoTokens').textContent = cantidadTokens;
-                    document.getElementById('exitoNuevoSaldo').textContent = formatearNumero(data.saldo_nuevo);
-                    mostrarPantalla('screenExito');
-                } else {
-                    mostrarPantalla('screenCliente');
-                    mostrarError('clienteError', data.error || 'Error al procesar');
-                }
-            } catch (error) {
-                mostrarPantalla('screenCliente');
-                mostrarError('clienteError', 'Error de conexión');
-            }
-        }
-        
-        function volverEscanear() {
-            clienteActual = null;
-            document.getElementById('inputManualId').value = '';
-            ocultarError('scanError');
-            ocultarError('clienteError');
-            iniciarScanner();
-            mostrarPantalla('screenEscanear');
-        }
-        
-        // =========================================================================
-        // UTILIDADES
-        // =========================================================================
-        function formatearNumero(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-        
-        function mostrarError(id, mensaje) {
-            const el = document.getElementById(id);
-            el.textContent = mensaje;
-            el.style.display = 'block';
-        }
-        
-        function ocultarError(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-    </script>
+
+    } catch (e) {
+        showAlert(document.getElementById('scan-alert'), 'QR no reconocido. Intenta de nuevo.', 'error');
+    }
+}
+
+function onScanError(err) { /* silencio */ }
+
+// =============================================================
+// CANJEAR TOKENS
+// =============================================================
+function cambiarTokens(delta) {
+    const saldo = scannedClient.saldo || 0;
+    const maxTokens = Math.floor(saldo / PRECIO_TOKEN);
+    tokenCount = Math.max(1, Math.min(tokenCount + delta, maxTokens));
+    document.getElementById('token-count').textContent = tokenCount;
+    document.getElementById('token-valor').textContent = '$' + (tokenCount * PRECIO_TOKEN).toLocaleString('es-CO');
+}
+
+async function descontarSaldo() {
+    const monto = tokenCount * PRECIO_TOKEN;
+    const saldo = scannedClient.saldo || 0;
+
+    if (monto > saldo) {
+        alert('Saldo insuficiente');
+        return;
+    }
+
+    // Llamar al Apps Script con GET params
+    const result = await callAPI({
+        accion: 'descontar_saldo',
+        id_vip: scannedClient.id,
+        monto: monto,
+        tokens: tokenCount,
+        sede: currentSede.nombre,
+        operador: 'Empleado',
+        metodo: 'WebApp'
+    });
+
+    if (result.ok) {
+        stats.canjes++;
+        stats.tokens += tokenCount;
+
+        document.getElementById('descuento-detail').textContent =
+            `Se descontaron ${tokenCount} tokens ($${monto.toLocaleString('es-CO')}) a ${scannedClient.nombre || scannedClient.id}. Nuevo saldo: $${result.saldo_nuevo.toLocaleString('es-CO')}`;
+    } else {
+        document.getElementById('descuento-detail').textContent =
+            `Error: ${result.error || 'No se pudo descontar'}. Verifica e intenta de nuevo.`;
+    }
+
+    document.getElementById('client-panel').style.display = 'none';
+    document.getElementById('descuento-result').style.display = 'block';
+}
+
+function nuevoEscaneo() {
+    document.getElementById('descuento-result').style.display = 'none';
+    scannedClient = null;
+    tokenCount = 1;
+    startScanner();
+}
+
+// =============================================================
+// VENDER MEMBRESÍA
+// =============================================================
+function selectVentaMem(tipo, btn) {
+    ventaMembresia = tipo;
+    document.querySelectorAll('.mem-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+}
+
+function selectPago(metodo, btn) {
+    ventaPago = metodo;
+    document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+}
+
+function resetVentaForm() {
+    document.getElementById('venta-form').style.display = 'block';
+    document.getElementById('venta-result').style.display = 'none';
+    document.getElementById('venta-nombre').value = '';
+    document.getElementById('venta-telefono').value = '';
+    ventaMembresia = null;
+    ventaPago = 'Efectivo';
+    document.querySelectorAll('.mem-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelector('.pay-btn').classList.add('selected');
+}
+
+async function registrarVenta() {
+    const nombre = document.getElementById('venta-nombre').value.trim();
+    const telefono = document.getElementById('venta-telefono').value.trim();
+    const errorEl = document.getElementById('venta-error');
+    const btn = document.getElementById('btn-vender');
+
+    if (!nombre || nombre.length < 3) { showAlert(errorEl, 'Ingresa el nombre del cliente', 'error'); return; }
+    if (!telefono || telefono.length < 7 || !/^[0-9]+$/.test(telefono)) { showAlert(errorEl, 'Ingresa un teléfono válido', 'error'); return; }
+    if (!ventaMembresia) { showAlert(errorEl, 'Selecciona un tipo de membresía', 'error'); return; }
+
+    btn.textContent = 'Registrando...';
+    btn.disabled = true;
+
+    const mem = MEMBRESIAS[ventaMembresia];
+
+    // Crear cliente en Google Sheets (GET params)
+    const result = await callAPI({
+        accion: 'crear_cliente',
+        nombre: nombre,
+        telefono: telefono,
+        membresia: ventaMembresia
+    });
+
+    btn.textContent = 'Registrar Membresía';
+    btn.disabled = false;
+
+    // Usar ID real del script o fallback
+    const idVip = (result.ok && result.id_vip) ? result.id_vip : 'VIP-' + Date.now().toString(36).toUpperCase();
+
+    ventaClienteData = {
+        id: idVip,
+        nombre: nombre,
+        telefono: telefono,
+        membresia: ventaMembresia,
+        saldo: mem.saldo,
+        tokens: mem.tokens
+    };
+
+    stats.ventas++;
+
+    // Mostrar resultado
+    document.getElementById('venta-detail').textContent =
+        `${ventaMembresia} · ${mem.tokens} Tokens (${mem.gratis} gratis) · Cobrado: $${mem.precio.toLocaleString('es-CO')} · Saldo: $${mem.saldo.toLocaleString('es-CO')} · ${ventaPago}`;
+
+    document.getElementById('venta-qr-nombre').textContent = nombre;
+    document.getElementById('venta-qr-id').textContent = idVip;
+
+    // Generar QR con datos reales
+    const qrContainer = document.getElementById('qr-venta-container');
+    qrContainer.innerHTML = '';
+
+    new QRCode(qrContainer, {
+        text: JSON.stringify({
+            id: idVip,
+            nombre: nombre,
+            membresia: ventaMembresia,
+            saldo: mem.saldo
+        }),
+        width: 180,
+        height: 180,
+        colorDark: '#0f172a',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+    });
+
+    document.getElementById('venta-form').style.display = 'none';
+    document.getElementById('venta-result').style.display = 'block';
+
+    if (!result.ok) {
+        showAlert(errorEl, 'Registrado localmente. Error de red: ' + (result.error || ''), 'error');
+    }
+}
+
+function nuevaVenta() {
+    resetVentaForm();
+}
+
+// =============================================================
+// ENVIAR POR WHATSAPP
+// =============================================================
+function enviarWhatsApp() {
+    if (!ventaClienteData) return;
+
+    const mem = MEMBRESIAS[ventaClienteData.membresia];
+    const telefono = ventaClienteData.telefono;
+
+    // Formatear teléfono Colombia
+    let tel = telefono.replace(/\D/g, '');
+    if (tel.startsWith('3') && tel.length === 10) tel = '57' + tel;
+    if (!tel.startsWith('57')) tel = '57' + tel;
+
+    const mensaje = encodeURIComponent(
+        `🚗 *PANZER CARWASH - Membresía VIP*\n\n` +
+        `¡Hola ${ventaClienteData.nombre}! 👋\n\n` +
+        `Tu membresía *${ventaClienteData.membresia}* ha sido activada:\n\n` +
+        `🪙 Tokens: *${mem.tokens}* (${mem.gratis} gratis)\n` +
+        `💰 Saldo cargado: *$${mem.saldo.toLocaleString('es-CO')}*\n` +
+        `💵 Pagaste: *$${mem.precio.toLocaleString('es-CO')}*\n` +
+        `🎁 Ahorraste: *$${(mem.saldo - mem.precio).toLocaleString('es-CO')}*\n` +
+        `🔑 ID: *${ventaClienteData.id}*\n\n` +
+        `Para obtener tu código QR ingresa aquí:\n` +
+        `👉 https://santiescupine-byte.github.io/panzer-vip/activar.html?tipo=${ventaClienteData.membresia.toLowerCase()}\n\n` +
+        `Presenta tu QR en cualquier sede para canjear tus tokens.\n\n` +
+        `¡Gracias por preferirnos! 🙌`
+    );
+
+    window.open(`https://wa.me/${tel}?text=${mensaje}`, '_blank');
+}
+
+// =============================================================
+// UTILIDADES
+// =============================================================
+function showAlert(el, msg, type) {
+    el.textContent = msg;
+    el.className = 'alert show ' + type;
+    setTimeout(() => el.classList.remove('show'), 3500);
+}
+</script>
+
 </body>
 </html>
