@@ -1337,18 +1337,17 @@ function enviarWhatsApp() {
     const carnetLink = 'https://santiescupine-byte.github.io/panzer-vip/carnet.html?' + carnetParams.toString();
 
     const mensaje = encodeURIComponent(
-        '🚗 *PANZER CARWASH - Membresía VIP*\n\n' +
+        '🚗 *PANZER CARWASH*\n' +
+        '━━━━━━━━━━━━━━━\n' +
         '¡Hola ' + ventaClienteData.nombre + '! 👋\n\n' +
-        'Tu membresía *' + memType + '* ha sido activada:\n\n' +
-        '🪙 Tokens: *' + mem.tokens + '* (' + mem.gratis + ' gratis)\n' +
-        '💰 Saldo cargado: *$' + mem.saldo.toLocaleString('es-CO') + '*\n' +
-        '💵 Pagaste: *$' + mem.precio.toLocaleString('es-CO') + '*\n' +
-        '🎁 Ahorraste: *$' + (mem.saldo - mem.precio).toLocaleString('es-CO') + '*\n' +
-        '🔑 ID: *' + ventaClienteData.id + '*\n\n' +
-        '📲 *Descarga tu carnet VIP con código QR aquí:*\n' +
-        '👉 ' + carnetLink + '\n\n' +
-        'Presenta tu QR en cualquier sede para canjear tus tokens.\n\n' +
-        '¡Gracias por preferirnos! 🙌'
+        'Tu membresía *' + memType + '* está activa ✅\n\n' +
+        '🪙 *' + mem.tokens + ' Tokens* (' + mem.gratis + ' gratis)\n' +
+        '💰 Saldo: *$' + mem.saldo.toLocaleString('es-CO') + '*\n' +
+        '🎁 Ahorro: *$' + (mem.saldo - mem.precio).toLocaleString('es-CO') + '*\n\n' +
+        '📲 Descarga tu carnet con QR:\n' +
+        carnetLink + '\n\n' +
+        '━━━━━━━━━━━━━━━\n' +
+        'Presenta tu QR en cualquier sede 🙌'
     );
 
     window.open('https://wa.me/' + tel + '?text=' + mensaje, '_blank');
