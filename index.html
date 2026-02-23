@@ -1092,23 +1092,25 @@ function startScanner() {
     document.getElementById('client-panel').style.display = 'none';
     document.getElementById('descuento-result').style.display = 'none';
 
-    if (qrScanner) { qrScanner.clear(); }
+    if (qrScanner) { try { qrScanner.stop(); } catch(e) {} }
 
-    qrScanner = new Html5QrcodeScanner("qr-reader", {
-        fps: 10,
-        qrbox: { width: 250, height: 250 },
-        aspectRatio: 1,
-        showTorchButtonIfSupported: true,
-        showZoomSliderIfSupported: true
-    }, false);
-
-    qrScanner.render(onScanSuccess, onScanError);
+    qrScanner = new Html5Qrcode("qr-reader");
+    qrScanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1 },
+        onScanSuccess,
+        onScanError
+    ).catch(err => {
+        console.error("Error cámara:", err);
+        document.getElementById('qr-reader').innerHTML = '<p style="text-align:center;color:#ef4444;padding:20px;">No se pudo acceder a la cámara. Verifica los permisos.</p>';
+    });
 }
 
 function stopScanner() {
     if (qrScanner) {
-        try { qrScanner.clear(); } catch(e) {}
+        try { qrScanner.stop(); } catch(e) {}
         qrScanner = null;
+        document.getElementById('qr-reader').innerHTML = '';
     }
 }
 
@@ -1361,23 +1363,25 @@ function startScannerRecarga() {
     document.getElementById('recarga-result').style.display = 'none';
     document.getElementById('recarga-scan-section').style.display = 'block';
 
-    if (qrScannerRecarga) { try { qrScannerRecarga.clear(); } catch(e) {} }
+    if (qrScannerRecarga) { try { qrScannerRecarga.stop(); } catch(e) {} }
 
-    qrScannerRecarga = new Html5QrcodeScanner("qr-reader-recarga", {
-        fps: 10,
-        qrbox: { width: 250, height: 250 },
-        aspectRatio: 1,
-        showTorchButtonIfSupported: true,
-        showZoomSliderIfSupported: true
-    }, false);
-
-    qrScannerRecarga.render(onRecargaScanSuccess, function() {});
+    qrScannerRecarga = new Html5Qrcode("qr-reader-recarga");
+    qrScannerRecarga.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1 },
+        onRecargaScanSuccess,
+        function() {}
+    ).catch(err => {
+        console.error("Error cámara:", err);
+        document.getElementById('qr-reader-recarga').innerHTML = '<p style="text-align:center;color:#ef4444;padding:20px;">No se pudo acceder a la cámara. Verifica los permisos.</p>';
+    });
 }
 
 function stopScannerRecarga() {
     if (qrScannerRecarga) {
-        try { qrScannerRecarga.clear(); } catch(e) {}
+        try { qrScannerRecarga.stop(); } catch(e) {}
         qrScannerRecarga = null;
+        document.getElementById('qr-reader-recarga').innerHTML = '';
     }
 }
 
