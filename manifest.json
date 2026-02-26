@@ -2,7 +2,7 @@
   "name": "Panzer Carwash - App Empleados",
   "short_name": "Panzer VIP",
   "description": "App de empleados para gestionar membresías VIP de Panzer Carwash",
-  "start_url": "/panzer-vip/",
+  "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0a0e1a",
