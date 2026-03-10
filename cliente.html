@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Panzer VIP - Mi Membresía</title>
+    <meta name="theme-color" content="#0a0e1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Panzer VIP">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2236;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-gold: #f59e0b;
+            --accent-silver: #94a3b8;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: rgba(59, 130, 246, 0.15);
+            --glow-blue: rgba(59, 130, 246, 0.12);
+            --glow-cyan: rgba(6, 182, 212, 0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { height: 100%; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100%;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background:
+                radial-gradient(ellipse at 20% 20%, var(--glow-blue) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, var(--glow-cyan) 0%, transparent 50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 16px;
+            min-height: 100vh;
+            padding-bottom: 100px;
+        }
+
+        /* ===== SCREENS ===== */
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ===== LOGIN ===== */
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px 24px;
+            text-align: center;
+            margin-top: 48px;
+        }
+        .login-logo {
+            width: 88px; height: 88px;
+            border-radius: 22px;
+            overflow: hidden;
+            margin: 0 auto 20px;
+            border: 2px solid var(--border);
+            box-shadow: 0 0 32px var(--glow-blue);
+        }
+        .login-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .login-title { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+        .login-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.5; }
+
+        .form-group { margin-bottom: 14px; text-align: left; }
+        .form-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 14px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Space Mono', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 3px;
+            outline: none;
+            transition: border-color 0.2s;
+            text-transform: uppercase;
+        }
+        .form-input:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+        }
+        .form-input::placeholder {
+            color: var(--text-muted);
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            color: white;
+        }
+        .btn-primary:hover { box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3); }
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .alert {
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 14px;
+            display: none;
+            text-align: center;
+        }
+        .alert.show { display: block; }
+        .alert.error { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: var(--accent-red); }
+        .alert.success { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); color: var(--accent-green); }
+
+        .login-help {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+        .login-help a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        /* ===== APP HEADER ===== */
+        .app-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0 10px;
+            margin-bottom: 6px;
+        }
+        .app-header-logo {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        .app-header-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .app-header-text { flex: 1; min-width: 0; }
+        .app-header-text h2 {
+            font-size: 15px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .app-header-text p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .logout-btn {
+            padding: 6px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .logout-btn:hover { border-color: var(--accent-red); color: var(--accent-red); }
+
+        /* ===== TAB CONTENT ===== */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.25s ease; }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            z-index: 100;
+            display: none;
+            background: rgba(10, 14, 26, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            padding: 8px 0 max(10px, env(safe-area-inset-bottom));
+        }
+        .bottom-nav.visible { display: flex; }
+        .nav-items { display: flex; width: 100%; }
+        .nav-tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 6px 0;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+        .nav-tab-dot {
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            opacity: 0;
+            transition: opacity 0.2s;
+            margin-bottom: 1px;
+        }
+        .nav-tab.active .nav-tab-dot { opacity: 1; }
+        .nav-tab-icon { font-size: 22px; transition: transform 0.2s; }
+        .nav-tab.active .nav-tab-icon { transform: scale(1.1); }
+        .nav-tab-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.3px;
+        }
+        .nav-tab.active .nav-tab-label { color: var(--accent-cyan); }
+
+        /* ===== CARNET TAB ===== */
+        .mini-carnet {
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+            margin-bottom: 16px;
+        }
+        .mini-carnet-header {
+            padding: 20px 20px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .mini-carnet-header.standard { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .mini-carnet-header.silver   { background: linear-gradient(135deg, #64748b, #475569); }
+        .mini-carnet-header.gold     { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .mini-carnet-logo {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.8);
+            background: white;
+            flex-shrink: 0;
+        }
+        .mini-carnet-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .mini-carnet-header-text { flex: 1; }
+        .mini-carnet-header-text h3 {
+            color: white;
+            font-size: 16px;
+            font-weight: 800;
+        }
+        .mini-carnet-header-text p {
+            color: rgba(255,255,255,0.75);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        .mem-badge-carnet {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .mem-badge-carnet.standard { background: rgba(255,255,255,0.2); color: white; }
+        .mem-badge-carnet.silver   { background: rgba(255,255,255,0.2); color: white; }
+        .mem-badge-carnet.gold     { background: rgba(255,255,255,0.2); color: white; }
+
+        .mini-carnet-body {
+            background: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .mini-carnet-qr {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 8px;
+            flex-shrink: 0;
+        }
+        .mini-carnet-qr canvas,
+        .mini-carnet-qr img { border-radius: 4px; }
+        .mini-carnet-info { flex: 1; min-width: 0; }
+        .mini-carnet-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .mini-carnet-id {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+        .mini-carnet-tokens {
+            background: #f0fdf4;
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+        .mini-carnet-tokens-num {
+            font-size: 22px;
+            font-weight: 800;
+            color: #15803d;
+            line-height: 1;
+        }
+        .mini-carnet-tokens-label { font-size: 10px; color: #16a34a; margin-top: 2px; }
+
+        .mini-carnet-footer {
+            background: white;
+            padding: 10px 20px 14px;
+            text-align: center;
+            border-top: 1px solid #f1f5f9;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .carnet-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .carnet-action-btn {
+            flex: 1;
+            padding: 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-primary);
+        }
+        .carnet-action-btn:hover { border-color: var(--accent-cyan); transform: translateY(-1px); }
+        .carnet-action-btn:active { transform: scale(0.97); }
+        .carnet-action-icon { font-size: 20px; margin-bottom: 4px; }
+        .carnet-action-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+
+        .carnet-tip {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ===== MI CUENTA TAB ===== */
+        .balance-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 24px 20px;
+            margin-bottom: 14px;
+        }
+        .balance-top {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .balance-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .balance-tokens {
+            font-family: 'Space Mono', monospace;
+            font-size: 56px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .balance-unit { font-size: 14px; color: var(--text-muted); }
+        .balance-divider { height: 1px; background: var(--border); margin: 16px 0; }
+        .balance-meta {
+            display: flex;
+            gap: 0;
+        }
+        .balance-meta-item {
+            flex: 1;
+            text-align: center;
+        }
+        .balance-meta-item:not(:last-child) { border-right: 1px solid var(--border); }
+        .balance-meta-val {
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .balance-meta-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .tx-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+        .tx-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px 14px;
+        }
+        .tx-icon {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .tx-icon.canje    { background: rgba(6,182,212,0.1); }
+        .tx-icon.recarga  { background: rgba(16,185,129,0.1); }
+        .tx-icon.venta    { background: rgba(139,92,246,0.1); }
+        .tx-icon.cupon    { background: rgba(245,158,11,0.1); }
+        .tx-icon.default  { background: rgba(100,116,139,0.1); }
+        .tx-body { flex: 1; min-width: 0; }
+        .tx-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tx-date  { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+        .tx-amount {
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .tx-amount.pos { color: var(--accent-green); }
+        .tx-amount.neg { color: var(--accent-red); }
+
+        .loading-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 28px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .spinner {
+            width: 18px; height: 18px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .empty-state {
+            text-align: center;
+            padding: 32px 20px;
+        }
+        .empty-state-icon { font-size: 40px; margin-bottom: 12px; }
+        .empty-state-text { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+
+        /* ===== CUPONES TAB ===== */
+        .cupones-intro {
+            text-align: center;
+            padding: 12px 0 16px;
+        }
+        .cupones-intro h3 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+        .cupones-intro p  { font-size: 12px; color: var(--text-muted); }
+
+        .cupon-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+        .cupon-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+        .cupon-card.available:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.3); border-color: rgba(245,158,11,0.3); }
+        .cupon-card.redeemed { opacity: 0.55; cursor: default; }
+        .cupon-card::after {
+            content: '';
+            position: absolute;
+            right: -24px; top: -24px;
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            opacity: 0.05;
+        }
+
+        .cupon-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 12px;
+        }
+        .cupon-emoji {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            background: rgba(245,158,11,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            flex-shrink: 0;
+        }
+        .cupon-info { flex: 1; min-width: 0; }
+        .cupon-title { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+        .cupon-desc  { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+        .cupon-status-pill {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+        .cupon-status-pill.available { background: rgba(16,185,129,0.12); color: var(--accent-green); border: 1px solid rgba(16,185,129,0.2); }
+        .cupon-status-pill.redeemed  { background: rgba(100,116,139,0.12); color: var(--text-muted); border: 1px solid rgba(100,116,139,0.2); }
+
+        .cupon-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+        .cupon-mem-tag { font-size: 11px; color: var(--text-muted); }
+        .cupon-cta      { font-size: 11px; font-weight: 600; color: var(--accent-cyan); }
+        .cupon-redeemed-note { font-size: 11px; color: var(--text-muted); }
+
+        /* ===== MODAL QR CUPÓN ===== */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            align-items: flex-end;
+            justify-content: center;
+            padding: 16px;
+        }
+        .modal-backdrop.open {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px 24px 20px 20px;
+            padding: 28px 24px 32px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            position: relative;
+            animation: slideUp 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+        }
+        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .modal-close {
+            position: absolute;
+            top: 16px; right: 16px;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            font-family: sans-serif;
+            transition: all 0.2s;
+        }
+        .modal-close:hover { color: var(--text-primary); border-color: var(--accent-cyan); }
+
+        /* Modal state: disponible */
+        #modal-state-available { }
+        .modal-cupon-icon  { font-size: 44px; margin-bottom: 10px; }
+        .modal-cupon-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+        .modal-cupon-desc  { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.5; }
+
+        .modal-qr-box {
+            background: white;
+            border-radius: 20px;
+            padding: 18px;
+            display: inline-block;
+            margin-bottom: 18px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+        #modal-qr-container canvas,
+        #modal-qr-container img { border-radius: 6px; }
+
+        .modal-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .modal-hint strong { color: var(--accent-cyan); }
+
+        /* Modal state: ya canjeado */
+        #modal-state-redeemed { display: none; }
+        .modal-lock-icon {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            background: rgba(100,116,139,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 28px;
+        }
+        .modal-lock-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+        .modal-lock-sub   { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
+
+        /* Generic card */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ==================== LOGIN ==================== -->
+    <div class="screen active" id="screen-login">
+        <div class="login-card">
+            <div class="login-logo">
+                <img src="https://santiescupine-byte.github.io/panzer-vip/Panzer%20Logo%20FINAL.png" alt="Panzer Carwash">
+            </div>
+            <div class="login-title">Panzer Carwash</div>
+            <div class="login-sub">Ingresa con el código de tu membresía VIP</div>
+            <div class="form-group">
+                <label class="form-label">Tu código VIP</label>
+                <input
+                    type="text"
+                    class="form-input"
+                    id="login-codigo"
+                    placeholder="VIP-00000"
+                    maxlength="10"
+                    autocomplete="off"
+                    autocorrect="off"
+                    spellcheck="false"
+                >
+            </div>
+            <div id="login-error" class="alert error"></div>
+            <button class="btn btn-primary" id="btn-login" onclick="loginCliente()">Ingresar</button>
+            <p class="login-help">
+                ¿No tienes tu código?<br>
+                <a href="https://wa.me/57" target="_blank">Contáctanos por WhatsApp</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- ==================== APP PRINCIPAL ==================== -->
+    <div class="screen" id="screen-app">
+
+        <!-- Header -->
+        <div class="app-header">
+            <div class="app-header-logo">
+                <img src="https://santiescupine-byte.github.io/panzer-vip/Panzer%20Logo%20FINAL.png" alt="Panzer">
+            </div>
+            <div class="app-header-text">
+                <h2>Hola, <span id="header-nombre">—</span> 👋</h2>
+                <p id="header-mem-sub">Membresía VIP</p>
+            </div>
+            <button class="logout-btn" onclick="logout()">Salir</button>
+        </div>
+
+        <!-- TAB: MI CARNET -->
+        <div class="tab-content active" id="tab-carnet">
+            <!-- Tarjeta de membresía -->
+            <div class="mini-carnet" id="mini-carnet">
+                <div class="mini-carnet-header" id="carnet-header-bg">
+                    <div class="mini-carnet-logo">
+                        <img src="https://santiescupine-byte.github.io/panzer-vip/Panzer%20Logo%20FINAL.png" alt="Panzer">
+                    </div>
+                    <div class="mini-carnet-header-text">
+                        <h3>PANZER CARWASH</h3>
+                        <p>Membresía VIP</p>
+                    </div>
+                    <div class="mem-badge-carnet" id="carnet-badge">—</div>
+                </div>
+                <div class="mini-carnet-body">
+                    <div class="mini-carnet-qr" id="carnet-qr-box">
+                        <!-- QR here -->
+                    </div>
+                    <div class="mini-carnet-info">
+                        <div class="mini-carnet-name" id="carnet-nombre">—</div>
+                        <div class="mini-carnet-id" id="carnet-id">—</div>
+                        <div class="mini-carnet-tokens">
+                            <div class="mini-carnet-tokens-num" id="carnet-tokens">—</div>
+                            <div class="mini-carnet-tokens-label">tokens disponibles</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mini-carnet-footer">
+                    Presenta tu QR en cualquier sede 🚗
+                </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="carnet-actions">
+                <div class="carnet-action-btn" onclick="verCarnetCompleto()">
+                    <div class="carnet-action-icon">📥</div>
+                    <div class="carnet-action-label">Descargar carnet</div>
+                </div>
+                <div class="carnet-action-btn" onclick="compartirCarnet()">
+                    <div class="carnet-action-icon">📤</div>
+                    <div class="carnet-action-label">Compartir</div>
+                </div>
+            </div>
+
+            <div class="carnet-tip">
+                Muestra el código QR al empleado de Panzer Carwash para canjear tus tokens. Si tienes el carnet guardado también funciona. 🙌
+            </div>
+        </div>
+
+        <!-- TAB: MI CUENTA -->
+        <div class="tab-content" id="tab-cuenta">
+            <!-- Balance card -->
+            <div class="balance-card">
+                <div class="balance-top">
+                    <div class="balance-label">Saldo disponible</div>
+                    <div class="balance-tokens" id="cuenta-tokens">—</div>
+                    <div class="balance-unit">tokens</div>
+                </div>
+                <div class="balance-divider"></div>
+                <div class="balance-meta">
+                    <div class="balance-meta-item">
+                        <div class="balance-meta-val" id="cuenta-mem">—</div>
+                        <div class="balance-meta-label">Membresía</div>
+                    </div>
+                    <div class="balance-meta-item">
+                        <div class="balance-meta-val" id="cuenta-codigo">—</div>
+                        <div class="balance-meta-label">Código</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historial -->
+            <div class="section-title">Historial de movimientos</div>
+            <div id="tx-loading" class="loading-box">
+                <div class="spinner"></div>
+                <span>Cargando...</span>
+            </div>
+            <div class="tx-list" id="tx-list" style="display:none;"></div>
+            <div id="tx-empty" class="empty-state" style="display:none;">
+                <div class="empty-state-icon">📋</div>
+                <div class="empty-state-text">No hay movimientos registrados aún</div>
+            </div>
+        </div>
+
+        <!-- TAB: CUPONES -->
+        <div class="tab-content" id="tab-cupones">
+            <div class="cupones-intro">
+                <h3>🎁 Mis Cupones</h3>
+                <p>Beneficios exclusivos para tu membresía</p>
+            </div>
+            <div id="cupones-loading" class="loading-box">
+                <div class="spinner"></div>
+                <span>Cargando cupones...</span>
+            </div>
+            <div class="cupon-grid" id="cupon-grid" style="display:none;"></div>
+            <div id="cupones-empty" class="empty-state" style="display:none;">
+                <div class="empty-state-icon">🎟️</div>
+                <div class="empty-state-text">No hay cupones disponibles por ahora.<br>¡Pronto habrá novedades!</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ==================== BOTTOM NAV ==================== -->
+<div class="bottom-nav" id="bottom-nav">
+    <div class="nav-items">
+        <button class="nav-tab active" id="nav-carnet" onclick="switchTab('carnet')">
+            <div class="nav-tab-dot"></div>
+            <div class="nav-tab-icon">🎫</div>
+            <div class="nav-tab-label">Mi Carnet</div>
+        </button>
+        <button class="nav-tab" id="nav-cuenta" onclick="switchTab('cuenta')">
+            <div class="nav-tab-dot"></div>
+            <div class="nav-tab-icon">💰</div>
+            <div class="nav-tab-label">Mi Cuenta</div>
+        </button>
+        <button class="nav-tab" id="nav-cupones" onclick="switchTab('cupones')">
+            <div class="nav-tab-dot"></div>
+            <div class="nav-tab-icon">🎁</div>
+            <div class="nav-tab-label">Cupones</div>
+        </button>
+    </div>
+</div>
+
+<!-- ==================== MODAL QR CUPÓN ==================== -->
+<div class="modal-backdrop" id="modal-cupon" onclick="cerrarModalSiOverlay(event)">
+    <div class="modal-card">
+        <button class="modal-close" onclick="cerrarModal()">✕</button>
+
+        <!-- Disponible -->
+        <div id="modal-state-available">
+            <div class="modal-cupon-icon" id="modal-icon">🎁</div>
+            <div class="modal-cupon-title" id="modal-titulo">—</div>
+            <div class="modal-cupon-desc" id="modal-desc">—</div>
+            <div class="modal-qr-box">
+                <div id="modal-qr-container"></div>
+            </div>
+            <div class="modal-hint">
+                Muestra este QR al <strong>empleado de Panzer Carwash</strong><br>
+                para reclamar tu beneficio 🙌
+            </div>
+        </div>
+
+        <!-- Ya canjeado -->
+        <div id="modal-state-redeemed" style="display:none;">
+            <div class="modal-lock-icon">🔒</div>
+            <div class="modal-lock-title">Ya fue canjeado</div>
+            <div class="modal-lock-sub" id="modal-lock-fecha">Este beneficio ya fue reclamado.</div>
+            <button class="btn btn-outline" onclick="cerrarModal()" style="margin-top:4px;">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURACIÓN
+// ============================================================
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyoTaC9iB1fm4s3hM4QQ9-1Zbo5cCzJQIn68YlczTTAXrYHBJK1rQsZmiIMo4CL9-S8Bg/exec';
+const PRECIO_TOKEN = 6000;
+
+// ============================================================
+// ESTADO
+// ============================================================
+let clienteActual = null;
+let cuponesData   = [];
+let currentTab    = 'carnet';
+let historialCargado  = false;
+let cuponesCargados   = false;
+
+// ============================================================
+// API
+// ============================================================
+async function callAPI(params) {
+    const query = new URLSearchParams(params).toString();
+    const url = APPS_SCRIPT_URL + '?' + query;
+    try {
+        const res = await fetch(url);
+        return await res.json();
+    } catch (e) {
+        return { ok: false, error: 'Error de conexión' };
+    }
+}
+
+// ============================================================
+// LOGIN
+// ============================================================
+async function loginCliente() {
+    const codigo = document.getElementById('login-codigo').value.trim().toUpperCase();
+    const errorEl = document.getElementById('login-error');
+    const btn = document.getElementById('btn-login');
+
+    if (!codigo) {
+        showAlert(errorEl, 'Ingresa tu código VIP', 'error');
+        return;
+    }
+    if (!codigo.startsWith('VIP-') || codigo.length < 8) {
+        showAlert(errorEl, 'Código inválido. Ejemplo: VIP-00164', 'error');
+        return;
+    }
+
+    btn.textContent = 'Ingresando...';
+    btn.disabled = true;
+
+    // Reutilizamos la acción existente consultar_cliente
+    const result = await callAPI({ accion: 'consultar_cliente', id_vip: codigo });
+
+    btn.textContent = 'Ingresar';
+    btn.disabled = false;
+
+    if (result.ok && result.cliente) {
+        clienteActual = result.cliente;
+        sessionStorage.setItem('panzer_cliente', JSON.stringify(clienteActual));
+        iniciarApp();
+    } else {
+        showAlert(errorEl, result.error || 'Código no encontrado. Verifica tu membresía.', 'error');
+    }
+}
+
+function logout() {
+    clienteActual = null;
+    historialCargado = false;
+    cuponesCargados  = false;
+    sessionStorage.removeItem('panzer_cliente');
+    document.getElementById('screen-app').classList.remove('active');
+    document.getElementById('bottom-nav').classList.remove('visible');
+    document.getElementById('screen-login').classList.add('active');
+    document.getElementById('login-codigo').value = '';
+}
+
+// ============================================================
+// INICIAR APP
+// ============================================================
+function iniciarApp() {
+    document.getElementById('screen-login').classList.remove('active');
+    document.getElementById('screen-app').classList.add('active');
+    document.getElementById('bottom-nav').classList.add('visible');
+    switchTab('carnet');
+
+    const nombre  = clienteActual.nombre.split(' ')[0];
+    const memType = clienteActual.membresia.toLowerCase();
+    const tokens  = Math.floor((clienteActual.saldo || 0) / PRECIO_TOKEN);
+
+    // Header
+    document.getElementById('header-nombre').textContent   = nombre;
+    document.getElementById('header-mem-sub').textContent  = 'Membresía ' + clienteActual.membresia;
+
+    // Carnet
+    renderCarnet(tokens, memType);
+
+    // Cuenta
+    document.getElementById('cuenta-tokens').textContent = tokens;
+    document.getElementById('cuenta-mem').textContent    = clienteActual.membresia;
+    document.getElementById('cuenta-codigo').textContent  = clienteActual.id;
+}
+
+// ============================================================
+// CARNET
+// ============================================================
+function renderCarnet(tokens, memType) {
+    const cls = memType; // 'standard', 'silver', 'gold'
+
+    document.getElementById('carnet-header-bg').className = 'mini-carnet-header ' + cls;
+
+    const badge = document.getElementById('carnet-badge');
+    badge.className = 'mem-badge-carnet ' + cls;
+    const emojis = { standard: '⭐', silver: '🥈', gold: '🥇' };
+    badge.textContent = (emojis[cls] || '⭐') + ' ' + clienteActual.membresia;
+
+    document.getElementById('carnet-nombre').textContent = clienteActual.nombre;
+    document.getElementById('carnet-id').textContent     = clienteActual.id;
+    document.getElementById('carnet-tokens').textContent = tokens;
+
+    // QR
+    const qrBox = document.getElementById('carnet-qr-box');
+    qrBox.innerHTML = '';
+    new QRCode(qrBox, {
+        text: JSON.stringify({
+            id: clienteActual.id,
+            nombre: clienteActual.nombre,
+            membresia: clienteActual.membresia,
+            saldo: clienteActual.saldo
+        }),
+        width: 90,
+        height: 90,
+        colorDark: '#0f172a',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+    });
+}
+
+function verCarnetCompleto() {
+    const params = new URLSearchParams({
+        id:     clienteActual.id,
+        nombre: clienteActual.nombre,
+        mem:    clienteActual.membresia,
+        saldo:  clienteActual.saldo
+    });
+    window.open('carnet.html?' + params.toString(), '_blank');
+}
+
+function compartirCarnet() {
+    const params = new URLSearchParams({
+        id:     clienteActual.id,
+        nombre: clienteActual.nombre,
+        mem:    clienteActual.membresia,
+        saldo:  clienteActual.saldo
+    });
+    const url = 'https://vip.panzercarwash.com/carnet.html?' + params.toString();
+    if (navigator.share) {
+        navigator.share({ title: 'Mi Carnet Panzer VIP', url }).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(url).then(() => {
+            alert('¡Link copiado al portapapeles!');
+        }).catch(() => {
+            prompt('Copia este link:', url);
+        });
+    }
+}
+
+// ============================================================
+// HISTORIAL
+// ============================================================
+async function cargarHistorial() {
+    if (historialCargado) return;
+
+    document.getElementById('tx-loading').style.display = 'flex';
+    document.getElementById('tx-list').style.display    = 'none';
+    document.getElementById('tx-empty').style.display   = 'none';
+
+    const result = await callAPI({ accion: 'historial_cliente', id_vip: clienteActual.id });
+
+    document.getElementById('tx-loading').style.display = 'none';
+
+    if (result.ok && result.transacciones && result.transacciones.length > 0) {
+        document.getElementById('tx-list').style.display = 'flex';
+        renderHistorial(result.transacciones);
+        historialCargado = true;
+    } else {
+        document.getElementById('tx-empty').style.display = 'block';
+        historialCargado = true;
+    }
+}
+
+function renderHistorial(txs) {
+    const list = document.getElementById('tx-list');
+    list.innerHTML = '';
+
+    txs.forEach(tx => {
+        const tipo = (tx.tipo || '').toLowerCase();
+        const isPositive = tipo === 'recarga' || tipo === 'venta';
+
+        const iconMap = {
+            'canje':   { icon: '🚗', cls: 'canje' },
+            'recarga': { icon: '🔋', cls: 'recarga' },
+            'venta':   { icon: '🎉', cls: 'venta' },
+            'cupon':   { icon: '🎁', cls: 'cupon' }
+        };
+        const info   = iconMap[tipo] || { icon: '📋', cls: 'default' };
+        const tokens = Math.abs(Math.round((tx.monto || 0) / PRECIO_TOKEN));
+        const sign   = isPositive ? '+' : '-';
+        const amtStr = sign + tokens + ' token' + (tokens !== 1 ? 's' : '');
+
+        const item = document.createElement('div');
+        item.className = 'tx-item';
+        item.innerHTML = `
+            <div class="tx-icon ${info.cls}">${info.icon}</div>
+            <div class="tx-body">
+                <div class="tx-title">${tx.descripcion || tx.tipo || 'Movimiento'}</div>
+                <div class="tx-date">${formatDate(tx.fecha)}${tx.sede ? ' · ' + tx.sede : ''}</div>
+            </div>
+            <div class="tx-amount ${isPositive ? 'pos' : 'neg'}">${amtStr}</div>
+        `;
+        list.appendChild(item);
+    });
+}
+
+function formatDate(str) {
+    if (!str) return '—';
+    try {
+        const d = new Date(str);
+        return d.toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' });
+    } catch (e) { return str; }
+}
+
+// ============================================================
+// CUPONES
+// ============================================================
+async function cargarCupones() {
+    if (cuponesCargados) return;
+
+    document.getElementById('cupones-loading').style.display = 'flex';
+    document.getElementById('cupon-grid').style.display     = 'none';
+    document.getElementById('cupones-empty').style.display  = 'none';
+
+    const result = await callAPI({
+        accion:    'obtener_cupones',
+        membresia: clienteActual.membresia,
+        id_vip:    clienteActual.id
+    });
+
+    document.getElementById('cupones-loading').style.display = 'none';
+
+    if (result.ok && result.cupones && result.cupones.length > 0) {
+        cuponesData = result.cupones;
+        document.getElementById('cupon-grid').style.display = 'flex';
+        renderCupones(result.cupones);
+        cuponesCargados = true;
+    } else {
+        document.getElementById('cupones-empty').style.display = 'block';
+        cuponesCargados = true;
+        cuponesData = [];
+    }
+}
+
+function renderCupones(cupones) {
+    const grid = document.getElementById('cupon-grid');
+    grid.innerHTML = '';
+
+    cupones.forEach((cupon, idx) => {
+        const redeemed = cupon.canjeado === true || cupon.canjeado === 'true' || cupon.canjeado === 'SI';
+
+        const memLabel = !cupon.membresia || cupon.membresia === 'Todos'
+            ? 'Para todos los miembros'
+            : 'Solo membresía ' + cupon.membresia;
+        const memIcon = { Gold: '🥇', Silver: '🥈', Standard: '⭐' }[cupon.membresia] || '⭐';
+
+        const card = document.createElement('div');
+        card.className = 'cupon-card ' + (redeemed ? 'redeemed' : 'available');
+        card.onclick = () => redeemed ? abrirCanjeado(cupon) : abrirCupon(idx);
+
+        card.innerHTML = `
+            <div class="cupon-row">
+                <div class="cupon-emoji">${cupon.emoji || '🎁'}</div>
+                <div class="cupon-info">
+                    <div class="cupon-title">${cupon.nombre}</div>
+                    <div class="cupon-desc">${cupon.descripcion}</div>
+                </div>
+                <div class="cupon-status-pill ${redeemed ? 'redeemed' : 'available'}">
+                    ${redeemed ? 'Usado' : 'Disponible'}
+                </div>
+            </div>
+            <div class="cupon-footer">
+                <div class="cupon-mem-tag">${memIcon} ${memLabel}</div>
+                ${redeemed
+                    ? `<div class="cupon-redeemed-note">Canjeado ${cupon.fecha_canje ? formatDate(cupon.fecha_canje) : ''}</div>`
+                    : `<div class="cupon-cta">Toca para usar →</div>`
+                }
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+// ============================================================
+// MODAL QR CUPÓN
+// ============================================================
+function abrirCupon(idx) {
+    const cupon = cuponesData[idx];
+    if (!cupon) return;
+
+    document.getElementById('modal-state-available').style.display = 'block';
+    document.getElementById('modal-state-redeemed').style.display  = 'none';
+
+    document.getElementById('modal-icon').textContent  = cupon.emoji || '🎁';
+    document.getElementById('modal-titulo').textContent = cupon.nombre;
+    document.getElementById('modal-desc').textContent   = cupon.descripcion;
+
+    // Generar QR
+    const container = document.getElementById('modal-qr-container');
+    container.innerHTML = '';
+    new QRCode(container, {
+        text: JSON.stringify({
+            tipo:          'cupon',
+            id_cupon:      cupon.id,
+            id_cliente:    clienteActual.id,
+            nombre_cliente: clienteActual.nombre,
+            nombre_cupon:  cupon.nombre
+        }),
+        width: 200,
+        height: 200,
+        colorDark: '#0f172a',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+    });
+
+    document.getElementById('modal-cupon').classList.add('open');
+}
+
+function abrirCanjeado(cupon) {
+    document.getElementById('modal-state-available').style.display = 'none';
+    document.getElementById('modal-state-redeemed').style.display  = 'block';
+
+    const fecha = cupon.fecha_canje ? 'Canjeado el ' + formatDate(cupon.fecha_canje) : 'Este beneficio ya fue reclamado.';
+    document.getElementById('modal-lock-fecha').textContent = fecha;
+
+    document.getElementById('modal-cupon').classList.add('open');
+}
+
+function cerrarModal() {
+    document.getElementById('modal-cupon').classList.remove('open');
+}
+
+function cerrarModalSiOverlay(e) {
+    if (e.target === document.getElementById('modal-cupon')) cerrarModal();
+}
+
+// ============================================================
+// NAVEGACIÓN TABS
+// ============================================================
+function switchTab(tab) {
+    currentTab = tab;
+
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('nav-' + tab).classList.add('active');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Lazy-load data
+    if (tab === 'cuenta')   cargarHistorial();
+    if (tab === 'cupones')  cargarCupones();
+}
+
+// ============================================================
+// AUTO-FORMAT CÓDIGO VIP
+// ============================================================
+document.getElementById('login-codigo').addEventListener('input', function (e) {
+    let val = e.target.value.toUpperCase().replace(/[^A-Z0-9\-]/g, '');
+    // Auto-prefix VIP-
+    if (val.length >= 3 && !val.startsWith('VIP')) {
+        val = 'VIP-' + val.replace(/[^0-9]/g, '');
+    } else if (val.startsWith('VIP') && val.length > 3 && val[3] !== '-') {
+        val = 'VIP-' + val.slice(3).replace(/[^0-9]/g, '');
+    }
+    e.target.value = val;
+});
+
+document.getElementById('login-codigo').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') loginCliente();
+});
+
+// ============================================================
+// PERSISTENCIA DE SESIÓN
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+    const saved = sessionStorage.getItem('panzer_cliente');
+    if (saved) {
+        try {
+            clienteActual = JSON.parse(saved);
+            iniciarApp();
+        } catch (e) {
+            sessionStorage.removeItem('panzer_cliente');
+        }
+    }
+});
+
+// ============================================================
+// UTILIDADES
+// ============================================================
+function showAlert(el, msg, type) {
+    el.textContent = msg;
+    el.className = 'alert show ' + type;
+    setTimeout(() => el.classList.remove('show'), 4500);
+}
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+}
+</script>
+</body>
+</html>
