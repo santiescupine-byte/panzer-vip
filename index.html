@@ -33,9 +33,7 @@
             --glow-blue: rgba(59, 130, 246, 0.15);
             --glow-cyan: rgba(6, 182, 212, 0.1);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Outfit', sans-serif;
             background: var(--bg-primary);
@@ -43,7 +41,6 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
-
         body::before {
             content: '';
             position: fixed;
@@ -54,7 +51,6 @@
                 radial-gradient(ellipse at 80% 80%, var(--glow-cyan) 0%, transparent 50%);
             z-index: 0;
         }
-
         .container {
             position: relative;
             z-index: 1;
@@ -63,7 +59,6 @@
             padding: 16px;
             min-height: 100vh;
         }
-
         /* Header */
         .header {
             display: flex;
@@ -72,7 +67,6 @@
             padding: 16px 0;
             margin-bottom: 8px;
         }
-
         .header-logo {
             width: 48px; height: 48px;
             border-radius: 14px;
@@ -80,9 +74,7 @@
             border: 1px solid var(--border);
             flex-shrink: 0;
         }
-
         .header-logo img { width: 100%; height: 100%; object-fit: cover; }
-
         .header-text h1 {
             font-size: 18px;
             font-weight: 800;
@@ -91,12 +83,10 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         .header-text p {
             font-size: 12px;
             color: var(--text-muted);
         }
-
         .header-sede {
             margin-left: auto;
             padding: 5px 10px;
@@ -107,12 +97,10 @@
             font-weight: 600;
             color: var(--accent-blue);
         }
-
         /* Screens */
         .screen { display: none; animation: fadeIn 0.3s ease; }
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         /* Login */
         .login-card {
             background: var(--bg-card);
@@ -122,7 +110,6 @@
             text-align: center;
             margin-top: 40px;
         }
-
         .login-logo {
             width: 90px; height: 90px;
             border-radius: 22px;
@@ -131,15 +118,11 @@
             border: 2px solid var(--border);
             box-shadow: 0 0 30px var(--glow-blue);
         }
-
         .login-logo img { width: 100%; height: 100%; object-fit: cover; }
-
         .login-title { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
         .login-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
-
         /* Form elements */
         .form-group { margin-bottom: 14px; text-align: left; }
-
         .form-label {
             display: block;
             font-size: 11px;
@@ -149,7 +132,6 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-
         .form-input, .form-select {
             width: 100%;
             padding: 13px 14px;
@@ -163,23 +145,18 @@
             transition: border-color 0.2s;
             -webkit-appearance: none;
         }
-
         .form-input:focus, .form-select:focus {
             border-color: var(--accent-cyan);
             box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
         }
-
         .form-input::placeholder { color: var(--text-muted); }
-
         .form-select {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 14px center;
             padding-right: 36px;
         }
-
         .form-select option { background: var(--bg-secondary); color: var(--text-primary); }
-
         /* Buttons */
         .btn {
             width: 100%;
@@ -192,29 +169,26 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-
         .btn:active { transform: scale(0.98); }
-
         .btn-primary {
             background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
             color: white;
         }
-
         .btn-primary:hover { box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3); }
-
         .btn-green {
             background: linear-gradient(135deg, #059669, var(--accent-green));
             color: white;
         }
-
+        .btn-gold {
+            background: linear-gradient(135deg, #d97706, var(--accent-gold));
+            color: white;
+        }
         .btn-outline {
             background: transparent;
             color: var(--text-primary);
             border: 2px solid var(--border);
         }
-
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
         /* Menu Cards */
         .menu-grid {
             display: grid;
@@ -222,7 +196,6 @@
             gap: 12px;
             margin-bottom: 20px;
         }
-
         .menu-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -232,13 +205,11 @@
             cursor: pointer;
             transition: all 0.25s;
         }
-
         .menu-card:hover {
             border-color: var(--accent-cyan);
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
-
         .menu-card-icon {
             width: 56px; height: 56px;
             border-radius: 16px;
@@ -248,13 +219,11 @@
             font-size: 26px;
             margin: 0 auto 12px;
         }
-
-        .menu-card-icon.scan { background: rgba(6, 182, 212, 0.12); }
-        .menu-card-icon.sell { background: rgba(139, 92, 246, 0.12); }
-
+        .menu-card-icon.scan   { background: rgba(6, 182, 212, 0.12); }
+        .menu-card-icon.sell   { background: rgba(139, 92, 246, 0.12); }
+        .menu-card-icon.coupon { background: rgba(245, 158, 11, 0.12); }
         .menu-card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-        .menu-card-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
-
+        .menu-card-desc  { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
         /* Back button */
         .back-btn {
             display: inline-flex;
@@ -272,9 +241,7 @@
             margin-bottom: 16px;
             transition: all 0.2s;
         }
-
         .back-btn:hover { border-color: var(--accent-cyan); color: var(--text-primary); }
-
         /* Card generic */
         .card {
             background: var(--bg-card);
@@ -283,19 +250,12 @@
             padding: 24px 20px;
             margin-bottom: 14px;
         }
-
-        .card-title { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+        .card-title    { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
         .card-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
-
         /* QR Scanner */
-        #qr-reader {
-            border-radius: 14px;
-            overflow: hidden;
-            margin-bottom: 16px;
-        }
-
-        #qr-reader video { border-radius: 14px; }
-
+        #qr-reader         { border-radius: 14px; overflow: hidden; margin-bottom: 16px; }
+        #qr-reader video   { border-radius: 14px; }
+        #qr-reader-recarga { border-radius: 14px; overflow: hidden; margin-bottom: 16px; }
         /* Cliente info */
         .client-info {
             background: var(--bg-secondary);
@@ -303,25 +263,20 @@
             padding: 18px;
             margin-bottom: 16px;
         }
-
         .client-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 8px 0;
         }
-
         .client-row:not(:last-child) { border-bottom: 1px solid var(--border); }
-
         .client-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-
         .client-value { font-size: 14px; font-weight: 600; }
         .client-value.saldo {
             font-family: 'Space Mono', monospace;
             color: var(--accent-green);
             font-size: 16px;
         }
-
         /* Token counter */
         .token-counter {
             display: flex;
@@ -331,7 +286,6 @@
             padding: 16px;
             margin-bottom: 16px;
         }
-
         .token-btn {
             width: 48px; height: 48px;
             border-radius: 50%;
@@ -346,14 +300,9 @@
             justify-content: center;
             transition: all 0.15s;
         }
-
         .token-btn:active { transform: scale(0.9); }
-        .token-btn:hover { border-color: var(--accent-cyan); }
-
-        .token-display {
-            text-align: center;
-        }
-
+        .token-btn:hover  { border-color: var(--accent-cyan); }
+        .token-display    { text-align: center; }
         .token-number {
             font-family: 'Space Mono', monospace;
             font-size: 42px;
@@ -361,23 +310,15 @@
             color: var(--accent-cyan);
             line-height: 1;
         }
-
-        .token-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
+        .token-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
         .token-valor {
             font-family: 'Space Mono', monospace;
             font-size: 13px;
             color: var(--text-secondary);
             margin-top: 2px;
         }
-
         /* Membership selector */
         .mem-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-
         .mem-btn {
             display: flex;
             align-items: center;
@@ -392,43 +333,26 @@
             font-family: inherit;
             text-align: left;
         }
-
         .mem-btn:hover { border-color: var(--border); }
         .mem-btn.selected { border-color: var(--accent-cyan); background: rgba(6, 182, 212, 0.05); }
         .mem-btn.selected.standard { border-color: var(--accent-blue); }
-        .mem-btn.selected.silver { border-color: var(--accent-silver); }
-        .mem-btn.selected.gold { border-color: var(--accent-gold); }
-
+        .mem-btn.selected.silver   { border-color: var(--accent-silver); }
+        .mem-btn.selected.gold     { border-color: var(--accent-gold); }
         .mem-left { display: flex; align-items: center; gap: 10px; }
-
         .mem-icon {
             width: 38px; height: 38px;
             border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
             font-size: 18px;
         }
-
-        .mem-icon.standard { background: rgba(59, 130, 246, 0.12); }
-        .mem-icon.silver { background: rgba(148, 163, 184, 0.12); }
-        .mem-icon.gold { background: rgba(245, 158, 11, 0.12); }
-
-        .mem-name { font-size: 14px; font-weight: 600; }
+        .mem-icon.standard { background: rgba(59,130,246,0.12); }
+        .mem-icon.silver   { background: rgba(148,163,184,0.12); }
+        .mem-icon.gold     { background: rgba(245,158,11,0.12); }
+        .mem-name   { font-size: 14px; font-weight: 600; }
         .mem-tokens { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
-
-        .mem-price {
-            font-family: 'Space Mono', monospace;
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-secondary);
-        }
-
+        .mem-price  { font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; color: var(--text-secondary); }
         /* Método de pago */
-        .payment-methods {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
+        .payment-methods { display: flex; gap: 8px; margin-bottom: 20px; }
         .pay-btn {
             flex: 1;
             padding: 12px;
@@ -441,33 +365,24 @@
             color: var(--text-primary);
             font-family: inherit;
         }
-
-        .pay-btn.selected { border-color: var(--accent-green); background: rgba(16, 185, 129, 0.06); }
-        .pay-btn-icon { font-size: 20px; margin-bottom: 4px; }
+        .pay-btn.selected { border-color: var(--accent-green); background: rgba(16,185,129,0.06); }
+        .pay-btn-icon  { font-size: 20px; margin-bottom: 4px; }
         .pay-btn-label { font-size: 11px; font-weight: 600; }
-
-        /* Success / Result */
-        .success-box {
-            text-align: center;
-            padding: 20px 0;
-        }
-
+        /* Success */
+        .success-box { text-align: center; padding: 20px 0; }
         .success-icon {
             width: 64px; height: 64px;
             border-radius: 50%;
-            background: rgba(16, 185, 129, 0.12);
+            background: rgba(16,185,129,0.12);
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 16px;
             font-size: 32px;
             animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-
         @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
-
         .success-title { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
-        .success-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
-
-        /* QR display card */
+        .success-sub   { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+        /* QR mini card */
         .qr-mini-card {
             background: white;
             border-radius: 16px;
@@ -476,13 +391,10 @@
             margin-bottom: 16px;
             box-shadow: 0 12px 40px rgba(0,0,0,0.3);
         }
-
         #qr-venta-container canvas, #qr-venta-container img { border-radius: 6px; }
-
         .qr-mini-name { color: #0f172a; font-size: 14px; font-weight: 700; margin-top: 10px; }
-        .qr-mini-id { color: #94a3b8; font-size: 11px; font-family: 'Space Mono', monospace; }
-
-        /* WhatsApp button */
+        .qr-mini-id   { color: #94a3b8; font-size: 11px; font-family: 'Space Mono', monospace; }
+        /* WhatsApp */
         .btn-whatsapp {
             background: linear-gradient(135deg, #25d366, #128c7e);
             color: white;
@@ -491,7 +403,6 @@
             justify-content: center;
             gap: 8px;
         }
-
         /* Alert */
         .alert {
             padding: 12px;
@@ -500,18 +411,11 @@
             margin-bottom: 14px;
             display: none;
         }
-
-        .alert.show { display: block; }
-        .alert.error { background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); color: var(--accent-red); }
-        .alert.success { background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); color: var(--accent-green); }
-
+        .alert.show  { display: block; }
+        .alert.error   { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: var(--accent-red); }
+        .alert.success { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); color: var(--accent-green); }
         /* Stats bar */
-        .stats-bar {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
+        .stats-bar { display: flex; gap: 8px; margin-bottom: 20px; }
         .stat-item {
             flex: 1;
             background: var(--bg-card);
@@ -520,33 +424,51 @@
             padding: 12px;
             text-align: center;
         }
-
-        .stat-value {
-            font-family: 'Space Mono', monospace;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--accent-cyan);
-        }
-
+        .stat-value { font-family: 'Space Mono', monospace; font-size: 18px; font-weight: 700; color: var(--accent-cyan); }
         .stat-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
-
         /* Divider */
-        .divider {
-            height: 1px;
-            background: var(--border);
-            margin: 16px 0;
-        }
+        .divider { height: 1px; background: var(--border); margin: 16px 0; }
+        .footer  { text-align: center; padding: 20px 0; font-size: 11px; color: var(--text-muted); }
 
-        .footer {
+        /* ===== NUEVO: Cupón panel ===== */
+        .cupon-info-box {
+            background: rgba(245,158,11,0.06);
+            border: 1px solid rgba(245,158,11,0.2);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .cupon-info-icon  { font-size: 44px; margin-bottom: 8px; }
+        .cupon-info-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+        .cupon-info-desc  { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
+        .cupon-client-tag {
+            display: inline-block;
+            padding: 5px 14px;
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+        .cupon-already-box {
             text-align: center;
             padding: 20px 0;
-            font-size: 11px;
-            color: var(--text-muted);
+        }
+        .cupon-already-icon {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            background: rgba(239,68,68,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            font-size: 28px;
         }
     </style>
 </head>
 <body>
-
 <div class="container">
 
     <!-- ==================== LOGIN ==================== -->
@@ -557,7 +479,6 @@
             </div>
             <div class="login-title">Panzer Carwash</div>
             <div class="login-sub">App de Empleados</div>
-
             <div class="form-group">
                 <label class="form-label">Sede</label>
                 <select class="form-select" id="login-sede">
@@ -568,14 +489,11 @@
                     <option value="bolivariana">Sede Bolivariana</option>
                 </select>
             </div>
-
             <div class="form-group">
                 <label class="form-label">Contraseña de sede</label>
                 <input type="password" class="form-input" id="login-pass" placeholder="Ingresa la contraseña">
             </div>
-
             <div id="login-error" class="alert error"></div>
-
             <button class="btn btn-primary" onclick="login()">Ingresar</button>
         </div>
     </div>
@@ -592,7 +510,6 @@
             </div>
             <div class="header-sede" id="display-sede">Poblado</div>
         </div>
-
         <div class="stats-bar">
             <div class="stat-item">
                 <div class="stat-value" id="stat-canjes">0</div>
@@ -611,7 +528,6 @@
                 <div class="stat-label">Tokens</div>
             </div>
         </div>
-
         <div class="menu-grid">
             <div class="menu-card" onclick="goTo('screen-scan')">
                 <div class="menu-card-icon scan">📷</div>
@@ -631,7 +547,10 @@
                 <div class="menu-card-desc">Escanea el QR del cliente y recarga su saldo con tokens gratis incluidos</div>
             </div>
         </div>
-
+        <!-- NUEVO: nota sobre cupones -->
+        <div style="background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.15); border-radius:12px; padding:14px; margin-bottom:20px; text-align:center; font-size:12px; color:var(--text-muted);">
+            🎁 Al escanear el QR de un cupón del cliente, el sistema lo detectará automáticamente
+        </div>
         <div class="footer">
             <button class="btn btn-outline" onclick="logout()" style="width: auto; padding: 10px 20px; font-size: 12px;">
                 Cerrar sesión
@@ -639,18 +558,17 @@
         </div>
     </div>
 
-    <!-- ==================== CANJEAR TOKENS (ESCANEAR QR) ==================== -->
+    <!-- ==================== CANJEAR TOKENS ==================== -->
     <div class="screen" id="screen-scan">
         <button class="back-btn" onclick="goTo('screen-menu')">← Menú</button>
-
         <div class="card">
             <div class="card-title">📷 Escanear QR del Cliente</div>
-            <div class="card-subtitle">Apunta la cámara al código QR de la membresía</div>
+            <div class="card-subtitle">Apunta la cámara al código QR de la membresía o al QR de un cupón</div>
             <div id="qr-reader"></div>
             <div id="scan-alert" class="alert"></div>
         </div>
 
-        <!-- Info del cliente después de escanear -->
+        <!-- Info del cliente después de escanear (tokens) -->
         <div id="client-panel" style="display:none;">
             <div class="card">
                 <div class="card-title">Cliente VIP</div>
@@ -672,7 +590,6 @@
                         <span class="client-value" id="scan-id" style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text-muted);">—</span>
                     </div>
                 </div>
-
                 <div class="card-title" style="font-size:14px;">Tokens a entregar</div>
                 <div class="token-counter">
                     <button class="token-btn" onclick="cambiarTokens(-1)">−</button>
@@ -683,7 +600,6 @@
                     </div>
                     <button class="token-btn" onclick="cambiarTokens(1)">+</button>
                 </div>
-
                 <button class="btn btn-green" onclick="descontarSaldo()">✅ Descontar Saldo</button>
             </div>
         </div>
@@ -699,27 +615,75 @@
                 </div>
             </div>
         </div>
+
+        <!-- ======= NUEVO: Panel Cupón ======= -->
+        <div id="cupon-panel" style="display:none;">
+            <div class="card">
+                <div class="card-title">🎁 Cupón de Cliente</div>
+                <div class="card-subtitle">Verifica y entrega el beneficio</div>
+
+                <!-- Estado: verificando -->
+                <div id="cupon-verificando" style="text-align:center; padding:24px 0;">
+                    <div style="width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--accent-cyan);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;"></div>
+                    <div style="font-size:13px;color:var(--text-muted);">Verificando cupón...</div>
+                </div>
+
+                <!-- Estado: disponible para canjear -->
+                <div id="cupon-disponible" style="display:none;">
+                    <div class="cupon-info-box">
+                        <div class="cupon-info-icon" id="cupon-icon-disp">🎁</div>
+                        <div class="cupon-info-title" id="cupon-nombre-disp">—</div>
+                        <div class="cupon-info-desc" id="cupon-desc-disp">—</div>
+                        <div class="cupon-client-tag" id="cupon-client-tag">—</div>
+                    </div>
+                    <div id="cupon-error" class="alert error"></div>
+                    <button class="btn btn-gold" id="btn-confirmar-cupon" onclick="confirmarCanjeCupon()">
+                        🎁 Confirmar y entregar beneficio
+                    </button>
+                    <button class="btn btn-outline" onclick="nuevoEscaneo()" style="margin-top:10px;">
+                        Cancelar
+                    </button>
+                </div>
+
+                <!-- Estado: ya canjeado -->
+                <div id="cupon-ya-canjeado" style="display:none;">
+                    <div class="cupon-already-box">
+                        <div class="cupon-already-icon">🚫</div>
+                        <div class="success-title" style="color:var(--accent-red);">Ya fue canjeado</div>
+                        <div class="success-sub">Este cliente ya reclamó este cupón anteriormente.</div>
+                        <button class="btn btn-outline" onclick="nuevoEscaneo()">Escanear otro</button>
+                    </div>
+                </div>
+
+                <!-- Estado: cupón entregado -->
+                <div id="cupon-entregado" style="display:none;">
+                    <div class="success-box">
+                        <div class="success-icon" style="background:rgba(245,158,11,0.12);">🎉</div>
+                        <div class="success-title">¡Beneficio Entregado!</div>
+                        <div class="success-sub" id="cupon-entregado-detail"></div>
+                        <button class="btn btn-primary" onclick="nuevoEscaneo()">Escanear otro</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ======= FIN Panel Cupón ======= -->
     </div>
 
     <!-- ==================== VENDER MEMBRESÍA ==================== -->
     <div class="screen" id="screen-venta">
         <button class="back-btn" onclick="goTo('screen-menu')">← Menú</button>
-
         <div id="venta-form">
             <div class="card">
                 <div class="card-title">🛒 Vender Membresía</div>
                 <div class="card-subtitle">Registra un nuevo cliente VIP en el punto de venta</div>
-
                 <div class="form-group">
                     <label class="form-label">Nombre del cliente</label>
                     <input type="text" class="form-input" id="venta-nombre" placeholder="Nombre completo" autocomplete="off">
                 </div>
-
                 <div class="form-group">
                     <label class="form-label">Teléfono / WhatsApp</label>
                     <input type="tel" class="form-input" id="venta-telefono" placeholder="Ej: 3001234567" autocomplete="off">
                 </div>
-
                 <div class="form-group">
                     <label class="form-label">Tipo de membresía</label>
                     <div class="mem-options">
@@ -755,7 +719,6 @@
                         </button>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label class="form-label">Método de pago</label>
                     <div class="payment-methods">
@@ -773,33 +736,26 @@
                         </button>
                     </div>
                 </div>
-
                 <div id="venta-error" class="alert error"></div>
-
                 <button class="btn btn-primary" id="btn-vender" onclick="registrarVenta()">
                     Registrar Membresía
                 </button>
             </div>
         </div>
-
-        <!-- Resultado de la venta -->
         <div id="venta-result" style="display:none;">
             <div class="card">
                 <div class="success-box">
                     <div class="success-icon">🎉</div>
                     <div class="success-title">¡Membresía Creada!</div>
                     <div class="success-sub" id="venta-detail"></div>
-
                     <div class="qr-mini-card">
                         <div id="qr-venta-container"></div>
                         <div class="qr-mini-name" id="venta-qr-nombre"></div>
                         <div class="qr-mini-id" id="venta-qr-id"></div>
                     </div>
-
                     <button class="btn btn-whatsapp" onclick="enviarWhatsApp()" style="margin-bottom: 10px;">
                         📲 Enviar QR por WhatsApp
                     </button>
-
                     <button class="btn btn-outline" onclick="nuevaVenta()">
                         Registrar otra membresía
                     </button>
@@ -811,7 +767,6 @@
     <!-- ==================== RECARGAR MEMBRESÍA ==================== -->
     <div class="screen" id="screen-recarga">
         <button class="back-btn" onclick="goTo('screen-menu')">← Menú</button>
-
         <div id="recarga-scan-section">
             <div class="card">
                 <div class="card-title">🔋 Recargar Membresía</div>
@@ -820,8 +775,6 @@
                 <div id="recarga-scan-alert" class="alert"></div>
             </div>
         </div>
-
-        <!-- Info del cliente + selección de recarga -->
         <div id="recarga-client-panel" style="display:none;">
             <div class="card">
                 <div class="card-title">Cliente encontrado</div>
@@ -843,7 +796,6 @@
                         <span class="client-value" id="recarga-id" style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text-muted);">—</span>
                     </div>
                 </div>
-
                 <div style="margin-top:18px;">
                     <div class="card-title" style="font-size:14px;">Selecciona paquete de recarga</div>
                     <div class="card-subtitle">Mismo beneficio de tokens gratis</div>
@@ -880,7 +832,6 @@
                         </button>
                     </div>
                 </div>
-
                 <div class="form-group" style="margin-top:14px;">
                     <label class="form-label">Método de pago</label>
                     <div class="payment-methods">
@@ -898,23 +849,18 @@
                         </button>
                     </div>
                 </div>
-
                 <div id="recarga-error" class="alert error"></div>
-
                 <button class="btn btn-green" id="btn-recargar" onclick="ejecutarRecarga()">
                     🔋 Recargar Saldo
                 </button>
             </div>
         </div>
-
-        <!-- Resultado de la recarga -->
         <div id="recarga-result" style="display:none;">
             <div class="card">
                 <div class="success-box">
                     <div class="success-icon">✅</div>
                     <div class="success-title">¡Saldo Recargado!</div>
                     <div class="success-sub" id="recarga-detail"></div>
-
                     <div class="client-info" style="text-align:left; margin: 16px 0;">
                         <div class="client-row">
                             <span class="client-label">Saldo anterior</span>
@@ -929,7 +875,6 @@
                             <span class="client-value saldo" id="recarga-saldo-nuevo">—</span>
                         </div>
                     </div>
-
                     <button class="btn btn-primary" onclick="nuevaRecarga()" style="margin-bottom: 10px;">
                         Recargar otro cliente
                     </button>
@@ -940,7 +885,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 <script>
@@ -949,9 +893,8 @@
 // =============================================================
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyoTaC9iB1fm4s3hM4QQ9-1Zbo5cCzJQIn68YlczTTAXrYHBJK1rQsZmiIMo4CL9-S8Bg/exec';
 const PRECIO_TOKEN = 6000;
-
 const MEMBRESIAS = {
-    'Standard': { saldo: 30000, tokens: 5, precio: 24000, gratis: 1 },
+    'Standard': { saldo: 30000, tokens: 5,  precio: 24000, gratis: 1 },
     'Silver':   { saldo: 60000, tokens: 10, precio: 42000, gratis: 3 },
     'Gold':     { saldo: 90000, tokens: 15, precio: 60000, gratis: 5 }
 };
@@ -959,29 +902,30 @@ const MEMBRESIAS = {
 // =============================================================
 // ESTADO
 // =============================================================
-let currentSede = null;
-let scannedClient = null;
-let tokenCount = 1;
-let ventaMembresia = null;
-let ventaPago = 'Efectivo';
-let ventaClienteData = null;
-let qrScanner = null;
-let stats = { canjes: 0, ventas: 0, recargas: 0, tokens: 0 };
-let recargaCliente = null;
-let recargaTipo = null;
-let recargaPago = 'Efectivo';
-let qrScannerRecarga = null;
+let currentSede        = null;
+let scannedClient      = null;
+let tokenCount         = 1;
+let ventaMembresia     = null;
+let ventaPago          = 'Efectivo';
+let ventaClienteData   = null;
+let qrScanner          = null;
+let stats              = { canjes: 0, ventas: 0, recargas: 0, tokens: 0 };
+let recargaCliente     = null;
+let recargaTipo        = null;
+let recargaPago        = 'Efectivo';
+let qrScannerRecarga   = null;
+// NUEVO: estado del cupón en proceso
+let cuponEnProceso     = null;   // { id_cupon, id_cliente, nombre_cliente, nombre_cupon }
 
 // =============================================================
-// LLAMADA AL APPS SCRIPT (GET con query params)
+// API
 // =============================================================
 async function callAPI(params) {
     const query = new URLSearchParams(params).toString();
     const url = APPS_SCRIPT_URL + '?' + query;
     try {
         const response = await fetch(url);
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (e) {
         console.error('Error API:', e);
         return { ok: false, error: 'Error de conexión' };
@@ -989,16 +933,16 @@ async function callAPI(params) {
 }
 
 // =============================================================
-// LOGIN - Valida contra Google Sheets
+// LOGIN
 // =============================================================
 async function login() {
     const sedeId = document.getElementById('login-sede').value;
-    const pass = document.getElementById('login-pass').value;
+    const pass   = document.getElementById('login-pass').value;
     const errorEl = document.getElementById('login-error');
-    const btn = document.querySelector('#screen-login .btn-primary');
+    const btn    = document.querySelector('#screen-login .btn-primary');
 
     if (!sedeId) { showAlert(errorEl, 'Selecciona una sede', 'error'); return; }
-    if (!pass) { showAlert(errorEl, 'Ingresa la contraseña', 'error'); return; }
+    if (!pass)   { showAlert(errorEl, 'Ingresa la contraseña', 'error'); return; }
 
     btn.textContent = 'Verificando...';
     btn.disabled = true;
@@ -1025,12 +969,12 @@ function logout() {
 }
 
 // =============================================================
-// CARGAR SEDES DESDE GOOGLE SHEETS (con fallback)
+// SEDES (con fallback)
 // =============================================================
 const SEDES_FALLBACK = [
-    { id: 'poblado', nombre: 'Sede Poblado' },
-    { id: 'centro', nombre: 'Sede Centro' },
-    { id: 'toberin', nombre: 'Sede Toberín' },
+    { id: 'poblado',     nombre: 'Sede Poblado' },
+    { id: 'centro',      nombre: 'Sede Centro' },
+    { id: 'toberin',     nombre: 'Sede Toberín' },
     { id: 'bolivariana', nombre: 'Sede Bolivariana' }
 ];
 
@@ -1048,9 +992,7 @@ async function cargarSedes() {
             });
             return;
         }
-    } catch (e) { console.log('No se pudo conectar al API, usando sedes locales'); }
-
-    // Fallback: sedes locales
+    } catch (e) { /* usar fallback */ }
     select.innerHTML = '<option value="">Selecciona tu sede</option>';
     SEDES_FALLBACK.forEach(sede => {
         const opt = document.createElement('option');
@@ -1059,8 +1001,6 @@ async function cargarSedes() {
         select.appendChild(opt);
     });
 }
-
-// Cargar sedes al iniciar
 window.addEventListener('DOMContentLoaded', cargarSedes);
 
 // =============================================================
@@ -1070,14 +1010,14 @@ function goTo(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
 
-    if (screenId === 'screen-scan') startScanner();
-    else stopScanner();
+    if (screenId === 'screen-scan')    startScanner();
+    else                               stopScanner();
 
     if (screenId === 'screen-recarga') startScannerRecarga();
-    else stopScannerRecarga();
+    else                               stopScannerRecarga();
 
-    if (screenId === 'screen-menu') updateStats();
-    if (screenId === 'screen-venta') resetVentaForm();
+    if (screenId === 'screen-menu')    updateStats();
+    if (screenId === 'screen-venta')   resetVentaForm();
     if (screenId === 'screen-recarga') resetRecarga();
 }
 
@@ -1085,21 +1025,21 @@ function goTo(screenId) {
 // STATS
 // =============================================================
 function updateStats() {
-    document.getElementById('stat-canjes').textContent = stats.canjes;
-    document.getElementById('stat-ventas').textContent = stats.ventas;
+    document.getElementById('stat-canjes').textContent   = stats.canjes;
+    document.getElementById('stat-ventas').textContent   = stats.ventas;
     document.getElementById('stat-recargas').textContent = stats.recargas;
-    document.getElementById('stat-tokens').textContent = stats.tokens;
+    document.getElementById('stat-tokens').textContent   = stats.tokens;
 }
 
 // =============================================================
-// QR SCANNER
+// QR SCANNER (tokens)
 // =============================================================
 function startScanner() {
-    document.getElementById('client-panel').style.display = 'none';
+    document.getElementById('client-panel').style.display    = 'none';
     document.getElementById('descuento-result').style.display = 'none';
+    document.getElementById('cupon-panel').style.display     = 'none'; // NUEVO
 
     if (qrScanner) { try { qrScanner.stop(); } catch(e) {} }
-
     qrScanner = new Html5Qrcode("qr-reader");
     qrScanner.start(
         { facingMode: "environment" },
@@ -1108,7 +1048,8 @@ function startScanner() {
         onScanError
     ).catch(err => {
         console.error("Error cámara:", err);
-        document.getElementById('qr-reader').innerHTML = '<p style="text-align:center;color:#ef4444;padding:20px;">No se pudo acceder a la cámara. Verifica los permisos.</p>';
+        document.getElementById('qr-reader').innerHTML =
+            '<p style="text-align:center;color:#ef4444;padding:20px;">No se pudo acceder a la cámara. Verifica los permisos.</p>';
     });
 }
 
@@ -1120,18 +1061,28 @@ function stopScanner() {
     }
 }
 
+// =============================================================
+// ON SCAN SUCCESS — detecta si es token o cupón
+// =============================================================
 async function onScanSuccess(decodedText) {
     try {
         const data = JSON.parse(decodedText);
+
+        // ——— NUEVO: QR de cupón ———
+        if (data.tipo === 'cupon') {
+            stopScanner();
+            await procesarCuponQR(data);
+            return;
+        }
+
+        // ——— QR de membresía (flujo original) ———
         if (!data.id || !data.nombre) throw new Error('QR inválido');
 
         stopScanner();
-
-        // Consultar saldo ACTUALIZADO desde Google Sheets
-        document.getElementById('scan-nombre').textContent = data.nombre;
+        document.getElementById('scan-nombre').textContent    = data.nombre;
         document.getElementById('scan-membresia').textContent = data.membresia || '—';
-        document.getElementById('scan-saldo').textContent = 'Consultando...';
-        document.getElementById('scan-id').textContent = data.id;
+        document.getElementById('scan-saldo').textContent     = 'Consultando...';
+        document.getElementById('scan-id').textContent        = data.id;
         document.getElementById('client-panel').style.display = 'block';
 
         const result = await callAPI({ accion: 'consultar_cliente', id_vip: data.id });
@@ -1139,23 +1090,20 @@ async function onScanSuccess(decodedText) {
         if (result.ok && result.cliente) {
             scannedClient = result.cliente;
             tokenCount = 1;
-
-            document.getElementById('scan-nombre').textContent = result.cliente.nombre;
+            document.getElementById('scan-nombre').textContent    = result.cliente.nombre;
             document.getElementById('scan-membresia').textContent = result.cliente.membresia;
-            document.getElementById('scan-saldo').textContent = '$' + result.cliente.saldo.toLocaleString('es-CO');
-            document.getElementById('scan-id').textContent = result.cliente.id;
-            document.getElementById('token-count').textContent = '1';
-            document.getElementById('token-valor').textContent = '$' + PRECIO_TOKEN.toLocaleString('es-CO');
+            document.getElementById('scan-saldo').textContent     = '$' + result.cliente.saldo.toLocaleString('es-CO');
+            document.getElementById('scan-id').textContent        = result.cliente.id;
+            document.getElementById('token-count').textContent    = '1';
+            document.getElementById('token-valor').textContent    = '$' + PRECIO_TOKEN.toLocaleString('es-CO');
         } else {
-            // Fallback: usar datos del QR
             scannedClient = data;
             tokenCount = 1;
-            document.getElementById('scan-saldo').textContent = '$' + (data.saldo || 0).toLocaleString('es-CO');
+            document.getElementById('scan-saldo').textContent  = '$' + (data.saldo || 0).toLocaleString('es-CO');
             document.getElementById('token-count').textContent = '1';
             document.getElementById('token-valor').textContent = '$' + PRECIO_TOKEN.toLocaleString('es-CO');
             showAlert(document.getElementById('scan-alert'), 'Usando datos del QR (sin conexión)', 'error');
         }
-
     } catch (e) {
         showAlert(document.getElementById('scan-alert'), 'QR no reconocido. Intenta de nuevo.', 'error');
     }
@@ -1164,10 +1112,85 @@ async function onScanSuccess(decodedText) {
 function onScanError(err) { /* silencio */ }
 
 // =============================================================
-// CANJEAR TOKENS
+// NUEVO: PROCESAR QR DE CUPÓN
+// =============================================================
+async function procesarCuponQR(data) {
+    cuponEnProceso = data; // { tipo, id_cupon, id_cliente, nombre_cliente, nombre_cupon }
+
+    // Mostrar panel de cupón y estado "verificando"
+    document.getElementById('cupon-panel').style.display      = 'block';
+    document.getElementById('cupon-verificando').style.display = 'block';
+    document.getElementById('cupon-disponible').style.display  = 'none';
+    document.getElementById('cupon-ya-canjeado').style.display = 'none';
+    document.getElementById('cupon-entregado').style.display   = 'none';
+
+    // Verificar con el servidor
+    const result = await callAPI({
+        accion:      'verificar_cupon',
+        id_cupon:    data.id_cupon,
+        id_cliente:  data.id_cliente
+    });
+
+    document.getElementById('cupon-verificando').style.display = 'none';
+
+    if (!result.ok) {
+        showAlert(document.getElementById('scan-alert'), result.error || 'Error al verificar cupón', 'error');
+        document.getElementById('cupon-panel').style.display = 'none';
+        startScanner();
+        return;
+    }
+
+    if (result.canjeado) {
+        // Ya fue canjeado
+        document.getElementById('cupon-ya-canjeado').style.display = 'block';
+        return;
+    }
+
+    // Disponible para canjear
+    const cupon = result.cupon || {};
+    document.getElementById('cupon-icon-disp').textContent   = cupon.emoji || '🎁';
+    document.getElementById('cupon-nombre-disp').textContent = cupon.nombre || data.nombre_cupon || 'Cupón';
+    document.getElementById('cupon-desc-disp').textContent   = cupon.descripcion || '';
+    document.getElementById('cupon-client-tag').textContent  = '👤 ' + (data.nombre_cliente || data.id_cliente);
+    document.getElementById('cupon-disponible').style.display = 'block';
+}
+
+// =============================================================
+// NUEVO: CONFIRMAR CANJE DE CUPÓN
+// =============================================================
+async function confirmarCanjeCupon() {
+    if (!cuponEnProceso) return;
+
+    const btn = document.getElementById('btn-confirmar-cupon');
+    btn.textContent = 'Registrando...';
+    btn.disabled = true;
+
+    const result = await callAPI({
+        accion:      'canjear_cupon',
+        id_cupon:    cuponEnProceso.id_cupon,
+        id_cliente:  cuponEnProceso.id_cliente,
+        sede:        currentSede ? currentSede.nombre : 'Sin sede'
+    });
+
+    btn.textContent = '🎁 Confirmar y entregar beneficio';
+    btn.disabled = false;
+
+    if (result.ok) {
+        document.getElementById('cupon-disponible').style.display = 'none';
+        document.getElementById('cupon-entregado').style.display  = 'block';
+        document.getElementById('cupon-entregado-detail').textContent =
+            (cuponEnProceso.nombre_cupon || 'Cupón') + ' entregado a ' + (cuponEnProceso.nombre_cliente || cuponEnProceso.id_cliente);
+        cuponEnProceso = null;
+    } else {
+        showAlert(document.getElementById('cupon-error'), result.error || 'Error al registrar canje', 'error');
+    }
+}
+
+// =============================================================
+// CANJEAR TOKENS (flujo original)
 // =============================================================
 function cambiarTokens(delta) {
-    const saldo = scannedClient.saldo || 0;
+    const saldo    = scannedClient.saldo || 0;
     const maxTokens = Math.floor(saldo / PRECIO_TOKEN);
     tokenCount = Math.max(1, Math.min(tokenCount + delta, maxTokens));
     document.getElementById('token-count').textContent = tokenCount;
@@ -1177,27 +1200,21 @@ function cambiarTokens(delta) {
 async function descontarSaldo() {
     const monto = tokenCount * PRECIO_TOKEN;
     const saldo = scannedClient.saldo || 0;
+    if (monto > saldo) { alert('Saldo insuficiente'); return; }
 
-    if (monto > saldo) {
-        alert('Saldo insuficiente');
-        return;
-    }
-
-    // Llamar al Apps Script con GET params
     const result = await callAPI({
-        accion: 'descontar_saldo',
-        id_vip: scannedClient.id,
-        monto: monto,
-        tokens: tokenCount,
-        sede: currentSede.nombre,
-        operador: 'Empleado',
-        metodo: 'WebApp'
+        accion:    'descontar_saldo',
+        id_vip:    scannedClient.id,
+        monto:     monto,
+        tokens:    tokenCount,
+        sede:      currentSede.nombre,
+        operador:  'Empleado',
+        metodo:    'WebApp'
     });
 
     if (result.ok) {
         stats.canjes++;
         stats.tokens += tokenCount;
-
         document.getElementById('descuento-detail').textContent =
             `Se descontaron ${tokenCount} tokens ($${monto.toLocaleString('es-CO')}) a ${scannedClient.nombre || scannedClient.id}. Nuevo saldo: $${result.saldo_nuevo.toLocaleString('es-CO')}`;
     } else {
@@ -1205,13 +1222,15 @@ async function descontarSaldo() {
             `Error: ${result.error || 'No se pudo descontar'}. Verifica e intenta de nuevo.`;
     }
 
-    document.getElementById('client-panel').style.display = 'none';
+    document.getElementById('client-panel').style.display    = 'none';
     document.getElementById('descuento-result').style.display = 'block';
 }
 
 function nuevoEscaneo() {
     document.getElementById('descuento-result').style.display = 'none';
-    scannedClient = null;
+    document.getElementById('cupon-panel').style.display      = 'none'; // NUEVO
+    scannedClient  = null;
+    cuponEnProceso = null;
     tokenCount = 1;
     startScanner();
 }
@@ -1232,115 +1251,82 @@ function selectPago(metodo, btn) {
 }
 
 function resetVentaForm() {
-    document.getElementById('venta-form').style.display = 'block';
+    document.getElementById('venta-form').style.display   = 'block';
     document.getElementById('venta-result').style.display = 'none';
-    document.getElementById('venta-nombre').value = '';
-    document.getElementById('venta-telefono').value = '';
+    document.getElementById('venta-nombre').value    = '';
+    document.getElementById('venta-telefono').value  = '';
     ventaMembresia = null;
-    ventaPago = 'Efectivo';
+    ventaPago      = 'Efectivo';
     document.querySelectorAll('.mem-btn').forEach(b => b.classList.remove('selected'));
     document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
     document.querySelector('.pay-btn').classList.add('selected');
 }
 
 async function registrarVenta() {
-    const nombre = document.getElementById('venta-nombre').value.trim();
-    const telefono = document.getElementById('venta-telefono').value.trim();
-    const errorEl = document.getElementById('venta-error');
-    const btn = document.getElementById('btn-vender');
+    const nombre    = document.getElementById('venta-nombre').value.trim();
+    const telefono  = document.getElementById('venta-telefono').value.trim();
+    const errorEl   = document.getElementById('venta-error');
+    const btn       = document.getElementById('btn-vender');
 
-    if (!nombre || nombre.length < 3) { showAlert(errorEl, 'Ingresa el nombre del cliente', 'error'); return; }
+    if (!nombre || nombre.length < 3)                      { showAlert(errorEl, 'Ingresa el nombre del cliente', 'error'); return; }
     if (!telefono || telefono.length < 7 || !/^[0-9]+$/.test(telefono)) { showAlert(errorEl, 'Ingresa un teléfono válido', 'error'); return; }
-    if (!ventaMembresia) { showAlert(errorEl, 'Selecciona un tipo de membresía', 'error'); return; }
+    if (!ventaMembresia)                                   { showAlert(errorEl, 'Selecciona un tipo de membresía', 'error'); return; }
 
     btn.textContent = 'Registrando...';
     btn.disabled = true;
 
-    const mem = MEMBRESIAS[ventaMembresia];
-
-    // Crear cliente en Google Sheets (GET params)
+    const mem    = MEMBRESIAS[ventaMembresia];
     const result = await callAPI({
-        accion: 'crear_cliente',
-        nombre: nombre,
-        telefono: telefono,
+        accion:    'crear_cliente',
+        nombre:    nombre,
+        telefono:  telefono,
         membresia: ventaMembresia
     });
 
     btn.textContent = 'Registrar Membresía';
     btn.disabled = false;
 
-    // Usar ID real del script o fallback
     const idVip = (result.ok && result.id_vip) ? result.id_vip : 'VIP-' + Date.now().toString(36).toUpperCase();
-
-    ventaClienteData = {
-        id: idVip,
-        nombre: nombre,
-        telefono: telefono,
-        membresia: ventaMembresia,
-        saldo: mem.saldo,
-        tokens: mem.tokens
-    };
-
+    ventaClienteData = { id: idVip, nombre, telefono, membresia: ventaMembresia, saldo: mem.saldo, tokens: mem.tokens };
     stats.ventas++;
 
-    // Mostrar resultado
     document.getElementById('venta-detail').textContent =
-        `${ventaMembresia} · ${mem.tokens} Tokens (${mem.gratis} gratis) · Cobrado: $${mem.precio.toLocaleString('es-CO')} · Saldo: $${mem.saldo.toLocaleString('es-CO')} · ${ventaPago}`;
-
+        `${ventaMembresia} · ${mem.tokens} Tokens (${mem.gratis} gratis) · $${mem.precio.toLocaleString('es-CO')} · ${ventaPago}`;
     document.getElementById('venta-qr-nombre').textContent = nombre;
-    document.getElementById('venta-qr-id').textContent = idVip;
+    document.getElementById('venta-qr-id').textContent     = idVip;
 
-    // Generar QR con datos reales
     const qrContainer = document.getElementById('qr-venta-container');
     qrContainer.innerHTML = '';
-
     new QRCode(qrContainer, {
-        text: JSON.stringify({
-            id: idVip,
-            nombre: nombre,
-            membresia: ventaMembresia,
-            saldo: mem.saldo
-        }),
-        width: 180,
-        height: 180,
-        colorDark: '#0f172a',
-        colorLight: '#ffffff',
+        text: JSON.stringify({ id: idVip, nombre, membresia: ventaMembresia, saldo: mem.saldo }),
+        width: 180, height: 180,
+        colorDark: '#0f172a', colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.M
     });
 
-    document.getElementById('venta-form').style.display = 'none';
+    document.getElementById('venta-form').style.display   = 'none';
     document.getElementById('venta-result').style.display = 'block';
 
-    if (!result.ok) {
-        showAlert(errorEl, 'Registrado localmente. Error de red: ' + (result.error || ''), 'error');
-    }
+    if (!result.ok) showAlert(errorEl, 'Registrado localmente. Error: ' + (result.error || ''), 'error');
 }
 
-function nuevaVenta() {
-    resetVentaForm();
-}
+function nuevaVenta() { resetVentaForm(); }
 
 // =============================================================
-// ENVIAR POR WHATSAPP (link directo al carnet)
+// ENVIAR POR WHATSAPP
 // =============================================================
 function enviarWhatsApp() {
     if (!ventaClienteData) return;
-
-    const mem = MEMBRESIAS[ventaClienteData.membresia];
-    const telefono = ventaClienteData.telefono;
-    const memType = ventaClienteData.membresia;
-
-    // Formatear teléfono Colombia
-    let tel = telefono.replace(/\D/g, '');
+    const mem      = MEMBRESIAS[ventaClienteData.membresia];
+    let   tel      = ventaClienteData.telefono.replace(/\D/g, '');
     if (tel.startsWith('3') && tel.length === 10) tel = '57' + tel;
     if (!tel.startsWith('57')) tel = '57' + tel;
 
-    // Generar link al carnet con datos en la URL
     const carnetParams = new URLSearchParams({
-        id: ventaClienteData.id,
+        id:     ventaClienteData.id,
         nombre: ventaClienteData.nombre,
-        mem: memType,
-        saldo: mem.saldo
+        mem:    ventaClienteData.membresia,
+        saldo:  mem.saldo
     });
     const carnetLink = 'https://vip.panzercarwash.com/carnet.html?' + carnetParams.toString();
 
@@ -1348,16 +1334,15 @@ function enviarWhatsApp() {
         '🚗 *PANZER CARWASH*\n' +
         '━━━━━━━━━━━━━━━\n' +
         '¡Hola ' + ventaClienteData.nombre + '! 👋\n\n' +
-        'Tu membresía *' + memType + '* está activa ✅\n\n' +
+        'Tu membresía *' + ventaClienteData.membresia + '* está activa ✅\n\n' +
         '🪙 *' + mem.tokens + ' Tokens* (' + mem.gratis + ' gratis)\n' +
         '💰 Saldo: *$' + mem.saldo.toLocaleString('es-CO') + '*\n' +
         '🎁 Ahorro: *$' + (mem.saldo - mem.precio).toLocaleString('es-CO') + '*\n\n' +
-        '📲 Descarga tu carnet con QR:\n' +
-        carnetLink + '\n\n' +
+        '📲 Descarga tu carnet:\n' + carnetLink + '\n\n' +
+        '🔑 Tu código VIP: *' + ventaClienteData.id + '*\n\n' +
         '━━━━━━━━━━━━━━━\n' +
         'Presenta tu QR en cualquier sede 🙌'
     );
-
     window.open('https://wa.me/' + tel + '?text=' + mensaje, '_blank');
 }
 
@@ -1366,11 +1351,10 @@ function enviarWhatsApp() {
 // =============================================================
 function startScannerRecarga() {
     document.getElementById('recarga-client-panel').style.display = 'none';
-    document.getElementById('recarga-result').style.display = 'none';
+    document.getElementById('recarga-result').style.display       = 'none';
     document.getElementById('recarga-scan-section').style.display = 'block';
 
     if (qrScannerRecarga) { try { qrScannerRecarga.stop(); } catch(e) {} }
-
     qrScannerRecarga = new Html5Qrcode("qr-reader-recarga");
     qrScannerRecarga.start(
         { facingMode: "environment" },
@@ -1378,8 +1362,8 @@ function startScannerRecarga() {
         onRecargaScanSuccess,
         function() {}
     ).catch(err => {
-        console.error("Error cámara:", err);
-        document.getElementById('qr-reader-recarga').innerHTML = '<p style="text-align:center;color:#ef4444;padding:20px;">No se pudo acceder a la cámara. Verifica los permisos.</p>';
+        document.getElementById('qr-reader-recarga').innerHTML =
+            '<p style="text-align:center;color:#ef4444;padding:20px;">No se pudo acceder a la cámara. Verifica los permisos.</p>';
     });
 }
 
@@ -1395,31 +1379,28 @@ async function onRecargaScanSuccess(decodedText) {
     try {
         const data = JSON.parse(decodedText);
         if (!data.id) throw new Error('QR inválido');
-
         stopScannerRecarga();
         document.getElementById('recarga-scan-section').style.display = 'none';
 
-        // Consultar datos actualizados del cliente
-        document.getElementById('recarga-nombre').textContent = data.nombre || '...';
+        document.getElementById('recarga-nombre').textContent    = data.nombre || '...';
         document.getElementById('recarga-membresia').textContent = data.membresia || '...';
-        document.getElementById('recarga-saldo').textContent = 'Consultando...';
-        document.getElementById('recarga-id').textContent = data.id;
+        document.getElementById('recarga-saldo').textContent     = 'Consultando...';
+        document.getElementById('recarga-id').textContent        = data.id;
         document.getElementById('recarga-client-panel').style.display = 'block';
 
         const result = await callAPI({ accion: 'consultar_cliente', id_vip: data.id });
 
         if (result.ok && result.cliente) {
             recargaCliente = result.cliente;
-            document.getElementById('recarga-nombre').textContent = result.cliente.nombre;
+            document.getElementById('recarga-nombre').textContent    = result.cliente.nombre;
             document.getElementById('recarga-membresia').textContent = result.cliente.membresia;
-            document.getElementById('recarga-saldo').textContent = '$' + result.cliente.saldo.toLocaleString('es-CO');
-            document.getElementById('recarga-id').textContent = result.cliente.id;
+            document.getElementById('recarga-saldo').textContent     = '$' + result.cliente.saldo.toLocaleString('es-CO');
+            document.getElementById('recarga-id').textContent        = result.cliente.id;
         } else {
             recargaCliente = data;
             document.getElementById('recarga-saldo').textContent = '$' + (data.saldo || 0).toLocaleString('es-CO');
             showAlert(document.getElementById('recarga-scan-alert'), 'Usando datos del QR (sin conexión)', 'error');
         }
-
     } catch (e) {
         showAlert(document.getElementById('recarga-scan-alert'), 'QR no reconocido. Intenta de nuevo.', 'error');
     }
@@ -1439,10 +1420,10 @@ function selectRecargaPago(metodo, btn) {
 
 function resetRecarga() {
     recargaCliente = null;
-    recargaTipo = null;
-    recargaPago = 'Efectivo';
+    recargaTipo    = null;
+    recargaPago    = 'Efectivo';
     document.getElementById('recarga-client-panel').style.display = 'none';
-    document.getElementById('recarga-result').style.display = 'none';
+    document.getElementById('recarga-result').style.display       = 'none';
     document.getElementById('recarga-scan-section').style.display = 'block';
     document.querySelectorAll('#recarga-client-panel .mem-btn').forEach(b => b.classList.remove('selected'));
     document.querySelectorAll('#recarga-client-panel .pay-btn').forEach(b => b.classList.remove('selected'));
@@ -1452,22 +1433,21 @@ function resetRecarga() {
 
 async function ejecutarRecarga() {
     const errorEl = document.getElementById('recarga-error');
-    const btn = document.getElementById('btn-recargar');
+    const btn     = document.getElementById('btn-recargar');
 
     if (!recargaCliente) { showAlert(errorEl, 'No hay cliente escaneado', 'error'); return; }
-    if (!recargaTipo) { showAlert(errorEl, 'Selecciona un paquete de recarga', 'error'); return; }
+    if (!recargaTipo)    { showAlert(errorEl, 'Selecciona un paquete de recarga', 'error'); return; }
 
-    const mem = MEMBRESIAS[recargaTipo];
+    const mem          = MEMBRESIAS[recargaTipo];
     const saldoAnterior = recargaCliente.saldo || 0;
 
     btn.textContent = 'Recargando...';
     btn.disabled = true;
 
-    // Llamar al Apps Script para recargar
     const result = await callAPI({
-        accion: 'recargar_saldo',
-        id_vip: recargaCliente.id,
-        monto: mem.saldo,
+        accion:   'recargar_saldo',
+        id_vip:   recargaCliente.id,
+        monto:    mem.saldo,
         operador: 'Empleado'
     });
 
@@ -1475,22 +1455,17 @@ async function ejecutarRecarga() {
     btn.disabled = false;
 
     const nuevoSaldo = result.ok ? result.saldo_nuevo : (saldoAnterior + mem.saldo);
-
     stats.recargas++;
 
-    // Mostrar resultado
-    document.getElementById('recarga-detail').textContent =
-        recargaCliente.nombre + ' · Paquete ' + recargaTipo + ' · ' + recargaPago;
-    document.getElementById('recarga-saldo-anterior').textContent = '$' + saldoAnterior.toLocaleString('es-CO');
-    document.getElementById('recarga-monto-agregado').textContent = '+$' + mem.saldo.toLocaleString('es-CO');
-    document.getElementById('recarga-saldo-nuevo').textContent = '$' + nuevoSaldo.toLocaleString('es-CO');
+    document.getElementById('recarga-detail').textContent          = recargaCliente.nombre + ' · Paquete ' + recargaTipo + ' · ' + recargaPago;
+    document.getElementById('recarga-saldo-anterior').textContent  = '$' + saldoAnterior.toLocaleString('es-CO');
+    document.getElementById('recarga-monto-agregado').textContent  = '+$' + mem.saldo.toLocaleString('es-CO');
+    document.getElementById('recarga-saldo-nuevo').textContent     = '$' + nuevoSaldo.toLocaleString('es-CO');
 
     document.getElementById('recarga-client-panel').style.display = 'none';
-    document.getElementById('recarga-result').style.display = 'block';
+    document.getElementById('recarga-result').style.display       = 'block';
 
-    if (!result.ok) {
-        showAlert(errorEl, 'Recarga local. Error: ' + (result.error || 'sin conexión'), 'error');
-    }
+    if (!result.ok) showAlert(errorEl, 'Recarga local. Error: ' + (result.error || ''), 'error');
 }
 
 function nuevaRecarga() {
@@ -1507,13 +1482,10 @@ function showAlert(el, msg, type) {
     setTimeout(() => el.classList.remove('show'), 3500);
 }
 </script>
-
 <script>
-// Registrar Service Worker para PWA
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(function() {});
 }
 </script>
-
 </body>
 </html>
