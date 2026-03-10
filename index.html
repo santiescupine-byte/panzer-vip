@@ -430,6 +430,24 @@
         .divider { height: 1px; background: var(--border); margin: 16px 0; }
         .footer  { text-align: center; padding: 20px 0; font-size: 11px; color: var(--text-muted); }
 
+        /* ===== NUEVO: Cliente ya existe ===== */
+        .existe-box {
+            text-align: center;
+            padding: 8px 0 16px;
+        }
+        .existe-icon {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            background: rgba(245, 158, 11, 0.12);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 14px;
+            font-size: 30px;
+            animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .existe-title { font-size: 19px; font-weight: 800; margin-bottom: 6px; color: var(--accent-gold); }
+        .existe-sub   { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        .existe-actions { display: flex; flex-direction: column; gap: 10px; }
+
         /* ===== NUEVO: Cupón panel ===== */
         .cupon-info-box {
             background: rgba(245,158,11,0.06);
@@ -759,6 +777,43 @@
                     <button class="btn btn-outline" onclick="nuevaVenta()">
                         Registrar otra membresía
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- NUEVO: Cliente ya existe -->
+        <div id="venta-existe" style="display:none;">
+            <div class="card">
+                <div class="existe-box">
+                    <div class="existe-icon">⚠️</div>
+                    <div class="existe-title">Este cliente ya tiene membresía</div>
+                    <div class="existe-sub">El número de teléfono ya está registrado en el sistema. No se creó una membresía nueva.</div>
+                    <div class="client-info" style="text-align:left; margin-bottom:20px;">
+                        <div class="client-row">
+                            <span class="client-label">Nombre</span>
+                            <span class="client-value" id="existe-nombre">—</span>
+                        </div>
+                        <div class="client-row">
+                            <span class="client-label">Membresía</span>
+                            <span class="client-value" id="existe-membresia">—</span>
+                        </div>
+                        <div class="client-row">
+                            <span class="client-label">Saldo actual</span>
+                            <span class="client-value saldo" id="existe-saldo">—</span>
+                        </div>
+                        <div class="client-row">
+                            <span class="client-label">Código VIP</span>
+                            <span class="client-value" id="existe-id" style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text-muted);">—</span>
+                        </div>
+                    </div>
+                    <div class="existe-actions">
+                        <button class="btn btn-green" onclick="irARecargar()">
+                            🔋 Ir a Recargar este cliente
+                        </button>
+                        <button class="btn btn-outline" onclick="nuevaVenta()">
+                            Volver al formulario
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1253,6 +1308,7 @@ function selectPago(metodo, btn) {
 function resetVentaForm() {
     document.getElementById('venta-form').style.display   = 'block';
     document.getElementById('venta-result').style.display = 'none';
+    document.getElementById('venta-existe').style.display = 'none'; // NUEVO
     document.getElementById('venta-nombre').value    = '';
     document.getElementById('venta-telefono').value  = '';
     ventaMembresia = null;
@@ -1286,6 +1342,24 @@ async function registrarVenta() {
     btn.textContent = 'Registrar Membresía';
     btn.disabled = false;
 
+    // NUEVO: cliente ya existe — mostrar aviso y opción de recargar
+    if (result.ok && result.existe) {
+        document.getElementById('venta-form').style.display   = 'none';
+        document.getElementById('venta-existe').style.display = 'block';
+        document.getElementById('existe-nombre').textContent    = result.nombre    || nombre;
+        document.getElementById('existe-membresia').textContent = result.membresia || '—';
+        document.getElementById('existe-saldo').textContent     = '$' + (result.saldo || 0).toLocaleString('es-CO');
+        document.getElementById('existe-id').textContent        = result.id_vip    || '—';
+        // Guardar datos para ir a recargar si el empleado lo decide
+        recargaCliente = {
+            id:        result.id_vip,
+            nombre:    result.nombre,
+            membresia: result.membresia,
+            saldo:     result.saldo
+        };
+        return;
+    }
+
     const idVip = (result.ok && result.id_vip) ? result.id_vip : 'VIP-' + Date.now().toString(36).toUpperCase();
     ventaClienteData = { id: idVip, nombre, telefono, membresia: ventaMembresia, saldo: mem.saldo, tokens: mem.tokens };
     stats.ventas++;
@@ -1311,6 +1385,22 @@ async function registrarVenta() {
 }
 
 function nuevaVenta() { resetVentaForm(); }
+
+// NUEVO: ir directo a recargar cuando el cliente ya existe
+function irARecargar() {
+    resetVentaForm();
+    goTo('screen-recarga');
+    // recargaCliente ya está cargado con los datos del cliente existente
+    if (recargaCliente) {
+        stopScannerRecarga();
+        document.getElementById('recarga-scan-section').style.display  = 'none';
+        document.getElementById('recarga-client-panel').style.display  = 'block';
+        document.getElementById('recarga-nombre').textContent    = recargaCliente.nombre    || '—';
+        document.getElementById('recarga-membresia').textContent = recargaCliente.membresia || '—';
+        document.getElementById('recarga-saldo').textContent     = '$' + (recargaCliente.saldo || 0).toLocaleString('es-CO');
+        document.getElementById('recarga-id').textContent        = recargaCliente.id        || '—';
+    }
+}
 
 // =============================================================
 // ENVIAR POR WHATSAPP
