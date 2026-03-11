@@ -1544,11 +1544,12 @@ async function ejecutarRecarga() {
     btn.disabled = true;
 
     const result = await callAPI({
-        accion:   'recargar_saldo',
-        id_vip:   recargaCliente.id,
-        monto:    mem.saldo,
-        operador: currentEmpleado ? currentEmpleado.nombre : 'Empleado',
-        sede:     currentSede ? currentSede.nombre : 'Sin sede'
+        accion:    'recargar_saldo',
+        id_vip:    recargaCliente.id,
+        monto:     mem.saldo,
+        membresia: recargaTipo,
+        operador:  currentEmpleado ? currentEmpleado.nombre : 'Empleado',
+        sede:      currentSede ? currentSede.nombre : 'Sin sede'
     });
 
     btn.textContent = '🔋 Recargar Saldo';
