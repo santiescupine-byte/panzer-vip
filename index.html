@@ -508,8 +508,10 @@
                 </select>
             </div>
             <div class="form-group">
-                <label class="form-label">Contraseña de sede</label>
-                <input type="password" class="form-input" id="login-pass" placeholder="Ingresa la contraseña">
+                <label class="form-label">Tu PIN personal</label>
+                <input type="tel" class="form-input" id="login-pin" placeholder="••••" maxlength="4"
+                    style="text-align:center; letter-spacing:8px; font-size:22px;"
+                    autocomplete="off">
             </div>
             <div id="login-error" class="alert error"></div>
             <button class="btn btn-primary" onclick="login()">Ingresar</button>
@@ -524,7 +526,7 @@
             </div>
             <div class="header-text">
                 <h1>Panzer Carwash</h1>
-                <p>Panel de empleado</p>
+                <p id="display-empleado">Panel de empleado</p>
             </div>
             <div class="header-sede" id="display-sede">Poblado</div>
         </div>
@@ -958,6 +960,7 @@ const MEMBRESIAS = {
 // ESTADO
 // =============================================================
 let currentSede        = null;
+let currentEmpleado    = null;   // NUEVO
 let scannedClient      = null;
 let tokenCount         = 1;
 let ventaMembresia     = null;
@@ -991,34 +994,37 @@ async function callAPI(params) {
 // LOGIN
 // =============================================================
 async function login() {
-    const sedeId = document.getElementById('login-sede').value;
-    const pass   = document.getElementById('login-pass').value;
+    const sedeId  = document.getElementById('login-sede').value;
+    const pin     = document.getElementById('login-pin').value.trim();
     const errorEl = document.getElementById('login-error');
-    const btn    = document.querySelector('#screen-login .btn-primary');
+    const btn     = document.querySelector('#screen-login .btn-primary');
 
-    if (!sedeId) { showAlert(errorEl, 'Selecciona una sede', 'error'); return; }
-    if (!pass)   { showAlert(errorEl, 'Ingresa la contraseña', 'error'); return; }
+    if (!sedeId)              { showAlert(errorEl, 'Selecciona una sede', 'error'); return; }
+    if (!pin || pin.length < 4) { showAlert(errorEl, 'Ingresa tu PIN de 4 dígitos', 'error'); return; }
 
     btn.textContent = 'Verificando...';
     btn.disabled = true;
 
-    const result = await callAPI({ accion: 'validar_sede', id_sede: sedeId, password: pass });
+    const result = await callAPI({ accion: 'validar_empleado', id_sede: sedeId, pin: pin });
 
     btn.textContent = 'Ingresar';
     btn.disabled = false;
 
     if (result.ok) {
-        currentSede = { id: result.sede.id, nombre: result.sede.nombre };
-        document.getElementById('display-sede').textContent = result.sede.nombre.replace('Sede ', '');
+        currentSede     = { id: result.sede.id, nombre: result.sede.nombre };
+        currentEmpleado = { nombre: result.empleado.nombre };
+        document.getElementById('display-sede').textContent     = result.sede.nombre.replace('Sede ', '');
+        document.getElementById('display-empleado').textContent = result.empleado.nombre;
         goTo('screen-menu');
     } else {
-        showAlert(errorEl, result.error || 'Credenciales inválidas', 'error');
+        showAlert(errorEl, result.error || 'PIN incorrecto', 'error');
     }
 }
 
 function logout() {
-    currentSede = null;
-    document.getElementById('login-pass').value = '';
+    currentSede     = null;
+    currentEmpleado = null;
+    document.getElementById('login-pin').value = '';
     goTo('screen-login');
     stopScanner();
 }
@@ -1224,7 +1230,8 @@ async function confirmarCanjeCupon() {
         accion:      'canjear_cupon',
         id_cupon:    cuponEnProceso.id_cupon,
         id_cliente:  cuponEnProceso.id_cliente,
-        sede:        currentSede ? currentSede.nombre : 'Sin sede'
+        sede:        currentSede ? currentSede.nombre : 'Sin sede',
+        operador:    currentEmpleado ? currentEmpleado.nombre : 'Empleado'
     });
 
     btn.textContent = '🎁 Confirmar y entregar beneficio';
@@ -1263,7 +1270,7 @@ async function descontarSaldo() {
         monto:     monto,
         tokens:    tokenCount,
         sede:      currentSede.nombre,
-        operador:  'Empleado',
+        operador:  currentEmpleado ? currentEmpleado.nombre : 'Empleado',
         metodo:    'WebApp'
     });
 
@@ -1336,7 +1343,9 @@ async function registrarVenta() {
         accion:    'crear_cliente',
         nombre:    nombre,
         telefono:  telefono,
-        membresia: ventaMembresia
+        membresia: ventaMembresia,
+        operador:  currentEmpleado ? currentEmpleado.nombre : 'Empleado',
+        sede:      currentSede ? currentSede.nombre : 'Sin sede'
     });
 
     btn.textContent = 'Registrar Membresía';
@@ -1538,7 +1547,8 @@ async function ejecutarRecarga() {
         accion:   'recargar_saldo',
         id_vip:   recargaCliente.id,
         monto:    mem.saldo,
-        operador: 'Empleado'
+        operador: currentEmpleado ? currentEmpleado.nombre : 'Empleado',
+        sede:     currentSede ? currentSede.nombre : 'Sin sede'
     });
 
     btn.textContent = '🔋 Recargar Saldo';
