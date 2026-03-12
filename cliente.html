@@ -345,18 +345,6 @@
             color: #94a3b8;
             margin-bottom: 10px;
         }
-        .mini-carnet-tokens {
-            background: #f0fdf4;
-            border-radius: 10px;
-            padding: 10px 12px;
-        }
-        .mini-carnet-tokens-num {
-            font-size: 22px;
-            font-weight: 800;
-            color: #15803d;
-            line-height: 1;
-        }
-        .mini-carnet-tokens-label { font-size: 10px; color: #16a34a; margin-top: 2px; }
 
         .mini-carnet-footer {
             background: white;
@@ -759,10 +747,6 @@
                     <div class="mini-carnet-info">
                         <div class="mini-carnet-name" id="carnet-nombre">—</div>
                         <div class="mini-carnet-id" id="carnet-id">—</div>
-                        <div class="mini-carnet-tokens">
-                            <div class="mini-carnet-tokens-num" id="carnet-tokens">—</div>
-                            <div class="mini-carnet-tokens-label">tokens disponibles</div>
-                        </div>
                     </div>
                 </div>
                 <div class="mini-carnet-footer">
@@ -1009,24 +993,16 @@ function renderCarnet(tokens, memType) {
 
     document.getElementById('carnet-nombre').textContent = clienteActual.nombre;
     document.getElementById('carnet-id').textContent     = clienteActual.id;
-    document.getElementById('carnet-tokens').textContent = tokens;
 
     // QR
     const qrBox = document.getElementById('carnet-qr-box');
-    qrBox.innerHTML = '';
-    new QRCode(qrBox, {
-        text: JSON.stringify({
-            id: clienteActual.id,
-            nombre: clienteActual.nombre,
-            membresia: clienteActual.membresia,
-            saldo: clienteActual.saldo
-        }),
-        width: 90,
-        height: 90,
-        colorDark: '#0f172a',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.M
-    });
+    const qrDataCarnet = encodeURIComponent(JSON.stringify({
+        id: clienteActual.id,
+        nombre: clienteActual.nombre,
+        membresia: clienteActual.membresia,
+        saldo: clienteActual.saldo
+    }));
+    qrBox.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${qrDataCarnet}" width="120" height="120" style="border-radius:6px; display:block;">`;
 }
 
 function verCarnetCompleto() {
@@ -1208,21 +1184,14 @@ function abrirCupon(idx) {
 
     // Generar QR
     const container = document.getElementById('modal-qr-container');
-    container.innerHTML = '';
-    new QRCode(container, {
-        text: JSON.stringify({
-            tipo:          'cupon',
-            id_cupon:      cupon.id,
-            id_cliente:    clienteActual.id,
-            nombre_cliente: clienteActual.nombre,
-            nombre_cupon:  cupon.nombre
-        }),
-        width: 200,
-        height: 200,
-        colorDark: '#0f172a',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.M
-    });
+    const qrDataCupon = encodeURIComponent(JSON.stringify({
+        tipo:           'cupon',
+        id_cupon:       cupon.id,
+        id_cliente:     clienteActual.id,
+        nombre_cliente: clienteActual.nombre,
+        nombre_cupon:   cupon.nombre
+    }));
+    container.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrDataCupon}" width="200" height="200" style="border-radius:8px; display:block;">`;
 
     document.getElementById('modal-cupon').classList.add('open');
 }
