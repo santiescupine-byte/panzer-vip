@@ -981,10 +981,17 @@ let cuponEnProceso     = null;   // { id_cupon, id_cliente, nombre_cliente, nomb
 async function callAPI(params) {
     const query = new URLSearchParams(params).toString();
     const url = APPS_SCRIPT_URL + '?' + query;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 30000); // 30 segundos máximo
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(timer);
         return await response.json();
     } catch (e) {
+        clearTimeout(timer);
+        if (e.name === 'AbortError') {
+            return { ok: false, error: 'La operación tardó demasiado. Verifica en la hoja si el registro quedó guardado.' };
+        }
         console.error('Error API:', e);
         return { ok: false, error: 'Error de conexión' };
     }
@@ -1379,13 +1386,8 @@ async function registrarVenta() {
     document.getElementById('venta-qr-id').textContent     = idVip;
 
     const qrContainer = document.getElementById('qr-venta-container');
-    qrContainer.innerHTML = '';
-    new QRCode(qrContainer, {
-        text: JSON.stringify({ id: idVip, nombre, membresia: ventaMembresia, saldo: mem.saldo }),
-        width: 180, height: 180,
-        colorDark: '#0f172a', colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.M
-    });
+    const qrData = encodeURIComponent(JSON.stringify({ id: idVip, nombre, membresia: ventaMembresia, saldo: mem.saldo }));
+    qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${qrData}" width="180" height="180" style="border-radius:8px; display:block;">`;
 
     document.getElementById('venta-form').style.display   = 'none';
     document.getElementById('venta-result').style.display = 'block';
