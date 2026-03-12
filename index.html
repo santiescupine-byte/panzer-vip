@@ -499,12 +499,8 @@
             <div class="login-sub">App de Empleados</div>
             <div class="form-group">
                 <label class="form-label">Sede</label>
-                <select class="form-select" id="login-sede">
-                    <option value="">Selecciona tu sede</option>
-                    <option value="poblado">Sede Poblado</option>
-                    <option value="centro">Sede Centro</option>
-                    <option value="toberin">Sede Toberín</option>
-                    <option value="bolivariana">Sede Bolivariana</option>
+                <select class="form-select" id="login-sede" disabled>
+                    <option value="">⏳ Cargando sedes...</option>
                 </select>
             </div>
             <div class="form-group">
@@ -1058,6 +1054,7 @@ async function cargarSedes() {
                 opt.textContent = sede.nombre;
                 select.appendChild(opt);
             });
+            select.disabled = false;
             return;
         }
     } catch (e) { /* usar fallback */ }
@@ -1068,6 +1065,7 @@ async function cargarSedes() {
         opt.textContent = sede.nombre;
         select.appendChild(opt);
     });
+    select.disabled = false;
 }
 window.addEventListener('DOMContentLoaded', cargarSedes);
 
