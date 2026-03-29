@@ -60,12 +60,10 @@
             min-height: 100vh;
             padding-bottom: 100px;
         }
-
         /* ===== SCREENS ===== */
         .screen { display: none; }
         .screen.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
         /* ===== LOGIN ===== */
         .login-card {
             background: var(--bg-card);
@@ -86,7 +84,6 @@
         .login-logo img { width: 100%; height: 100%; object-fit: cover; }
         .login-title { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
         .login-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.5; }
-
         .form-group { margin-bottom: 14px; text-align: left; }
         .form-label {
             display: block;
@@ -122,7 +119,6 @@
             font-size: 14px;
             letter-spacing: 1px;
         }
-
         .btn {
             width: 100%;
             padding: 14px;
@@ -146,7 +142,6 @@
             border: 2px solid var(--border);
         }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
         .alert {
             padding: 12px;
             border-radius: 10px;
@@ -158,7 +153,6 @@
         .alert.show { display: block; }
         .alert.error { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: var(--accent-red); }
         .alert.success { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); color: var(--accent-green); }
-
         .login-help {
             font-size: 12px;
             color: var(--text-muted);
@@ -169,7 +163,6 @@
             color: var(--accent-cyan);
             text-decoration: none;
         }
-
         /* ===== APP HEADER ===== */
         .app-header {
             display: flex;
@@ -212,11 +205,9 @@
             flex-shrink: 0;
         }
         .logout-btn:hover { border-color: var(--accent-red); color: var(--accent-red); }
-
         /* ===== TAB CONTENT ===== */
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.25s ease; }
-
         /* ===== BOTTOM NAV ===== */
         .bottom-nav {
             position: fixed;
@@ -266,7 +257,6 @@
             letter-spacing: 0.3px;
         }
         .nav-tab.active .nav-tab-label { color: var(--accent-cyan); }
-
         /* ===== CARNET TAB ===== */
         .mini-carnet {
             border-radius: 22px;
@@ -313,7 +303,6 @@
         .mem-badge-carnet.standard { background: rgba(255,255,255,0.2); color: white; }
         .mem-badge-carnet.silver   { background: rgba(255,255,255,0.2); color: white; }
         .mem-badge-carnet.gold     { background: rgba(255,255,255,0.2); color: white; }
-
         .mini-carnet-body {
             background: white;
             padding: 20px;
@@ -345,7 +334,6 @@
             color: #94a3b8;
             margin-bottom: 10px;
         }
-
         .mini-carnet-footer {
             background: white;
             padding: 10px 20px 14px;
@@ -354,7 +342,6 @@
             font-size: 11px;
             color: #94a3b8;
         }
-
         .carnet-actions {
             display: flex;
             gap: 10px;
@@ -376,7 +363,6 @@
         .carnet-action-btn:active { transform: scale(0.97); }
         .carnet-action-icon { font-size: 20px; margin-bottom: 4px; }
         .carnet-action-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
-
         .carnet-tip {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -387,7 +373,6 @@
             color: var(--text-muted);
             line-height: 1.6;
         }
-
         /* ===== MI CUENTA TAB ===== */
         .balance-card {
             background: var(--bg-card);
@@ -434,7 +419,6 @@
             color: var(--text-primary);
         }
         .balance-meta-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
-
         .section-title {
             font-size: 12px;
             font-weight: 700;
@@ -443,7 +427,6 @@
             letter-spacing: 0.5px;
             margin-bottom: 10px;
         }
-
         .tx-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
         .tx-item {
             display: flex;
@@ -479,7 +462,6 @@
         }
         .tx-amount.pos { color: var(--accent-green); }
         .tx-amount.neg { color: var(--accent-red); }
-
         .loading-box {
             display: flex;
             align-items: center;
@@ -497,14 +479,12 @@
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-
         .empty-state {
             text-align: center;
             padding: 32px 20px;
         }
         .empty-state-icon { font-size: 40px; margin-bottom: 12px; }
         .empty-state-text { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
-
         /* ===== CUPONES TAB ===== */
         .cupones-intro {
             text-align: center;
@@ -512,7 +492,6 @@
         }
         .cupones-intro h3 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
         .cupones-intro p  { font-size: 12px; color: var(--text-muted); }
-
         .cupon-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
         .cupon-card {
             background: var(--bg-card);
@@ -535,7 +514,6 @@
             background: var(--accent-gold);
             opacity: 0.05;
         }
-
         .cupon-row {
             display: flex;
             align-items: center;
@@ -555,7 +533,6 @@
         .cupon-info { flex: 1; min-width: 0; }
         .cupon-title { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
         .cupon-desc  { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-
         .cupon-status-pill {
             padding: 4px 10px;
             border-radius: 20px;
@@ -567,7 +544,6 @@
         }
         .cupon-status-pill.available { background: rgba(16,185,129,0.12); color: var(--accent-green); border: 1px solid rgba(16,185,129,0.2); }
         .cupon-status-pill.redeemed  { background: rgba(100,116,139,0.12); color: var(--text-muted); border: 1px solid rgba(100,116,139,0.2); }
-
         .cupon-footer {
             display: flex;
             align-items: center;
@@ -578,7 +554,6 @@
         .cupon-mem-tag { font-size: 11px; color: var(--text-muted); }
         .cupon-cta      { font-size: 11px; font-weight: 600; color: var(--accent-cyan); }
         .cupon-redeemed-note { font-size: 11px; color: var(--text-muted); }
-
         /* ===== MODAL QR CUPÓN ===== */
         .modal-backdrop {
             display: none;
@@ -608,7 +583,6 @@
             animation: slideUp 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
         }
         @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
         .modal-close {
             position: absolute;
             top: 16px; right: 16px;
@@ -627,13 +601,11 @@
             transition: all 0.2s;
         }
         .modal-close:hover { color: var(--text-primary); border-color: var(--accent-cyan); }
-
         /* Modal state: disponible */
         #modal-state-available { }
         .modal-cupon-icon  { font-size: 44px; margin-bottom: 10px; }
         .modal-cupon-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
         .modal-cupon-desc  { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.5; }
-
         .modal-qr-box {
             background: white;
             border-radius: 20px;
@@ -644,14 +616,12 @@
         }
         #modal-qr-container canvas,
         #modal-qr-container img { border-radius: 6px; }
-
         .modal-hint {
             font-size: 12px;
             color: var(--text-muted);
             line-height: 1.6;
         }
         .modal-hint strong { color: var(--accent-cyan); }
-
         /* Modal state: ya canjeado */
         #modal-state-redeemed { display: none; }
         .modal-lock-icon {
@@ -666,7 +636,6 @@
         }
         .modal-lock-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
         .modal-lock-sub   { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
-
         /* Generic card */
         .card {
             background: var(--bg-card);
@@ -678,9 +647,7 @@
     </style>
 </head>
 <body>
-
 <div class="container">
-
     <!-- ==================== LOGIN ==================== -->
     <div class="screen active" id="screen-login">
         <div class="login-card">
@@ -710,10 +677,8 @@
             </p>
         </div>
     </div>
-
     <!-- ==================== APP PRINCIPAL ==================== -->
     <div class="screen" id="screen-app">
-
         <!-- Header -->
         <div class="app-header">
             <div class="app-header-logo">
@@ -725,7 +690,6 @@
             </div>
             <button class="logout-btn" onclick="logout()">Salir</button>
         </div>
-
         <!-- TAB: MI CARNET -->
         <div class="tab-content active" id="tab-carnet">
             <!-- Tarjeta de membresía -->
@@ -753,7 +717,6 @@
                     Presenta tu QR en cualquier sede 🚗
                 </div>
             </div>
-
             <!-- Acciones -->
             <div class="carnet-actions">
                 <div class="carnet-action-btn" onclick="verCarnetCompleto()">
@@ -765,12 +728,10 @@
                     <div class="carnet-action-label">Compartir</div>
                 </div>
             </div>
-
             <div class="carnet-tip">
                 Muestra el código QR al empleado de Panzer Carwash para canjear tus tokens. Si tienes el carnet guardado también funciona. 🙌
             </div>
         </div>
-
         <!-- TAB: MI CUENTA -->
         <div class="tab-content" id="tab-cuenta">
             <!-- Balance card -->
@@ -792,7 +753,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Historial -->
             <div class="section-title">Historial de movimientos</div>
             <div id="tx-loading" class="loading-box">
@@ -805,7 +765,6 @@
                 <div class="empty-state-text">No hay movimientos registrados aún</div>
             </div>
         </div>
-
         <!-- TAB: CUPONES -->
         <div class="tab-content" id="tab-cupones">
             <div class="cupones-intro">
@@ -822,10 +781,8 @@
                 <div class="empty-state-text">No hay cupones disponibles por ahora.<br>¡Pronto habrá novedades!</div>
             </div>
         </div>
-
     </div>
 </div>
-
 <!-- ==================== BOTTOM NAV ==================== -->
 <div class="bottom-nav" id="bottom-nav">
     <div class="nav-items">
@@ -846,12 +803,10 @@
         </button>
     </div>
 </div>
-
 <!-- ==================== MODAL QR CUPÓN ==================== -->
 <div class="modal-backdrop" id="modal-cupon" onclick="cerrarModalSiOverlay(event)">
     <div class="modal-card">
         <button class="modal-close" onclick="cerrarModal()">✕</button>
-
         <!-- Disponible -->
         <div id="modal-state-available">
             <div class="modal-cupon-icon" id="modal-icon">🎁</div>
@@ -865,7 +820,6 @@
                 para reclamar tu beneficio 🙌
             </div>
         </div>
-
         <!-- Ya canjeado -->
         <div id="modal-state-redeemed" style="display:none;">
             <div class="modal-lock-icon">🔒</div>
@@ -875,14 +829,12 @@
         </div>
     </div>
 </div>
-
 <script>
 // ============================================================
 // CONFIGURACIÓN
 // ============================================================
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyoTaC9iB1fm4s3hM4QQ9-1Zbo5cCzJQIn68YlczTTAXrYHBJK1rQsZmiIMo4CL9-S8Bg/exec';
 const PRECIO_TOKEN = 6000;
-
 // ============================================================
 // ESTADO
 // ============================================================
@@ -891,21 +843,24 @@ let cuponesData   = [];
 let currentTab    = 'carnet';
 let historialCargado  = false;
 let cuponesCargados   = false;
-
 // ============================================================
 // API
 // ============================================================
 async function callAPI(params) {
     const query = new URLSearchParams(params).toString();
     const url = APPS_SCRIPT_URL + '?' + query;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 25000);
     try {
-        const res = await fetch(url);
+        const res = await fetch(url, { signal: controller.signal });
+        clearTimeout(timer);
         return await res.json();
     } catch (e) {
+        clearTimeout(timer);
+        if (e.name === 'AbortError') return { ok: false, error: 'El servidor tardó demasiado. Intenta de nuevo.' };
         return { ok: false, error: 'Error de conexión' };
     }
 }
-
 // ============================================================
 // LOGIN
 // ============================================================
@@ -913,7 +868,6 @@ async function loginCliente() {
     const codigo = document.getElementById('login-codigo').value.trim().toUpperCase();
     const errorEl = document.getElementById('login-error');
     const btn = document.getElementById('btn-login');
-
     if (!codigo) {
         showAlert(errorEl, 'Ingresa tu código VIP', 'error');
         return;
@@ -922,16 +876,12 @@ async function loginCliente() {
         showAlert(errorEl, 'Código inválido. Ejemplo: VIP-00164', 'error');
         return;
     }
-
     btn.textContent = 'Ingresando...';
     btn.disabled = true;
-
     // Reutilizamos la acción existente consultar_cliente
     const result = await callAPI({ accion: 'consultar_cliente', id_vip: codigo });
-
     btn.textContent = 'Ingresar';
     btn.disabled = false;
-
     if (result.ok && result.cliente) {
         clienteActual = result.cliente;
         sessionStorage.setItem('panzer_cliente', JSON.stringify(clienteActual));
@@ -940,7 +890,6 @@ async function loginCliente() {
         showAlert(errorEl, result.error || 'Código no encontrado. Verifica tu membresía.', 'error');
     }
 }
-
 function logout() {
     clienteActual = null;
     historialCargado = false;
@@ -951,7 +900,6 @@ function logout() {
     document.getElementById('screen-login').classList.add('active');
     document.getElementById('login-codigo').value = '';
 }
-
 // ============================================================
 // INICIAR APP
 // ============================================================
@@ -960,51 +908,49 @@ function iniciarApp() {
     document.getElementById('screen-app').classList.add('active');
     document.getElementById('bottom-nav').classList.add('visible');
     switchTab('carnet');
-
     const nombre  = clienteActual.nombre.split(' ')[0];
     const memType = clienteActual.membresia.toLowerCase();
     const tokens  = Math.floor((clienteActual.saldo || 0) / PRECIO_TOKEN);
-
     // Header
     document.getElementById('header-nombre').textContent   = nombre;
     document.getElementById('header-mem-sub').textContent  = 'Membresía ' + clienteActual.membresia;
-
     // Carnet
     renderCarnet(tokens, memType);
-
     // Cuenta
     document.getElementById('cuenta-tokens').textContent = tokens;
     document.getElementById('cuenta-mem').textContent    = clienteActual.membresia;
     document.getElementById('cuenta-codigo').textContent  = clienteActual.id;
 }
-
 // ============================================================
 // CARNET
 // ============================================================
 function renderCarnet(tokens, memType) {
     const cls = memType; // 'standard', 'silver', 'gold'
-
     document.getElementById('carnet-header-bg').className = 'mini-carnet-header ' + cls;
-
     const badge = document.getElementById('carnet-badge');
     badge.className = 'mem-badge-carnet ' + cls;
     const emojis = { standard: '⭐', silver: '🥈', gold: '🥇' };
     badge.textContent = (emojis[cls] || '⭐') + ' ' + clienteActual.membresia;
-
     document.getElementById('carnet-nombre').textContent = clienteActual.nombre;
     document.getElementById('carnet-id').textContent     = clienteActual.id;
-
-    // QR
+    // QR — generado localmente con qrcodejs (sin petición externa)
     const qrBox = document.getElementById('carnet-qr-box');
-    const qrDataCarnet = encodeURIComponent(JSON.stringify({
+    qrBox.innerHTML = '';
+    const qrDataCarnet = JSON.stringify({
         id: clienteActual.id,
         nombre: clienteActual.nombre,
         membresia: clienteActual.membresia,
         saldo: clienteActual.saldo
-    }));
-    qrBox.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${qrDataCarnet}" width="120" height="120" style="border-radius:6px; display:block;">`;
+    });
+    new QRCode(qrBox, {
+        text: qrDataCarnet,
+        width: 120,
+        height: 120,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+    });
 }
-
 function verCarnetCompleto() {
     const params = new URLSearchParams({
         id:     clienteActual.id,
@@ -1014,7 +960,6 @@ function verCarnetCompleto() {
     });
     window.open('carnet.html?' + params.toString(), '_blank');
 }
-
 function compartirCarnet() {
     const params = new URLSearchParams({
         id:     clienteActual.id,
@@ -1033,21 +978,16 @@ function compartirCarnet() {
         });
     }
 }
-
 // ============================================================
 // HISTORIAL
 // ============================================================
 async function cargarHistorial() {
     if (historialCargado) return;
-
     document.getElementById('tx-loading').style.display = 'flex';
     document.getElementById('tx-list').style.display    = 'none';
     document.getElementById('tx-empty').style.display   = 'none';
-
     const result = await callAPI({ accion: 'historial_cliente', id_vip: clienteActual.id });
-
     document.getElementById('tx-loading').style.display = 'none';
-
     if (result.ok && result.transacciones && result.transacciones.length > 0) {
         document.getElementById('tx-list').style.display = 'flex';
         renderHistorial(result.transacciones);
@@ -1057,15 +997,12 @@ async function cargarHistorial() {
         historialCargado = true;
     }
 }
-
 function renderHistorial(txs) {
     const list = document.getElementById('tx-list');
     list.innerHTML = '';
-
     txs.forEach(tx => {
         const tipo = (tx.tipo || '').toLowerCase();
         const isPositive = tipo === 'recarga' || tipo === 'venta';
-
         const iconMap = {
             'canje':   { icon: '🚗', cls: 'canje' },
             'recarga': { icon: '🔋', cls: 'recarga' },
@@ -1076,7 +1013,6 @@ function renderHistorial(txs) {
         const tokens = Math.abs(Math.round((tx.monto || 0) / PRECIO_TOKEN));
         const sign   = isPositive ? '+' : '-';
         const amtStr = sign + tokens + ' token' + (tokens !== 1 ? 's' : '');
-
         const item = document.createElement('div');
         item.className = 'tx-item';
         item.innerHTML = `
@@ -1090,7 +1026,6 @@ function renderHistorial(txs) {
         list.appendChild(item);
     });
 }
-
 function formatDate(str) {
     if (!str) return '—';
     try {
@@ -1098,25 +1033,20 @@ function formatDate(str) {
         return d.toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' });
     } catch (e) { return str; }
 }
-
 // ============================================================
 // CUPONES
 // ============================================================
 async function cargarCupones() {
     if (cuponesCargados) return;
-
     document.getElementById('cupones-loading').style.display = 'flex';
     document.getElementById('cupon-grid').style.display     = 'none';
     document.getElementById('cupones-empty').style.display  = 'none';
-
     const result = await callAPI({
         accion:    'obtener_cupones',
         membresia: clienteActual.membresia,
         id_vip:    clienteActual.id
     });
-
     document.getElementById('cupones-loading').style.display = 'none';
-
     if (result.ok && result.cupones && result.cupones.length > 0) {
         cuponesData = result.cupones;
         document.getElementById('cupon-grid').style.display = 'flex';
@@ -1128,23 +1058,18 @@ async function cargarCupones() {
         cuponesData = [];
     }
 }
-
 function renderCupones(cupones) {
     const grid = document.getElementById('cupon-grid');
     grid.innerHTML = '';
-
     cupones.forEach((cupon, idx) => {
         const redeemed = cupon.canjeado === true || cupon.canjeado === 'true' || cupon.canjeado === 'SI';
-
         const memLabel = !cupon.membresia || cupon.membresia === 'Todos'
             ? 'Para todos los miembros'
             : 'Solo membresía ' + cupon.membresia;
         const memIcon = { Gold: '🥇', Silver: '🥈', Standard: '⭐' }[cupon.membresia] || '⭐';
-
         const card = document.createElement('div');
         card.className = 'cupon-card ' + (redeemed ? 'redeemed' : 'available');
         card.onclick = () => redeemed ? abrirCanjeado(cupon) : abrirCupon(idx);
-
         card.innerHTML = `
             <div class="cupon-row">
                 <div class="cupon-emoji">${cupon.emoji || '🎁'}</div>
@@ -1167,72 +1092,64 @@ function renderCupones(cupones) {
         grid.appendChild(card);
     });
 }
-
 // ============================================================
 // MODAL QR CUPÓN
 // ============================================================
 function abrirCupon(idx) {
     const cupon = cuponesData[idx];
     if (!cupon) return;
-
     document.getElementById('modal-state-available').style.display = 'block';
     document.getElementById('modal-state-redeemed').style.display  = 'none';
-
     document.getElementById('modal-icon').textContent  = cupon.emoji || '🎁';
     document.getElementById('modal-titulo').textContent = cupon.nombre;
     document.getElementById('modal-desc').textContent   = cupon.descripcion;
-
-    // Generar QR
+    // Generar QR localmente con qrcodejs (sin petición externa)
     const container = document.getElementById('modal-qr-container');
-    const qrDataCupon = encodeURIComponent(JSON.stringify({
+    container.innerHTML = '';
+    const qrDataCupon = JSON.stringify({
         tipo:           'cupon',
         id_cupon:       cupon.id,
         id_cliente:     clienteActual.id,
         nombre_cliente: clienteActual.nombre,
         nombre_cupon:   cupon.nombre
-    }));
-    container.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrDataCupon}" width="200" height="200" style="border-radius:8px; display:block;">`;
-
+    });
+    new QRCode(container, {
+        text: qrDataCupon,
+        width: 200,
+        height: 200,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+    });
     document.getElementById('modal-cupon').classList.add('open');
 }
-
 function abrirCanjeado(cupon) {
     document.getElementById('modal-state-available').style.display = 'none';
     document.getElementById('modal-state-redeemed').style.display  = 'block';
-
     const fecha = cupon.fecha_canje ? 'Canjeado el ' + formatDate(cupon.fecha_canje) : 'Este beneficio ya fue reclamado.';
     document.getElementById('modal-lock-fecha').textContent = fecha;
-
     document.getElementById('modal-cupon').classList.add('open');
 }
-
 function cerrarModal() {
     document.getElementById('modal-cupon').classList.remove('open');
 }
-
 function cerrarModalSiOverlay(e) {
     if (e.target === document.getElementById('modal-cupon')) cerrarModal();
 }
-
 // ============================================================
 // NAVEGACIÓN TABS
 // ============================================================
 function switchTab(tab) {
     currentTab = tab;
-
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     document.getElementById('tab-' + tab).classList.add('active');
-
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
     document.getElementById('nav-' + tab).classList.add('active');
-
     window.scrollTo({ top: 0, behavior: 'smooth' });
-
     // Lazy-load data
     if (tab === 'cuenta')   cargarHistorial();
     if (tab === 'cupones')  cargarCupones();
 }
-
 // ============================================================
 // AUTO-FORMAT CÓDIGO VIP
 // ============================================================
@@ -1246,26 +1163,47 @@ document.getElementById('login-codigo').addEventListener('input', function (e) {
     }
     e.target.value = val;
 });
-
 document.getElementById('login-codigo').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') loginCliente();
 });
-
 // ============================================================
-// PERSISTENCIA DE SESIÓN
+// PERSISTENCIA DE SESIÓN + REFRESCO SILENCIOSO
 // ============================================================
 window.addEventListener('DOMContentLoaded', () => {
     const saved = sessionStorage.getItem('panzer_cliente');
     if (saved) {
         try {
             clienteActual = JSON.parse(saved);
-            iniciarApp();
+            iniciarApp(); // muestra la app al instante con datos guardados
+            // Refresca los datos en segundo plano para mostrar saldo actualizado
+            refrescarDatosSilencioso();
         } catch (e) {
             sessionStorage.removeItem('panzer_cliente');
         }
     }
 });
 
+async function refrescarDatosSilencioso() {
+    try {
+        const result = await callAPI({ accion: 'consultar_cliente', id_vip: clienteActual.id });
+        if (result.ok && result.cliente) {
+            const actualizado = result.cliente;
+            // Solo re-renderiza si cambió el saldo o la membresía
+            const saldoCambio    = actualizado.saldo    !== clienteActual.saldo;
+            const memCambio      = actualizado.membresia !== clienteActual.membresia;
+            clienteActual = actualizado;
+            sessionStorage.setItem('panzer_cliente', JSON.stringify(clienteActual));
+            if (saldoCambio || memCambio) {
+                const tokens  = Math.floor((clienteActual.saldo || 0) / PRECIO_TOKEN);
+                const memType = clienteActual.membresia.toLowerCase();
+                renderCarnet(tokens, memType);
+                document.getElementById('cuenta-tokens').textContent = tokens;
+                document.getElementById('cuenta-mem').textContent    = clienteActual.membresia;
+                document.getElementById('header-mem-sub').textContent = 'Membresía ' + clienteActual.membresia;
+            }
+        }
+    } catch (e) { /* silencioso — no molesta al usuario si falla */ }
+}
 // ============================================================
 // UTILIDADES
 // ============================================================
@@ -1275,7 +1213,6 @@ function showAlert(el, msg, type) {
     setTimeout(() => el.classList.remove('show'), 4500);
 }
 </script>
-
 <script>
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(function () {});
