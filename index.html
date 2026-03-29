@@ -1387,7 +1387,13 @@ async function registrarVenta() {
         return;
     }
 
-    const idVip = (result.ok && result.id_vip) ? result.id_vip : 'VIP-' + Date.now().toString(36).toUpperCase();
+    // Si la API falló, mostrar error y detener — nunca generar un ID falso
+    if (!result.ok || !result.id_vip) {
+        showAlert(errorEl, result.error || 'Error al registrar el cliente. Intenta de nuevo.', 'error');
+        return;
+    }
+
+    const idVip = result.id_vip;
     ventaClienteData = { id: idVip, nombre, telefono, membresia: ventaMembresia, saldo: mem.saldo, tokens: mem.tokens };
     stats.ventas++;
 
@@ -1397,8 +1403,15 @@ async function registrarVenta() {
     document.getElementById('venta-qr-id').textContent     = idVip;
 
     const qrContainer = document.getElementById('qr-venta-container');
-    const qrData = encodeURIComponent(JSON.stringify({ id: idVip, nombre, membresia: ventaMembresia, saldo: mem.saldo }));
-    qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${qrData}" width="180" height="180" style="border-radius:8px; display:block;">`;
+    qrContainer.innerHTML = '';
+    new QRCode(qrContainer, {
+        text: JSON.stringify({ id: idVip, nombre, membresia: ventaMembresia, saldo: mem.saldo }),
+        width: 180,
+        height: 180,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+    });
 
     document.getElementById('venta-form').style.display   = 'none';
     document.getElementById('venta-result').style.display = 'block';
