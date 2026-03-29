@@ -1269,6 +1269,13 @@ async function descontarSaldo() {
     const saldo = scannedClient.saldo || 0;
     if (monto > saldo) { alert('Saldo insuficiente'); return; }
 
+    // Deshabilitar botón inmediatamente para evitar doble clic
+    const btn = document.querySelector('#client-panel .btn-green');
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = '⏳ Procesando...';
+    }
+
     const result = await callAPI({
         accion:    'descontar_saldo',
         id_vip:    scannedClient.id,
@@ -1284,13 +1291,19 @@ async function descontarSaldo() {
         stats.tokens += tokenCount;
         document.getElementById('descuento-detail').textContent =
             `Se descontaron ${tokenCount} tokens ($${monto.toLocaleString('es-CO')}) a ${scannedClient.nombre || scannedClient.id}. Nuevo saldo: $${result.saldo_nuevo.toLocaleString('es-CO')}`;
+        document.getElementById('client-panel').style.display    = 'none';
+        document.getElementById('descuento-result').style.display = 'block';
     } else {
         document.getElementById('descuento-detail').textContent =
             `Error: ${result.error || 'No se pudo descontar'}. Verifica e intenta de nuevo.`;
+        document.getElementById('client-panel').style.display    = 'none';
+        document.getElementById('descuento-result').style.display = 'block';
+        // Rehabilitar botón solo si hay error, para que pueda reintentar
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = '✅ Descontar Saldo';
+        }
     }
-
-    document.getElementById('client-panel').style.display    = 'none';
-    document.getElementById('descuento-result').style.display = 'block';
 }
 
 function nuevoEscaneo() {
