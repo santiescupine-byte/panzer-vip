@@ -1010,18 +1010,25 @@ function renderHistorial(txs) {
             'cupon':   { icon: '🎁', cls: 'cupon' }
         };
         const info   = iconMap[tipo] || { icon: '📋', cls: 'default' };
+        const labelMap = { canje: 'Lavada', recarga: 'Recarga', venta: 'Membresía nueva', cupon: 'Cupón canjeado' };
+        const label  = tx.descripcion || labelMap[tipo] || tx.tipo || 'Movimiento';
         const tokens = Math.abs(Math.round((tx.monto || 0) / PRECIO_TOKEN));
-        const sign   = isPositive ? '+' : '-';
-        const amtStr = sign + tokens + ' token' + (tokens !== 1 ? 's' : '');
+        let amtStr;
+        if (tipo === 'cupon') {
+            amtStr = '🎁 Gratis';
+        } else {
+            const sign = isPositive ? '+' : '-';
+            amtStr = sign + tokens + ' token' + (tokens !== 1 ? 's' : '');
+        }
         const item = document.createElement('div');
         item.className = 'tx-item';
         item.innerHTML = `
             <div class="tx-icon ${info.cls}">${info.icon}</div>
             <div class="tx-body">
-                <div class="tx-title">${tx.descripcion || tx.tipo || 'Movimiento'}</div>
+                <div class="tx-title">${label}</div>
                 <div class="tx-date">${formatDate(tx.fecha)}${tx.sede ? ' · ' + tx.sede : ''}</div>
             </div>
-            <div class="tx-amount ${isPositive ? 'pos' : 'neg'}">${amtStr}</div>
+            <div class="tx-amount ${isPositive ? 'pos' : (tipo === 'cupon' ? 'pos' : 'neg')}">${amtStr}</div>
         `;
         list.appendChild(item);
     });
