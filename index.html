@@ -978,7 +978,7 @@ async function callAPI(params) {
     const query = new URLSearchParams(params).toString();
     const url = APPS_SCRIPT_URL + '?' + query;
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 30000); // 30 segundos máximo
+    const timer = setTimeout(() => controller.abort(), 45000); // 45 segundos máximo
     try {
         const response = await fetch(url, { signal: controller.signal });
         clearTimeout(timer);
@@ -1357,14 +1357,24 @@ async function registrarVenta() {
     btn.disabled = true;
 
     const mem    = MEMBRESIAS[ventaMembresia];
-    const result = await callAPI({
+    const params = {
         accion:    'crear_cliente',
         nombre:    nombre,
         telefono:  telefono,
         membresia: ventaMembresia,
         operador:  currentEmpleado ? currentEmpleado.nombre : 'Empleado',
         sede:      currentSede ? currentSede.nombre : 'Sin sede'
-    });
+    };
+
+    // Primer intento
+    let result = await callAPI(params);
+
+    // Si falló, reintentar una vez automáticamente
+    if (!result.ok && !result.existe) {
+        btn.textContent = 'Reintentando...';
+        await new Promise(r => setTimeout(r, 2000)); // esperar 2 segundos
+        result = await callAPI(params);
+    }
 
     btn.textContent = 'Registrar Membresía';
     btn.disabled = false;
@@ -1387,9 +1397,13 @@ async function registrarVenta() {
         return;
     }
 
-    // Si la API falló, mostrar error y detener — nunca generar un ID falso
+    // Si la API falló tras los dos intentos, mostrar error claro
     if (!result.ok || !result.id_vip) {
-        showAlert(errorEl, result.error || 'Error al registrar el cliente. Intenta de nuevo.', 'error');
+        showAlert(errorEl,
+            (result.error || 'Error de conexión') +
+            ' — Verifica en Google Sheets si el cliente quedó guardado antes de reintentar.',
+            'error');
+        btn.disabled = false;
         return;
     }
 
