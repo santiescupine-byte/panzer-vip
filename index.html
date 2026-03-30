@@ -974,11 +974,11 @@ let cuponEnProceso     = null;   // { id_cupon, id_cliente, nombre_cliente, nomb
 // =============================================================
 // API
 // =============================================================
-async function callAPI(params) {
+async function callAPI(params, timeoutMs = 45000) {
     const query = new URLSearchParams(params).toString();
     const url = APPS_SCRIPT_URL + '?' + query;
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 45000); // 45 segundos máximo
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
         const response = await fetch(url, { signal: controller.signal });
         clearTimeout(timer);
@@ -986,7 +986,7 @@ async function callAPI(params) {
     } catch (e) {
         clearTimeout(timer);
         if (e.name === 'AbortError') {
-            return { ok: false, error: 'La operación tardó demasiado. Verifica en la hoja si el registro quedó guardado.' };
+            return { ok: false, error: 'timeout' };
         }
         console.error('Error API:', e);
         return { ok: false, error: 'Error de conexión' };
@@ -1366,49 +1366,56 @@ async function registrarVenta() {
         sede:      currentSede ? currentSede.nombre : 'Sin sede'
     };
 
-    // Primer intento
-    let result = await callAPI(params);
-
-    // Si falló, reintentar una vez automáticamente
-    if (!result.ok && !result.existe) {
-        btn.textContent = 'Reintentando...';
-        await new Promise(r => setTimeout(r, 2000)); // esperar 2 segundos
-        result = await callAPI(params);
+    // Hasta 3 intentos con timeout de 30s cada uno
+    // huboTimeout: rastrea si algún intento previo falló por demora del servidor
+    // (el cliente pudo haberse creado pero la respuesta llegó tarde)
+    let result = { ok: false, error: 'timeout' };
+    let huboTimeout = false;
+    for (let intento = 1; intento <= 3; intento++) {
+        btn.textContent = intento === 1 ? 'Registrando...' : `Reintentando (${intento}/3)...`;
+        result = await callAPI(params, 30000);
+        if (result.ok && !result.existe) break;   // creado exitosamente → salir
+        if (result.ok && result.existe) break;    // cliente encontrado → salir (ver abajo)
+        huboTimeout = huboTimeout || (result.error === 'timeout');
+        if (intento < 3) await new Promise(r => setTimeout(r, 1500));
     }
 
     btn.textContent = 'Registrar Membresía';
     btn.disabled = false;
 
-    // NUEVO: cliente ya existe — mostrar aviso y opción de recargar
+    // Cliente ya existe en el sistema
     if (result.ok && result.existe) {
-        document.getElementById('venta-form').style.display   = 'none';
-        document.getElementById('venta-existe').style.display = 'block';
-        document.getElementById('existe-nombre').textContent    = result.nombre    || nombre;
-        document.getElementById('existe-membresia').textContent = result.membresia || '—';
-        document.getElementById('existe-saldo').textContent     = '$' + (result.saldo || 0).toLocaleString('es-CO');
-        document.getElementById('existe-id').textContent        = result.id_vip    || '—';
-        // Guardar datos para ir a recargar si el empleado lo decide
-        recargaCliente = {
-            id:        result.id_vip,
-            nombre:    result.nombre,
-            membresia: result.membresia,
-            saldo:     result.saldo
-        };
-        return;
+        // Si en intentos anteriores hubo timeout, el cliente SE CREÓ en este intento
+        // (el servidor lo registró pero la respuesta llegó tarde) → mostrar carnet directamente
+        if (huboTimeout && result.id_vip) {
+            result.ok    = true;
+            result.existe = false;
+            // Continúa al bloque de generación de carnet abajo
+        } else {
+            // Cliente genuinamente ya tenía membresía antes de este intento
+            document.getElementById('venta-form').style.display   = 'none';
+            document.getElementById('venta-existe').style.display = 'block';
+            document.getElementById('existe-nombre').textContent    = result.nombre    || nombre;
+            document.getElementById('existe-membresia').textContent = result.membresia || '—';
+            document.getElementById('existe-saldo').textContent     = '$' + (result.saldo || 0).toLocaleString('es-CO');
+            document.getElementById('existe-id').textContent        = result.id_vip    || '—';
+            recargaCliente = { id: result.id_vip, nombre: result.nombre, membresia: result.membresia, saldo: result.saldo };
+            return;
+        }
     }
 
-    // Si la API falló tras los dos intentos, mostrar error claro
+    // Si falló los 3 intentos, mostrar error claro
     if (!result.ok || !result.id_vip) {
-        showAlert(errorEl,
-            (result.error || 'Error de conexión') +
-            ' — Verifica en Google Sheets si el cliente quedó guardado antes de reintentar.',
-            'error');
-        btn.disabled = false;
+        const msg = result.error === 'timeout'
+            ? 'El servidor no respondió (3 intentos). Verifica tu conexión a internet e intenta de nuevo.'
+            : (result.error || 'Error de conexión') + ' — Intenta de nuevo.';
+        showAlert(errorEl, msg, 'error');
         return;
     }
 
     const idVip = result.id_vip;
-    ventaClienteData = { id: idVip, nombre, telefono, membresia: ventaMembresia, saldo: mem.saldo, tokens: mem.tokens };
+    const saldoFinal = result.saldo || mem.saldo;
+    ventaClienteData = { id: idVip, nombre: result.nombre || nombre, telefono, membresia: ventaMembresia, saldo: saldoFinal, tokens: mem.tokens };
     stats.ventas++;
 
     document.getElementById('venta-detail').textContent =
