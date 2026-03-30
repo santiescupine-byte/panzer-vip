@@ -1355,6 +1355,8 @@ async function registrarVenta() {
 
     btn.textContent = 'Registrando...';
     btn.disabled = true;
+    errorEl.style.display = 'none';
+    errorEl.innerHTML = '';
 
     const mem    = MEMBRESIAS[ventaMembresia];
     const params = {
@@ -1366,14 +1368,14 @@ async function registrarVenta() {
         sede:      currentSede ? currentSede.nombre : 'Sin sede'
     };
 
-    // Hasta 3 intentos con timeout de 30s cada uno
+    // Hasta 3 intentos con timeout de 20s cada uno (máx ~63s total)
     // huboTimeout: rastrea si algún intento previo falló por demora del servidor
     // (el cliente pudo haberse creado pero la respuesta llegó tarde)
     let result = { ok: false, error: 'timeout' };
     let huboTimeout = false;
     for (let intento = 1; intento <= 3; intento++) {
         btn.textContent = intento === 1 ? 'Registrando...' : `Reintentando (${intento}/3)...`;
-        result = await callAPI(params, 30000);
+        result = await callAPI(params, 20000);
         if (result.ok && !result.existe) break;   // creado exitosamente → salir
         if (result.ok && result.existe) break;    // cliente encontrado → salir (ver abajo)
         huboTimeout = huboTimeout || (result.error === 'timeout');
@@ -1404,12 +1406,14 @@ async function registrarVenta() {
         }
     }
 
-    // Si falló los 3 intentos, mostrar error claro
+    // Si falló los 3 intentos, mostrar error permanente con botón de reintento
     if (!result.ok || !result.id_vip) {
         const msg = result.error === 'timeout'
-            ? 'El servidor no respondió (3 intentos). Verifica tu conexión a internet e intenta de nuevo.'
-            : (result.error || 'Error de conexión') + ' — Intenta de nuevo.';
-        showAlert(errorEl, msg, 'error');
+            ? '⚠️ Sin respuesta del servidor. Verifica el internet e intenta de nuevo. Si el problema persiste, revisa en Google Sheets si el cliente quedó registrado.'
+            : '⚠️ ' + (result.error || 'Error de conexión') + '. Intenta de nuevo.';
+        errorEl.innerHTML = msg + '<br><br><button onclick="registrarVenta()" style="background:#3b82f6;color:#fff;border:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">🔄 Reintentar</button>';
+        errorEl.className = 'alert error show';
+        errorEl.style.display = 'block';
         return;
     }
 
