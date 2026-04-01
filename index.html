@@ -222,6 +222,7 @@
         .menu-card-icon.scan   { background: rgba(6, 182, 212, 0.12); }
         .menu-card-icon.sell   { background: rgba(139, 92, 246, 0.12); }
         .menu-card-icon.coupon { background: rgba(245, 158, 11, 0.12); }
+        .menu-card-icon.send   { background: rgba(37, 211, 102, 0.12); }
         .menu-card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
         .menu-card-desc  { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
         /* Back button */
@@ -556,11 +557,16 @@
                 <div class="menu-card-desc">Registra un nuevo cliente VIP</div>
             </div>
         </div>
-        <div class="menu-grid" style="grid-template-columns: 1fr; margin-top: -4px;">
+        <div class="menu-grid" style="margin-top: -4px;">
             <div class="menu-card" onclick="goTo('screen-recarga')">
                 <div class="menu-card-icon" style="background: rgba(16, 185, 129, 0.12);">🔋</div>
                 <div class="menu-card-title">Recargar Membresía</div>
-                <div class="menu-card-desc">Escanea el QR del cliente y recarga su saldo con tokens gratis incluidos</div>
+                <div class="menu-card-desc">Escanea el QR del cliente y recarga su saldo</div>
+            </div>
+            <div class="menu-card" onclick="goTo('screen-reenvio')">
+                <div class="menu-card-icon" style="background: rgba(37, 211, 102, 0.12);">📲</div>
+                <div class="menu-card-title">Enviar Carnet</div>
+                <div class="menu-card-desc">Busca un cliente por teléfono y envíale su carnet por WhatsApp</div>
             </div>
         </div>
         <!-- NUEVO: nota sobre cupones -->
@@ -822,6 +828,58 @@
     </div>
 
     <!-- ==================== RECARGAR MEMBRESÍA ==================== -->
+    <!-- ============================================================ -->
+    <!-- PANTALLA: ENVIAR CARNET                                      -->
+    <!-- ============================================================ -->
+    <div class="screen" id="screen-reenvio">
+        <button class="back-btn" onclick="goTo('screen-menu')">← Menú</button>
+        <div class="card">
+            <div class="card-title">📲 Enviar Carnet por WhatsApp</div>
+            <div class="card-subtitle">Ingresa el número de teléfono del cliente</div>
+            <div class="form-group" style="margin-top:16px;">
+                <label class="form-label">Teléfono del cliente</label>
+                <input type="tel" class="form-input" id="reenvio-telefono"
+                       placeholder="Ej: 3001234567" autocomplete="off"
+                       oninput="this.value=this.value.replace(/\D/g,'')"
+                       onkeydown="if(event.key==='Enter') buscarClienteReenvio()">
+            </div>
+            <div id="reenvio-error" class="alert error"></div>
+            <button class="btn btn-primary" id="btn-reenvio-buscar" onclick="buscarClienteReenvio()">
+                🔍 Buscar Cliente
+            </button>
+        </div>
+
+        <!-- Resultado del cliente encontrado -->
+        <div id="reenvio-result" style="display:none;">
+            <div class="card">
+                <div class="client-info">
+                    <div class="client-row">
+                        <span class="client-label">Nombre</span>
+                        <span class="client-value" id="reenvio-nombre">—</span>
+                    </div>
+                    <div class="client-row">
+                        <span class="client-label">Código VIP</span>
+                        <span class="client-value" id="reenvio-id">—</span>
+                    </div>
+                    <div class="client-row">
+                        <span class="client-label">Membresía</span>
+                        <span class="client-value" id="reenvio-membresia">—</span>
+                    </div>
+                    <div class="client-row">
+                        <span class="client-label">Saldo</span>
+                        <span class="client-value" id="reenvio-saldo">—</span>
+                    </div>
+                </div>
+                <button class="btn btn-whatsapp" onclick="enviarCarnetWhatsApp()" style="margin-top:16px;">
+                    📲 Enviar Carnet por WhatsApp
+                </button>
+                <button class="btn btn-outline" onclick="resetReenvio()" style="margin-top:8px;">
+                    Buscar otro cliente
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="screen" id="screen-recarga">
         <button class="back-btn" onclick="goTo('screen-menu')">← Menú</button>
         <div id="recarga-scan-section">
@@ -1495,6 +1553,78 @@ function enviarWhatsApp() {
         'Presenta tu QR en cualquier sede 🙌'
     );
     window.open('https://wa.me/' + tel + '?text=' + mensaje, '_blank');
+}
+
+// =============================================================
+// ENVIAR CARNET (búsqueda por teléfono)
+// =============================================================
+let reenvioClienteData = null;
+
+async function buscarClienteReenvio() {
+    const tel     = document.getElementById('reenvio-telefono').value.trim();
+    const errorEl = document.getElementById('reenvio-error');
+    const btn     = document.getElementById('btn-reenvio-buscar');
+
+    if (!tel || tel.length < 7) {
+        showAlert(errorEl, 'Ingresa un número de teléfono válido', 'error');
+        return;
+    }
+
+    btn.textContent = 'Buscando...';
+    btn.disabled = true;
+    errorEl.style.display = 'none';
+    document.getElementById('reenvio-result').style.display = 'none';
+
+    const result = await callAPI({ accion: 'buscar_por_telefono', telefono: tel });
+
+    btn.textContent = '🔍 Buscar Cliente';
+    btn.disabled = false;
+
+    if (!result.ok || !result.cliente) {
+        showAlert(errorEl, result.error || 'Cliente no encontrado', 'error');
+        return;
+    }
+
+    reenvioClienteData = result.cliente;
+    document.getElementById('reenvio-nombre').textContent    = result.cliente.nombre;
+    document.getElementById('reenvio-id').textContent        = result.cliente.id;
+    document.getElementById('reenvio-membresia').textContent = result.cliente.membresia;
+    document.getElementById('reenvio-saldo').textContent     = '$' + (result.cliente.saldo || 0).toLocaleString('es-CO');
+    document.getElementById('reenvio-result').style.display  = 'block';
+}
+
+function enviarCarnetWhatsApp() {
+    if (!reenvioClienteData) return;
+    const c   = reenvioClienteData;
+    const mem = MEMBRESIAS[c.membresia] || { tokens: 0, gratis: 0, saldo: c.saldo, precio: 0 };
+
+    let tel = c.telefono.toString().replace(/\D/g, '');
+    if (tel.startsWith('3') && tel.length === 10) tel = '57' + tel;
+    if (!tel.startsWith('57')) tel = '57' + tel;
+
+    const carnetParams = new URLSearchParams({ id: c.id, nombre: c.nombre, mem: c.membresia, saldo: c.saldo });
+    const carnetLink   = 'https://vip.panzercarwash.com/carnet.html?' + carnetParams.toString();
+
+    const mensaje = encodeURIComponent(
+        '🚗 *PANZER CARWASH*\n' +
+        '━━━━━━━━━━━━━━━\n' +
+        '¡Hola ' + c.nombre + '! 👋\n\n' +
+        'Tu membresía *' + c.membresia + '* está activa ✅\n\n' +
+        '💰 Saldo actual: *$' + (c.saldo || 0).toLocaleString('es-CO') + '*\n\n' +
+        '📲 Descarga tu carnet:\n' + carnetLink + '\n\n' +
+        '🔑 Tu código VIP: *' + c.id + '*\n\n' +
+        '━━━━━━━━━━━━━━━\n' +
+        'Presenta tu QR en cualquier sede 🙌'
+    );
+    window.open('https://wa.me/' + tel + '?text=' + mensaje, '_blank');
+}
+
+function resetReenvio() {
+    reenvioClienteData = null;
+    document.getElementById('reenvio-telefono').value       = '';
+    document.getElementById('reenvio-result').style.display = 'none';
+    document.getElementById('reenvio-error').style.display  = 'none';
+    document.getElementById('reenvio-telefono').focus();
 }
 
 // =============================================================
