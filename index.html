@@ -1581,7 +1581,15 @@ async function buscarClienteReenvio() {
     btn.disabled = false;
 
     if (!result.ok || !result.cliente) {
-        showAlert(errorEl, result.error || 'Cliente no encontrado', 'error');
+        errorEl.innerHTML =
+            '👤 <strong>Cliente no encontrado</strong><br>' +
+            '<span style="font-size:12px;line-height:1.6;">' +
+            'Este número no tiene membresía activa registrada. ' +
+            'Puede que el registro haya fallado o que el cliente aún no tenga membresía. ' +
+            'Verifica en Google Sheets o regístralo nuevamente desde <em>Vender Membresía</em>.' +
+            '</span>';
+        errorEl.className = 'alert error show';
+        errorEl.style.display = 'block';
         return;
     }
 
