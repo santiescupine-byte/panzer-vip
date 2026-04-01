@@ -761,8 +761,12 @@
         <div id="venta-result" style="display:none;">
             <div class="card">
                 <div class="success-box">
-                    <div class="success-icon">🎉</div>
-                    <div class="success-title">¡Membresía Creada!</div>
+                    <!-- Aviso solo visible cuando el cliente ya existía -->
+                    <div id="aviso-ya-existe" style="display:none; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.4); border-radius:10px; padding:10px 14px; margin-bottom:14px; font-size:13px; color:#f59e0b; text-align:left;">
+                        ⚠️ <strong>Este cliente ya tenía membresía activa.</strong> No se creó una nueva. Revisa los datos antes de enviar.
+                    </div>
+                    <div class="success-icon" id="venta-success-icon">🎉</div>
+                    <div class="success-title" id="venta-success-title">¡Membresía Creada!</div>
                     <div class="success-sub" id="venta-detail"></div>
                     <div class="qr-mini-card">
                         <div id="qr-venta-container"></div>
@@ -960,6 +964,7 @@ let currentEmpleado    = null;   // NUEVO
 let scannedClient      = null;
 let tokenCount         = 1;
 let ventaMembresia     = null;
+let isRegistrando      = false;   // bloquea dobles envíos
 let ventaPago          = 'Efectivo';
 let ventaClienteData   = null;
 let qrScanner          = null;
@@ -1353,6 +1358,10 @@ async function registrarVenta() {
     if (!telefono || telefono.length < 7 || !/^[0-9]+$/.test(telefono)) { showAlert(errorEl, 'Ingresa un teléfono válido', 'error'); return; }
     if (!ventaMembresia)                                   { showAlert(errorEl, 'Selecciona un tipo de membresía', 'error'); return; }
 
+    // Bloquear doble envío — si ya hay un registro en curso, ignorar
+    if (isRegistrando) return;
+    isRegistrando = true;
+
     btn.textContent = 'Registrando...';
     btn.disabled = true;
     errorEl.style.display = 'none';
@@ -1368,63 +1377,56 @@ async function registrarVenta() {
         sede:      currentSede ? currentSede.nombre : 'Sin sede'
     };
 
-    // Hasta 3 intentos con timeout de 20s cada uno (máx ~63s total)
-    // huboTimeout: rastrea si algún intento previo falló por demora del servidor
-    // (el cliente pudo haberse creado pero la respuesta llegó tarde)
+    // Hasta 3 intentos de 20s — si el servidor crea el cliente pero responde tarde,
+    // el reintento lo encuentra como "existe" y siempre va al carnet de todas formas
     let result = { ok: false, error: 'timeout' };
-    let huboTimeout = false;
     for (let intento = 1; intento <= 3; intento++) {
         btn.textContent = intento === 1 ? 'Registrando...' : `Reintentando (${intento}/3)...`;
         result = await callAPI(params, 20000);
-        if (result.ok && !result.existe) break;   // creado exitosamente → salir
-        if (result.ok && result.existe) break;    // cliente encontrado → salir (ver abajo)
-        huboTimeout = huboTimeout || (result.error === 'timeout');
+        if (result.ok) break;   // respuesta válida (nuevo o ya existía) → salir
         if (intento < 3) await new Promise(r => setTimeout(r, 1500));
     }
 
     btn.textContent = 'Registrar Membresía';
     btn.disabled = false;
 
-    // Cliente ya existe en el sistema
-    if (result.ok && result.existe) {
-        // Si en intentos anteriores hubo timeout, el cliente SE CREÓ en este intento
-        // (el servidor lo registró pero la respuesta llegó tarde) → mostrar carnet directamente
-        if (huboTimeout && result.id_vip) {
-            result.ok    = true;
-            result.existe = false;
-            // Continúa al bloque de generación de carnet abajo
-        } else {
-            // Cliente genuinamente ya tenía membresía antes de este intento
-            document.getElementById('venta-form').style.display   = 'none';
-            document.getElementById('venta-existe').style.display = 'block';
-            document.getElementById('existe-nombre').textContent    = result.nombre    || nombre;
-            document.getElementById('existe-membresia').textContent = result.membresia || '—';
-            document.getElementById('existe-saldo').textContent     = '$' + (result.saldo || 0).toLocaleString('es-CO');
-            document.getElementById('existe-id').textContent        = result.id_vip    || '—';
-            recargaCliente = { id: result.id_vip, nombre: result.nombre, membresia: result.membresia, saldo: result.saldo };
-            return;
-        }
-    }
-
-    // Si falló los 3 intentos, mostrar error permanente con botón de reintento
+    // Sin respuesta tras 3 intentos → error claro y permanente
     if (!result.ok || !result.id_vip) {
-        const msg = result.error === 'timeout'
-            ? '⚠️ Sin respuesta del servidor. Verifica el internet e intenta de nuevo. Si el problema persiste, revisa en Google Sheets si el cliente quedó registrado.'
-            : '⚠️ ' + (result.error || 'Error de conexión') + '. Intenta de nuevo.';
-        errorEl.innerHTML = msg + '<br><br><button onclick="registrarVenta()" style="background:#3b82f6;color:#fff;border:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">🔄 Reintentar</button>';
+        isRegistrando = false;
+        const msg = '⚠️ Sin respuesta del servidor tras 3 intentos. Verifica el internet e intenta de nuevo. ' +
+                    'Si el problema persiste, revisa en Google Sheets si el cliente quedó registrado.';
+        errorEl.innerHTML = msg;
         errorEl.className = 'alert error show';
         errorEl.style.display = 'block';
         return;
     }
 
-    const idVip = result.id_vip;
-    const saldoFinal = result.saldo || mem.saldo;
-    ventaClienteData = { id: idVip, nombre: result.nombre || nombre, telefono, membresia: ventaMembresia, saldo: saldoFinal, tokens: mem.tokens };
-    stats.ventas++;
+    // Éxito — nuevo cliente O cliente que ya existía (en ambos casos mostrar carnet)
+    // Si el servidor encontró al cliente ya registrado, usamos sus datos reales
+    const clienteExistia = result.existe === true;
+    const idVip          = result.id_vip;
+    const memFinal       = result.membresia   || ventaMembresia;
+    const memInfo        = MEMBRESIAS[memFinal] || mem;
+    const saldoFinal     = result.saldo !== undefined ? result.saldo : mem.saldo;
+    ventaClienteData = { id: idVip, nombre: result.nombre || nombre, telefono, membresia: memFinal, saldo: saldoFinal, tokens: memInfo.tokens };
+    if (!clienteExistia) stats.ventas++;
 
-    document.getElementById('venta-detail').textContent =
-        `${ventaMembresia} · ${mem.tokens} Tokens (${mem.gratis} gratis) · $${mem.precio.toLocaleString('es-CO')} · ${ventaPago}`;
-    document.getElementById('venta-qr-nombre').textContent = nombre;
+    // Aviso visible solo cuando el cliente ya tenía membresía
+    const avisoEl = document.getElementById('aviso-ya-existe');
+    if (clienteExistia) {
+        avisoEl.style.display = 'block';
+        document.getElementById('venta-success-icon').textContent  = '⚠️';
+        document.getElementById('venta-success-title').textContent = 'Cliente ya registrado';
+        document.getElementById('venta-detail').textContent =
+            `Membresía activa: ${memFinal} · Saldo: $${saldoFinal.toLocaleString('es-CO')}`;
+    } else {
+        avisoEl.style.display = 'none';
+        document.getElementById('venta-success-icon').textContent  = '🎉';
+        document.getElementById('venta-success-title').textContent = '¡Membresía Creada!';
+        document.getElementById('venta-detail').textContent =
+            `${ventaMembresia} · ${mem.tokens} Tokens (${mem.gratis} gratis) · $${mem.precio.toLocaleString('es-CO')} · ${ventaPago}`;
+    }
+    document.getElementById('venta-qr-nombre').textContent = result.nombre || nombre;
     document.getElementById('venta-qr-id').textContent     = idVip;
 
     const qrContainer = document.getElementById('qr-venta-container');
@@ -1440,11 +1442,10 @@ async function registrarVenta() {
 
     document.getElementById('venta-form').style.display   = 'none';
     document.getElementById('venta-result').style.display = 'block';
-
-    if (!result.ok) showAlert(errorEl, 'Registrado localmente. Error: ' + (result.error || ''), 'error');
+    isRegistrando = false;   // liberar bloqueo — carnet mostrado exitosamente
 }
 
-function nuevaVenta() { resetVentaForm(); }
+function nuevaVenta() { isRegistrando = false; resetVentaForm(); }
 
 // NUEVO: ir directo a recargar cuando el cliente ya existe
 function irARecargar() {
