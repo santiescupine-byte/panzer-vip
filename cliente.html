@@ -462,6 +462,37 @@
         }
         .tx-amount.pos { color: var(--accent-green); }
         .tx-amount.neg { color: var(--accent-red); }
+        /* ===== PUNTOS ===== */
+        .puntos-card {
+            background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(251,191,36,0.04));
+            border: 1px solid rgba(245,158,11,0.25);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .puntos-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .puntos-icon { font-size: 28px; }
+        .puntos-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .puntos-valor { font-size: 18px; font-weight: 800; color: var(--accent-gold); }
+        .puntos-barra-bg { background: rgba(245,158,11,0.12); border-radius: 99px; height: 6px; margin-bottom: 8px; overflow: hidden; }
+        .puntos-barra-fill { background: linear-gradient(90deg, #f59e0b, #fbbf24); height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+        .puntos-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
+        .btn-canjear {
+            width: 100%; padding: 12px; border: none; border-radius: 12px;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: #000; font-weight: 800; font-size: 14px; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-canjear:active { transform: scale(0.98); }
+        /* ===== MODAL CANJE ===== */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            z-index: 100; display: flex; align-items: flex-end; justify-content: center;
+        }
+        .modal-box {
+            background: var(--bg-card); border-radius: 20px 20px 0 0;
+            padding: 28px 20px; width: 100%; max-width: 480px;
+        }
         .loading-box {
             display: flex;
             align-items: center;
@@ -753,6 +784,53 @@
                     </div>
                 </div>
             </div>
+            <!-- Tarjeta de puntos -->
+            <div class="puntos-card" id="puntos-card">
+                <div class="puntos-top">
+                    <div class="puntos-icon">⭐</div>
+                    <div class="puntos-info">
+                        <div class="puntos-label">Puntos acumulados</div>
+                        <div class="puntos-valor"><span id="cuenta-puntos">0</span> pts = $<span id="cuenta-puntos-valor">0</span></div>
+                    </div>
+                </div>
+                <div class="puntos-barra-bg">
+                    <div class="puntos-barra-fill" id="puntos-barra"></div>
+                </div>
+                <div class="puntos-meta">Ganas 1 punto por cada $100 en recargas · Mínimo para canjear: 5.000 pts</div>
+                <button class="btn-canjear" id="btn-canjear-puntos" onclick="abrirCanjePuntos()" style="display:none;">
+                    🎁 Canjear $<span id="btn-canjear-valor">0</span> en productos Panzer
+                </button>
+            </div>
+
+            <!-- Modal canje de puntos -->
+            <div class="modal-overlay" id="modal-canje" onclick="cerrarModalCanje()" style="display:none;">
+                <div class="modal-box" onclick="event.stopPropagation()">
+                    <div id="canje-step-confirm">
+                        <div style="font-size:40px;text-align:center;margin-bottom:12px;">🎁</div>
+                        <div style="font-size:17px;font-weight:700;text-align:center;margin-bottom:8px;">¿Canjear tus puntos?</div>
+                        <div style="font-size:13px;color:var(--text-secondary);text-align:center;margin-bottom:20px;">
+                            Se generará un bono de <strong>$<span id="modal-canje-valor">0</span></strong> válido para cualquier producto Panzer.<br><br>
+                            Panzer se pondrá en contacto contigo para coordinar la entrega o el uso en sede.
+                        </div>
+                        <button class="btn btn-primary" id="btn-confirmar-canje" onclick="confirmarCanje()">Generar mi bono</button>
+                        <button class="btn btn-outline" onclick="cerrarModalCanje()" style="margin-top:8px;">Cancelar</button>
+                    </div>
+                    <div id="canje-step-exito" style="display:none;">
+                        <div style="font-size:40px;text-align:center;margin-bottom:12px;">✅</div>
+                        <div style="font-size:17px;font-weight:700;text-align:center;margin-bottom:8px;">¡Bono generado!</div>
+                        <div style="font-size:13px;color:var(--text-secondary);text-align:center;margin-bottom:6px;">Tu código de bono es:</div>
+                        <div style="font-size:22px;font-weight:800;text-align:center;letter-spacing:3px;color:var(--accent-gold);margin-bottom:16px;" id="modal-codigo-bono">—</div>
+                        <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:20px;">
+                            Se enviará una solicitud a Panzer por WhatsApp. Ellos te contactarán para coordinar cómo usarlo.
+                        </div>
+                        <button class="btn btn-primary" onclick="enviarBonoWhatsApp()" style="background:linear-gradient(135deg,#25d366,#128c7e);">
+                            📲 Enviar solicitud por WhatsApp
+                        </button>
+                        <button class="btn btn-outline" onclick="cerrarModalCanje()" style="margin-top:8px;">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Historial -->
             <div class="section-title">Historial de movimientos</div>
             <div id="tx-loading" class="loading-box">
@@ -920,6 +998,21 @@ function iniciarApp() {
     document.getElementById('cuenta-tokens').textContent = tokens;
     document.getElementById('cuenta-mem').textContent    = clienteActual.membresia;
     document.getElementById('cuenta-codigo').textContent  = clienteActual.id;
+    // Puntos — se calculan cuando cargue el historial; mostramos 0 por ahora
+    renderPuntos(0);
+}
+
+function renderPuntos(puntos) {
+    const MINIMO = 5000;
+    document.getElementById('cuenta-puntos').textContent       = puntos.toLocaleString('es-CO');
+    document.getElementById('cuenta-puntos-valor').textContent = puntos.toLocaleString('es-CO');
+    document.getElementById('btn-canjear-valor').textContent   = puntos.toLocaleString('es-CO');
+    document.getElementById('modal-canje-valor').textContent   = puntos.toLocaleString('es-CO');
+    // Barra de progreso (máx visual = 10.000 pts)
+    const pct = Math.min((puntos / 10000) * 100, 100);
+    document.getElementById('puntos-barra').style.width = pct + '%';
+    // Mostrar botón de canje solo si tiene suficientes puntos
+    document.getElementById('btn-canjear-puntos').style.display = puntos >= MINIMO ? 'block' : 'none';
 }
 // ============================================================
 // CARNET
@@ -991,11 +1084,31 @@ async function cargarHistorial() {
     if (result.ok && result.transacciones && result.transacciones.length > 0) {
         document.getElementById('tx-list').style.display = 'flex';
         renderHistorial(result.transacciones);
+        // Calcular puntos desde el historial
+        const puntos = calcularPuntosDesdeHistorial(result.transacciones);
+        clienteActual.puntos = puntos;
+        renderPuntos(puntos);
         historialCargado = true;
     } else {
         document.getElementById('tx-empty').style.display = 'block';
+        renderPuntos(0);
         historialCargado = true;
     }
+}
+
+function calcularPuntosDesdeHistorial(txs) {
+    let ganados  = 0;
+    let canjeados = 0;
+    txs.forEach(tx => {
+        const tipo = (tx.tipo || '').toLowerCase();
+        const monto = Math.abs(tx.monto || 0);
+        if (tipo === 'recarga' || tipo === 'venta') {
+            ganados += Math.floor(monto / 100);
+        } else if (tipo === 'bono_puntos') {
+            canjeados += monto; // monto guardado como valor positivo de los puntos canjeados
+        }
+    });
+    return Math.max(0, ganados - canjeados);
 }
 function renderHistorial(txs) {
     const list = document.getElementById('tx-list');
@@ -1004,21 +1117,31 @@ function renderHistorial(txs) {
         const tipo = (tx.tipo || '').toLowerCase();
         const isPositive = tipo === 'recarga' || tipo === 'venta';
         const iconMap = {
-            'canje':   { icon: '🚗', cls: 'canje' },
-            'recarga': { icon: '🔋', cls: 'recarga' },
-            'venta':   { icon: '🎉', cls: 'venta' },
-            'cupon':   { icon: '🎁', cls: 'cupon' }
+            'canje':       { icon: '🚗', cls: 'canje'   },
+            'recarga':     { icon: '🔋', cls: 'recarga' },
+            'venta':       { icon: '🎉', cls: 'venta'   },
+            'cupon':       { icon: '🎁', cls: 'cupon'   },
+            'bono_puntos': { icon: '⭐', cls: 'recarga'  }
         };
         const info   = iconMap[tipo] || { icon: '📋', cls: 'default' };
-        const labelMap = { canje: 'Lavada', recarga: 'Recarga', venta: 'Membresía nueva', cupon: 'Cupón canjeado' };
+        const labelMap = {
+            canje:       'Lavada',
+            recarga:     'Recarga',
+            venta:       'Membresía nueva',
+            cupon:       'Cupón canjeado',
+            bono_puntos: 'Puntos canjeados'
+        };
         const label  = tx.descripcion || labelMap[tipo] || tx.tipo || 'Movimiento';
         const tokens = Math.abs(Math.round((tx.monto || 0) / PRECIO_TOKEN));
-        let amtStr;
+        let amtStr, amtCls;
         if (tipo === 'cupon') {
-            amtStr = '🎁 Gratis';
+            amtStr = '🎁 Gratis'; amtCls = 'pos';
+        } else if (tipo === 'bono_puntos') {
+            amtStr = '−' + Math.abs(tx.monto || 0).toLocaleString('es-CO') + ' pts'; amtCls = 'neg';
         } else {
             const sign = isPositive ? '+' : '-';
             amtStr = sign + tokens + ' token' + (tokens !== 1 ? 's' : '');
+            amtCls = isPositive ? 'pos' : 'neg';
         }
         const item = document.createElement('div');
         item.className = 'tx-item';
@@ -1028,7 +1151,7 @@ function renderHistorial(txs) {
                 <div class="tx-title">${label}</div>
                 <div class="tx-date">${formatDate(tx.fecha)}${tx.sede ? ' · ' + tx.sede : ''}</div>
             </div>
-            <div class="tx-amount ${isPositive ? 'pos' : (tipo === 'cupon' ? 'pos' : 'neg')}">${amtStr}</div>
+            <div class="tx-amount ${amtCls}">${amtStr}</div>
         `;
         list.appendChild(item);
     });
@@ -1099,6 +1222,77 @@ function renderCupones(cupones) {
         grid.appendChild(card);
     });
 }
+// ============================================================
+// SISTEMA DE PUNTOS
+// ============================================================
+function abrirCanjePuntos() {
+    const puntos = clienteActual.puntos || 0;
+    if (puntos < 5000) return;
+    // Reset modal al estado de confirmación
+    document.getElementById('canje-step-confirm').style.display = 'block';
+    document.getElementById('canje-step-exito').style.display   = 'none';
+    document.getElementById('btn-confirmar-canje').disabled     = false;
+    document.getElementById('btn-confirmar-canje').textContent  = 'Generar mi bono';
+    document.getElementById('modal-canje-valor').textContent    = puntos.toLocaleString('es-CO');
+    document.getElementById('modal-canje').style.display        = 'flex';
+}
+
+async function confirmarCanje() {
+    const btn = document.getElementById('btn-confirmar-canje');
+    btn.disabled    = true;
+    btn.textContent = 'Generando...';
+    const result = await callAPI({ accion: 'canjear_puntos', id_vip: clienteActual.id });
+    if (result.ok && result.codigo) {
+        // Resetear puntos localmente
+        clienteActual.puntos = 0;
+        sessionStorage.setItem('panzer_cliente', JSON.stringify(clienteActual));
+        renderPuntos(0);
+        // Forzar recarga del historial la próxima vez (para reflejar la transacción bono_puntos)
+        historialCargado = false;
+        // Guardar código para el botón de WhatsApp
+        document.getElementById('modal-codigo-bono').textContent = result.codigo;
+        // Guardar valor del bono (puntos originales devueltos por el servidor)
+        if (result.puntos) {
+            document.getElementById('modal-canje-valor').textContent = result.puntos.toLocaleString('es-CO');
+        }
+        // Mostrar paso de éxito
+        document.getElementById('canje-step-confirm').style.display = 'none';
+        document.getElementById('canje-step-exito').style.display   = 'block';
+    } else {
+        btn.disabled    = false;
+        btn.textContent = 'Generar mi bono';
+        alert(result.error || 'Hubo un error al generar el bono. Intenta de nuevo.');
+    }
+}
+
+function cerrarModalCanje() {
+    document.getElementById('modal-canje').style.display = 'none';
+    // Resetear modal al estado inicial para la próxima vez
+    document.getElementById('canje-step-confirm').style.display = 'block';
+    document.getElementById('canje-step-exito').style.display   = 'none';
+    document.getElementById('btn-confirmar-canje').disabled     = false;
+    document.getElementById('btn-confirmar-canje').textContent  = 'Generar mi bono';
+}
+
+function enviarBonoWhatsApp() {
+    const codigo = document.getElementById('modal-codigo-bono').textContent;
+    const puntos = (clienteActual.puntos !== undefined) ? clienteActual.puntos : 0;
+    // En el momento de enviar, los puntos ya se resetearon a 0; usamos el valor del bono guardado
+    const valorBono = document.getElementById('modal-canje-valor').textContent;
+    const nombre    = clienteActual.nombre;
+    const id        = clienteActual.id;
+    const msg = encodeURIComponent(
+        `🎁 *SOLICITUD DE REDENCIÓN DE BONO*\n\n` +
+        `👤 Cliente: ${nombre}\n` +
+        `🔑 Código VIP: ${id}\n` +
+        `🎟️ Código Bono: ${codigo}\n` +
+        `💰 Valor: $${valorBono}\n\n` +
+        `Deseo canjear mi bono en un producto Panzer. ` +
+        `Por favor coordinar entrega a domicilio o indicarme en qué sede puedo reclamarlo. ¡Gracias! 🚗✨`
+    );
+    window.open(`https://wa.me/573003096264?text=${msg}`, '_blank');
+}
+
 // ============================================================
 // MODAL QR CUPÓN
 // ============================================================
@@ -1196,8 +1390,10 @@ async function refrescarDatosSilencioso() {
         if (result.ok && result.cliente) {
             const actualizado = result.cliente;
             // Solo re-renderiza si cambió el saldo o la membresía
-            const saldoCambio    = actualizado.saldo    !== clienteActual.saldo;
-            const memCambio      = actualizado.membresia !== clienteActual.membresia;
+            const saldoCambio  = actualizado.saldo    !== clienteActual.saldo;
+            const memCambio    = actualizado.membresia !== clienteActual.membresia;
+            // Conservar puntos calculados desde el historial
+            actualizado.puntos = clienteActual.puntos || 0;
             clienteActual = actualizado;
             sessionStorage.setItem('panzer_cliente', JSON.stringify(clienteActual));
             if (saldoCambio || memCambio) {
@@ -1207,6 +1403,8 @@ async function refrescarDatosSilencioso() {
                 document.getElementById('cuenta-tokens').textContent = tokens;
                 document.getElementById('cuenta-mem').textContent    = clienteActual.membresia;
                 document.getElementById('header-mem-sub').textContent = 'Membresía ' + clienteActual.membresia;
+                // Si hubo recarga nueva, forzar recarga de historial para recalcular puntos
+                if (saldoCambio) historialCargado = false;
             }
         }
     } catch (e) { /* silencioso — no molesta al usuario si falla */ }
