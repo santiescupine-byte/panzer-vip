@@ -1115,21 +1115,23 @@ function renderHistorial(txs) {
     list.innerHTML = '';
     txs.forEach(tx => {
         const tipo = (tx.tipo || '').toLowerCase();
-        const isPositive = tipo === 'recarga' || tipo === 'venta';
+        const isPositive = tipo === 'recarga' || tipo === 'recarga inicial' || tipo === 'venta';
         const iconMap = {
-            'canje':       { icon: '🚗', cls: 'canje'   },
-            'recarga':     { icon: '🔋', cls: 'recarga' },
-            'venta':       { icon: '🎉', cls: 'venta'   },
-            'cupon':       { icon: '🎁', cls: 'cupon'   },
-            'bono_puntos': { icon: '⭐', cls: 'recarga'  }
+            'canje':           { icon: '🚗', cls: 'canje'   },
+            'recarga':         { icon: '🔋', cls: 'recarga' },
+            'recarga inicial': { icon: '🎉', cls: 'venta'   },
+            'venta':           { icon: '🎉', cls: 'venta'   },
+            'cupon':           { icon: '🎁', cls: 'cupon'   },
+            'bono_puntos':     { icon: '⭐', cls: 'recarga'  }
         };
         const info   = iconMap[tipo] || { icon: '📋', cls: 'default' };
         const labelMap = {
-            canje:       'Lavada',
-            recarga:     'Recarga',
-            venta:       'Membresía nueva',
-            cupon:       'Cupón canjeado',
-            bono_puntos: 'Puntos canjeados'
+            'canje':           'Lavada',
+            'recarga':         'Recarga',
+            'recarga inicial': 'Membresía nueva',
+            'venta':           'Membresía nueva',
+            'cupon':           'Cupón canjeado',
+            'bono_puntos':     'Puntos canjeados'
         };
         const label  = tx.descripcion || labelMap[tipo] || tx.tipo || 'Movimiento';
         const tokens = Math.abs(Math.round((tx.monto || 0) / PRECIO_TOKEN));
