@@ -219,12 +219,48 @@
             font-size: 26px;
             margin: 0 auto 12px;
         }
-        .menu-card-icon.scan   { background: rgba(6, 182, 212, 0.12); }
-        .menu-card-icon.sell   { background: rgba(139, 92, 246, 0.12); }
-        .menu-card-icon.coupon { background: rgba(245, 158, 11, 0.12); }
-        .menu-card-icon.send   { background: rgba(37, 211, 102, 0.12); }
+        .menu-card-icon.scan    { background: rgba(6, 182, 212, 0.12); }
+        .menu-card-icon.sell    { background: rgba(139, 92, 246, 0.12); }
+        .menu-card-icon.coupon  { background: rgba(245, 158, 11, 0.12); }
+        .menu-card-icon.send    { background: rgba(37, 211, 102, 0.12); }
+        .menu-card-icon.report  { background: rgba(59, 130, 246, 0.12); }
         .menu-card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
         .menu-card-desc  { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+        /* Reporte turno */
+        .turno-pills {
+            display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0;
+        }
+        .turno-pill {
+            padding: 8px 16px; border-radius: 99px; border: 2px solid var(--border);
+            background: var(--bg-secondary); color: var(--text-secondary);
+            font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .turno-pill.active {
+            border-color: var(--accent-cyan); background: rgba(6,182,212,0.1); color: var(--accent-cyan);
+        }
+        .reporte-card {
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            border-radius: 16px; padding: 20px; margin-top: 16px;
+        }
+        .reporte-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid var(--border);
+        }
+        .reporte-row:last-child { border-bottom: none; }
+        .reporte-label { font-size: 13px; color: var(--text-secondary); }
+        .reporte-value { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+        .reporte-total {
+            background: rgba(6,182,212,0.06); border: 1px solid rgba(6,182,212,0.2);
+            border-radius: 12px; padding: 14px; margin-top: 12px; text-align: center;
+        }
+        .btn-whatsapp-report {
+            width: 100%; padding: 14px; border: none; border-radius: 12px; margin-top: 14px;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            color: white; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .btn-whatsapp-report:active { transform: scale(0.98); }
         /* Back button */
         .back-btn {
             display: inline-flex;
@@ -569,6 +605,14 @@
                 <div class="menu-card-desc">Busca un cliente por teléfono y envíale su carnet por WhatsApp</div>
             </div>
         </div>
+        <!-- Reporte de turno -->
+        <div class="menu-grid" style="margin-top: -4px;">
+            <div class="menu-card" onclick="goTo('screen-reporte')" style="grid-column: span 2;">
+                <div class="menu-card-icon report">📊</div>
+                <div class="menu-card-title">Reporte de Turno</div>
+                <div class="menu-card-desc">Genera y envía el resumen de tu turno por WhatsApp</div>
+            </div>
+        </div>
         <!-- NUEVO: nota sobre cupones -->
         <div style="background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.15); border-radius:12px; padding:14px; margin-bottom:20px; text-align:center; font-size:12px; color:var(--text-muted);">
             🎁 Al escanear el QR de un cupón del cliente, el sistema lo detectará automáticamente
@@ -831,6 +875,65 @@
     <!-- ============================================================ -->
     <!-- PANTALLA: ENVIAR CARNET                                      -->
     <!-- ============================================================ -->
+    <!-- ==================== REPORTE DE TURNO ==================== -->
+    <div class="screen" id="screen-reporte">
+        <button class="back-btn" onclick="goTo('screen-menu')">← Menú</button>
+        <div class="card">
+            <div class="card-title">📊 Reporte de Turno</div>
+            <div class="card-subtitle">Selecciona cuánto tiempo llevas en turno</div>
+            <div class="turno-pills" id="turno-pills">
+                <button class="turno-pill" onclick="seleccionarTurno(6,  this)">6 horas</button>
+                <button class="turno-pill active" onclick="seleccionarTurno(8,  this)">8 horas</button>
+                <button class="turno-pill" onclick="seleccionarTurno(12, this)">12 horas</button>
+                <button class="turno-pill" onclick="seleccionarTurno(16, this)">16 horas</button>
+            </div>
+            <div id="reporte-alert" class="alert error" style="display:none;"></div>
+            <button class="btn btn-primary" id="btn-generar-reporte" onclick="generarReporte()">
+                Generar reporte
+            </button>
+        </div>
+
+        <!-- Resultado del reporte -->
+        <div id="reporte-resultado" style="display:none;">
+            <div class="card">
+                <div class="card-title">📋 Resumen del turno</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:12px;" id="reporte-meta">—</div>
+                <div class="reporte-card">
+                    <div class="reporte-row">
+                        <span class="reporte-label">🚗 Lavadas realizadas</span>
+                        <span class="reporte-value" id="rep-lavadas">—</span>
+                    </div>
+                    <div class="reporte-row">
+                        <span class="reporte-label">🔋 Tokens canjeados</span>
+                        <span class="reporte-value" id="rep-tokens">—</span>
+                    </div>
+                    <div class="reporte-row">
+                        <span class="reporte-label">🛒 Membresías vendidas</span>
+                        <span class="reporte-value" id="rep-ventas">—</span>
+                    </div>
+                    <div class="reporte-row">
+                        <span class="reporte-label">💰 Recargas procesadas</span>
+                        <span class="reporte-value" id="rep-recargas">—</span>
+                    </div>
+                    <div class="reporte-row">
+                        <span class="reporte-label">🎁 Cupones canjeados</span>
+                        <span class="reporte-value" id="rep-cupones">—</span>
+                    </div>
+                </div>
+                <div class="reporte-total" id="rep-detalle-mem" style="display:none;">
+                    <div style="font-size:11px; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px;">Detalle membresías</div>
+                    <div style="font-size:13px; font-weight:600;" id="rep-mem-texto">—</div>
+                </div>
+                <button class="btn-whatsapp-report" onclick="enviarReporteWhatsApp()">
+                    📲 Enviar por WhatsApp
+                </button>
+                <button class="btn btn-outline" onclick="resetReporte()" style="margin-top:8px;">
+                    Generar otro
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="screen" id="screen-reenvio">
         <button class="back-btn" onclick="goTo('screen-menu')">← Menú</button>
         <div class="card">
@@ -1762,6 +1865,114 @@ async function ejecutarRecarga() {
 function nuevaRecarga() {
     resetRecarga();
     startScannerRecarga();
+}
+
+// =============================================================
+// REPORTE DE TURNO
+// =============================================================
+let turnoHoras = 8; // valor por defecto
+let reporteData = null;
+
+function seleccionarTurno(horas, btn) {
+    turnoHoras = horas;
+    document.querySelectorAll('.turno-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+async function generarReporte() {
+    const btn = document.getElementById('btn-generar-reporte');
+    const alertEl = document.getElementById('reporte-alert');
+    btn.textContent = 'Generando...';
+    btn.disabled = true;
+    alertEl.style.display = 'none';
+
+    const fechaDesde = Date.now() - turnoHoras * 3600 * 1000;
+    const result = await callAPI({
+        accion:      'reporte_turno',
+        operador:    currentEmpleado.nombre,
+        sede:        currentSede.nombre,
+        fecha_desde: fechaDesde
+    });
+
+    btn.textContent = 'Generar reporte';
+    btn.disabled = false;
+
+    if (!result.ok) {
+        alertEl.textContent = result.error || 'No se pudo generar el reporte. Intenta de nuevo.';
+        alertEl.style.display = 'block';
+        return;
+    }
+
+    reporteData = result;
+
+    // Llenar resultado
+    const ahora     = new Date();
+    const desde     = new Date(fechaDesde);
+    const fmtOpts   = { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' };
+    document.getElementById('reporte-meta').textContent =
+        `${currentEmpleado.nombre} · ${currentSede.nombre} · ${desde.toLocaleString('es-CO', fmtOpts)} → ${ahora.toLocaleTimeString('es-CO', {hour:'2-digit',minute:'2-digit'})}`;
+
+    document.getElementById('rep-lavadas').textContent = result.lavadas + ' lavadas';
+    document.getElementById('rep-tokens').textContent  = result.tokens_canjeados + ' tokens';
+    document.getElementById('rep-ventas').textContent  = result.ventas + ' vendidas';
+    document.getElementById('rep-recargas').textContent =
+        result.recargas + (result.monto_recargas > 0 ? ` · $${result.monto_recargas.toLocaleString('es-CO')}` : '');
+    document.getElementById('rep-cupones').textContent = result.cupones + ' cupones';
+
+    // Detalle de membresías si hay ventas
+    if (result.ventas > 0 && result.detalle_ventas) {
+        const detalles = Object.entries(result.detalle_ventas)
+            .filter(([,v]) => v > 0)
+            .map(([k,v]) => `${v} ${k}`)
+            .join(' · ');
+        document.getElementById('rep-mem-texto').textContent = detalles;
+        document.getElementById('rep-detalle-mem').style.display = 'block';
+    } else {
+        document.getElementById('rep-detalle-mem').style.display = 'none';
+    }
+
+    document.getElementById('reporte-resultado').style.display = 'block';
+    document.getElementById('reporte-resultado').scrollIntoView({ behavior: 'smooth' });
+}
+
+function enviarReporteWhatsApp() {
+    if (!reporteData) return;
+    const ahora   = new Date().toLocaleString('es-CO', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+    const desde   = new Date(Date.now() - turnoHoras * 3600 * 1000)
+                        .toLocaleTimeString('es-CO', { hour:'2-digit', minute:'2-digit' });
+
+    let detMem = '';
+    if (reporteData.ventas > 0 && reporteData.detalle_ventas) {
+        detMem = '\n   ' + Object.entries(reporteData.detalle_ventas)
+            .filter(([,v]) => v > 0)
+            .map(([k,v]) => `${v} ${k}`)
+            .join(', ');
+    }
+
+    const msg = encodeURIComponent(
+        `📊 *REPORTE DE TURNO — PANZER CARWASH*\n` +
+        `━━━━━━━━━━━━━━━━━━\n` +
+        `👤 Empleado: ${currentEmpleado.nombre}\n` +
+        `📍 Sede: ${currentSede.nombre}\n` +
+        `🕐 Turno: ${desde} → ${new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})} (${turnoHoras}h)\n` +
+        `📅 Generado: ${ahora}\n` +
+        `━━━━━━━━━━━━━━━━━━\n` +
+        `🚗 Lavadas realizadas: ${reporteData.lavadas}\n` +
+        `🔋 Tokens canjeados: ${reporteData.tokens_canjeados}\n` +
+        `🛒 Membresías vendidas: ${reporteData.ventas}${detMem}\n` +
+        `💰 Recargas procesadas: ${reporteData.recargas}` +
+        (reporteData.monto_recargas > 0 ? ` ($${reporteData.monto_recargas.toLocaleString('es-CO')})` : '') + `\n` +
+        `🎁 Cupones canjeados: ${reporteData.cupones}\n` +
+        `━━━━━━━━━━━━━━━━━━\n` +
+        `✅ Reporte generado automáticamente · Panzer VIP`
+    );
+    window.open(`https://wa.me/?text=${msg}`, '_blank');
+}
+
+function resetReporte() {
+    reporteData = null;
+    document.getElementById('reporte-resultado').style.display = 'none';
+    document.getElementById('reporte-alert').style.display = 'none';
 }
 
 // =============================================================
