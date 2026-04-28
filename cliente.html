@@ -1102,10 +1102,10 @@ function calcularPuntosDesdeHistorial(txs) {
     txs.forEach(tx => {
         const tipo = (tx.tipo || '').toLowerCase();
         const monto = Math.abs(tx.monto || 0);
-        if (tipo === 'recarga' || tipo === 'venta') {
+        if (tipo === 'recarga' || tipo === 'recarga inicial' || tipo === 'venta') {
             ganados += Math.floor(monto / 100);
         } else if (tipo === 'bono_puntos') {
-            canjeados += monto; // monto guardado como valor positivo de los puntos canjeados
+            canjeados += monto;
         }
     });
     return Math.max(0, ganados - canjeados);
@@ -1389,9 +1389,8 @@ async function refrescarDatosSilencioso() {
         const result = await callAPI({ accion: 'consultar_cliente', id_vip: clienteActual.id });
         if (result.ok && result.cliente) {
             const actualizado = result.cliente;
-            // Solo re-renderiza si cambió el saldo o la membresía
-            const saldoCambio  = actualizado.saldo    !== clienteActual.saldo;
-            const memCambio    = actualizado.membresia !== clienteActual.membresia;
+            const saldoCambio = actualizado.saldo     !== clienteActual.saldo;
+            const memCambio   = actualizado.membresia !== clienteActual.membresia;
             // Conservar puntos calculados desde el historial
             actualizado.puntos = clienteActual.puntos || 0;
             clienteActual = actualizado;
@@ -1400,15 +1399,26 @@ async function refrescarDatosSilencioso() {
                 const tokens  = Math.floor((clienteActual.saldo || 0) / PRECIO_TOKEN);
                 const memType = clienteActual.membresia.toLowerCase();
                 renderCarnet(tokens, memType);
-                document.getElementById('cuenta-tokens').textContent = tokens;
-                document.getElementById('cuenta-mem').textContent    = clienteActual.membresia;
+                document.getElementById('cuenta-tokens').textContent  = tokens;
+                document.getElementById('cuenta-mem').textContent     = clienteActual.membresia;
                 document.getElementById('header-mem-sub').textContent = 'Membresía ' + clienteActual.membresia;
-                // Si hubo recarga nueva, forzar recarga de historial para recalcular puntos
-                if (saldoCambio) historialCargado = false;
+                if (saldoCambio) {
+                    // Forzar recarga de historial para actualizar puntos
+                    historialCargado = false;
+                    // Si el usuario ya está en Mi Cuenta, recargar historial de inmediato
+                    if (currentTab === 'cuenta') cargarHistorial();
+                }
             }
         }
     } catch (e) { /* silencioso — no molesta al usuario si falla */ }
 }
+
+// Refresca cuando el cliente vuelve a poner la app en primer plano (PWA móvil)
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && clienteActual) {
+        refrescarDatosSilencioso();
+    }
+});
 // ============================================================
 // UTILIDADES
 // ============================================================
