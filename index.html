@@ -900,10 +900,6 @@
                 <div style="font-size:11px; color:var(--text-muted); margin-bottom:12px;" id="reporte-meta">—</div>
                 <div class="reporte-card">
                     <div class="reporte-row">
-                        <span class="reporte-label">🚗 Lavadas realizadas</span>
-                        <span class="reporte-value" id="rep-lavadas">—</span>
-                    </div>
-                    <div class="reporte-row">
                         <span class="reporte-label">🔋 Tokens canjeados</span>
                         <span class="reporte-value" id="rep-tokens">—</span>
                     </div>
@@ -1912,8 +1908,7 @@ async function generarReporte() {
     document.getElementById('reporte-meta').textContent =
         `${currentEmpleado.nombre} · ${currentSede.nombre} · ${desde.toLocaleString('es-CO', fmtOpts)} → ${ahora.toLocaleTimeString('es-CO', {hour:'2-digit',minute:'2-digit'})}`;
 
-    document.getElementById('rep-lavadas').textContent = result.lavadas + ' lavadas';
-    document.getElementById('rep-tokens').textContent  = result.tokens_canjeados + ' tokens';
+    document.getElementById('rep-tokens').textContent = result.tokens_canjeados + ' tokens';
     document.getElementById('rep-ventas').textContent  = result.ventas + ' vendidas';
     document.getElementById('rep-recargas').textContent =
         result.recargas + (result.monto_recargas > 0 ? ` · $${result.monto_recargas.toLocaleString('es-CO')}` : '');
@@ -1957,7 +1952,6 @@ function enviarReporteWhatsApp() {
         `🕐 Turno: ${desde} → ${new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})} (${turnoHoras}h)\n` +
         `📅 Generado: ${ahora}\n` +
         `━━━━━━━━━━━━━━━━━━\n` +
-        `🚗 Lavadas realizadas: ${reporteData.lavadas}\n` +
         `🔋 Tokens canjeados: ${reporteData.tokens_canjeados}\n` +
         `🛒 Membresías vendidas: ${reporteData.ventas}${detMem}\n` +
         `💰 Recargas procesadas: ${reporteData.recargas}` +
