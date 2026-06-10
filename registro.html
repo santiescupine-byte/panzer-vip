@@ -874,15 +874,14 @@
         btn.disabled = true;
 
         try {
-            // Enviar a Google Apps Script con GET params
-            const params = new URLSearchParams({
-                accion: 'crear_cliente',
-                nombre: nombre,
-                telefono: telefono,
-                membresia: selectedMembership
+            // Crear cliente en Supabase (migrado)
+            const SB_URL='https://gmwqxqeiocjcpablxjcn.supabase.co';
+            const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtd3F4cWVpb2NqY3BhYmx4amNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzMzYwMDksImV4cCI6MjA5NTkxMjAwOX0.O_fSFAHUiZtDNIRShumewEqkPExITBRuxVO2qbMuzxY';
+            const response = await fetch(SB_URL+'/rest/v1/rpc/vip_crear', {
+                method:'POST',
+                headers:{ 'apikey':SB_KEY, 'Authorization':'Bearer '+SB_KEY, 'Content-Type':'application/json' },
+                body: JSON.stringify({ p_nombre:nombre, p_telefono:telefono, p_membresia:selectedMembership, p_operador:'Registro', p_sede:'Registro' })
             });
-
-            const response = await fetch(APPS_SCRIPT_URL + '?' + params.toString());
             const result = await response.json();
 
             const idVip = (result.ok && result.id_vip) ? result.id_vip : 'VIP-' + Date.now().toString(36).toUpperCase();

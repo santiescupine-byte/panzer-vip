@@ -924,20 +924,22 @@ let cuponesCargados   = false;
 // ============================================================
 // API
 // ============================================================
+// Migrado a Supabase (rápido). Misma forma de respuesta.
+const SB_URL = 'https://gmwqxqeiocjcpablxjcn.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtd3F4cWVpb2NqY3BhYmx4amNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzMzYwMDksImV4cCI6MjA5NTkxMjAwOX0.O_fSFAHUiZtDNIRShumewEqkPExITBRuxVO2qbMuzxY';
 async function callAPI(params) {
-    const query = new URLSearchParams(params).toString();
-    const url = APPS_SCRIPT_URL + '?' + query;
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 25000);
+    const p = params;
+    const map = {
+        consultar_cliente: ['vip_consultar',      {p_id_vip:p.id_vip}],
+        historial_cliente: ['vip_historial',      {p_id_vip:p.id_vip}],
+        obtener_cupones:   ['vip_obtener_cupones',{p_membresia:p.membresia,p_id_vip:p.id_vip}],
+        canjear_puntos:    ['vip_canjear_puntos', {p_id_vip:p.id_vip}],
+    };
+    const m = map[p.accion]; if(!m) return { ok:false, error:'acción no soportada: '+p.accion };
     try {
-        const res = await fetch(url, { signal: controller.signal });
-        clearTimeout(timer);
-        return await res.json();
-    } catch (e) {
-        clearTimeout(timer);
-        if (e.name === 'AbortError') return { ok: false, error: 'El servidor tardó demasiado. Intenta de nuevo.' };
-        return { ok: false, error: 'Error de conexión' };
-    }
+        const r = await fetch(SB_URL+'/rest/v1/rpc/'+m[0], { method:'POST', headers:{ 'apikey':SB_KEY, 'Authorization':'Bearer '+SB_KEY, 'Content-Type':'application/json' }, body: JSON.stringify(m[1]) });
+        return await r.json();
+    } catch(e) { return { ok:false, error:'Error de conexión' }; }
 }
 // ============================================================
 // LOGIN
